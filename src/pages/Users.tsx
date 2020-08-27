@@ -1,5 +1,13 @@
 ﻿import * as React from "react";
 
-class Users extends React.Component {}
+type UserProps = {
+
+};
+
+class Users extends React.Component<UserProps> {
+    render() {
+        return <></>;
+    }
+}
 
 export default Users;
