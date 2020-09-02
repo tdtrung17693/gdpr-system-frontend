@@ -23,6 +23,12 @@ const userDropdownMenu = (
         <span> {L('Logout')}</span>
       </Link>
     </Menu.Item>
+    <Menu.Item key="3">
+      <Link to="/accountsetting">
+        <Icon type="setting" />
+        <span> {L('Setting')}</span>
+      </Link>
+    </Menu.Item>
   </Menu>
 );
 
