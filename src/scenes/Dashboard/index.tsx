@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Row, Col, Card, Icon } from 'antd';
+import { Row, Col, Card } from 'antd';
+import { Icon } from '@ant-design/compatible';
 import './index.less';
 import TinyLineChartExample from './components/TinyLineChartExample';
 import BarChartExample from './components/BarChartExample';
