@@ -13,16 +13,15 @@ import registerServiceWorker from './registerServiceWorker';
 Utils.setLocalization();
 
 
+const stores = initializeStores();
 
-  const stores = initializeStores();
+ReactDOM.render(
+  <Provider {...stores}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
+  document.getElementById('root') as HTMLElement
+);
 
-  ReactDOM.render(
-    <Provider {...stores}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>,
-    document.getElementById('root') as HTMLElement
-  );
-
-  registerServiceWorker();
+registerServiceWorker();

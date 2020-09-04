@@ -6,7 +6,7 @@ import { inject, observer } from 'mobx-react';
 import AppComponentBase from '../../components/AppComponentBase';
 import CreateOrUpdateRole from './components/createOrUpdateRole';
 import { EntityDto } from '../../services/dto/entityDto';
-import { FormComponentProps } from 'antd/lib/form';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { L } from '../../lib/abpUtility';
 import RoleStore from '../../stores/roleStore';
 import Stores from '../../stores/storeIdentifier';
@@ -182,7 +182,7 @@ class Role extends AppComponentBase<IRoleProps, IRoleState> {
           >
             <Table
               rowKey="id"
-              size={'default'}
+              size="middle"
               bordered={true}
               pagination={{ pageSize: this.state.maxResultCount, total: roles === undefined ? 0 : roles.totalCount, defaultCurrent: 1 }}
               columns={columns}

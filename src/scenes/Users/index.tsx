@@ -190,7 +190,7 @@ class User extends AppComponentBase<IUserProps, IUserState> {
           >
             <Table
               rowKey={record => record.id.toString()}
-              size={'default'}
+              size="middle"
               bordered={true}
               columns={columns}
               pagination={{ pageSize: 10, total: users === undefined ? 0 : users.totalCount, defaultCurrent: 1 }}

@@ -2,7 +2,8 @@ import './index.less';
 
 import * as React from 'react';
 
-import { Avatar, Badge, Col, Dropdown, Icon, Menu, Row } from 'antd';
+import { Avatar, Badge, Col, Dropdown, Menu, Row } from 'antd';
+import { Icon } from '@ant-design/compatible';
 
 import { L } from '../../lib/abpUtility';
 import LanguageSelect from '../LanguageSelect';
