@@ -189,7 +189,7 @@ class Tenant extends AppComponentBase<ITenantProps, ITenantState> {
           >
             <Table
               rowKey="id"
-              size={'default'}
+              size="middle"
               bordered={true}
               pagination={{ pageSize: this.state.maxResultCount, total: tenants === undefined ? 0 : tenants.totalCount, defaultCurrent: 1 }}
               columns={columns}

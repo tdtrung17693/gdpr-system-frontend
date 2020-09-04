@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { Checkbox, Col, Form, Input, Modal } from 'antd';
+import { Checkbox, Col, Input, Modal } from 'antd';
+import { Form } from '@ant-design/compatible';
 
-import { FormComponentProps } from 'antd/lib/form';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import FormItem from 'antd/lib/form/FormItem';
 import { L } from '../../../lib/abpUtility';
 import rules from './createOrUpdateTenant.validation';

@@ -2,7 +2,8 @@ import './index.less';
 
 import * as React from 'react';
 
-import { Avatar, Col, Icon, Layout, Menu } from 'antd';
+import { Avatar, Col, Layout, Menu } from 'antd';
+import { Icon } from '@ant-design/compatible';
 import { L, isGranted } from '../../lib/abpUtility';
 
 import AbpLogo from '../../images/abp-logo-long.png';

@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import { Form, Input, Modal, Tabs } from 'antd';
+import { Input, Modal, Tabs } from 'antd';
+import { Form } from '@ant-design/compatible'
 
 import CheckboxGroup from 'antd/lib/checkbox/Group';
-import { FormComponentProps } from 'antd/lib/form';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import FormItem from 'antd/lib/form/FormItem';
 import { GetAllPermissionsOutput } from '../../../services/role/dto/getAllPermissionsOutput';
 import { L } from '../../../lib/abpUtility';
