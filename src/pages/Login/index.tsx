@@ -28,17 +28,12 @@ export interface ILoginProps extends FormComponentProps {
 @inject(Stores.AuthenticationStore, Stores.SessionStore, Stores.AccountStore)
 @observer
 class Login extends React.Component<ILoginProps> {
-  handleSubmit = async (e: any) => {
-    e.preventDefault();
+  onFinish = async (values: any) => {
     const { loginModel } = this.props.authenticationStore!;
-    await this.props.form.validateFields(async (err: any, values: any) => {
-      if (!err) {
-        await this.props.authenticationStore!.login(values);
-        sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
-        const { state } = this.props.location;
-        window.location = state ? state.from.pathname : '/';
-      }
-    });
+    await this.props.authenticationStore!.login(values);
+    sessionStorage.setItem('rememberMe', loginModel.rememberMe ? '1' : '0');
+    // const { state } = this.props.location;
+    // window.location = state ? state.from.pathname : '/';
   };
 
   public render() {
@@ -48,7 +43,7 @@ class Login extends React.Component<ILoginProps> {
     const { loginModel } = this.props.authenticationStore!;
     return (
       <Col className="name">
-        <Form className="" onFinish={this.handleSubmit}>
+        <Form className="" onFinish={this.onFinish}>
 
           <Row style={{ marginTop: 10 }}>
             <Col span={8} offset={8}>
@@ -56,8 +51,8 @@ class Login extends React.Component<ILoginProps> {
                 <div style={{ textAlign: 'center' }}>
                   <h3>{L('WelcomeMessage')}</h3>
                 </div>
-                <FormItem name="userNameOrEmailAddress" rules={rules.userNameOrEmailAddress}>
-                    <Input placeholder={L('UserNameOrEmail')} prefix={<UserOutlined type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
+                <FormItem name="username" rules={rules.userNameOrEmailAddress}>
+                    <Input placeholder={L('Username')} prefix={<UserOutlined type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                 </FormItem>
 
                 <FormItem name="password" rules={rules.password }>

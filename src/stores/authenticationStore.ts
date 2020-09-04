@@ -1,6 +1,5 @@
 import { action, observable } from 'mobx';
 
-import AppConsts from './../lib/appconst';
 import LoginModel from '../models/Login/loginModel';
 import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 
@@ -18,14 +17,14 @@ class AuthenticationStore {
   @action
   public async login(model: LoginModel) {
     let result = await tokenAuthService.authenticate({
-      userNameOrEmailAddress: model.userNameOrEmailAddress,
+      username: model.username,
       password: model.password,
       rememberClient: model.rememberMe,
     });
 
-    var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expireInSeconds) : undefined;
-    abp.auth.setToken(result.accessToken, tokenExpireDate);
-    abp.utils.setCookieValue(AppConsts.authorization.encrptedAuthTokenName, result.encryptedAccessToken, tokenExpireDate, abp.appPath);
+    var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
+    console.log(result)
+    abp.auth.setToken(result.authToken, tokenExpireDate);
   }
 
   @action
