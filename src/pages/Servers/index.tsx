@@ -47,7 +47,7 @@ export default function Servers() {
     <div>
       <h2>Servers Management</h2>
       <Collapse defaultActiveKey={['1']}>
-        <Panel header="Export Requests By Servers" key="1">
+        <Panel header="Export Requests By Servers" key='0'>
           <div className="site-card-wrapper">
             <Row gutter={16}>
               <Col span={6}>
