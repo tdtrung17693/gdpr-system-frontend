@@ -9,6 +9,8 @@ export default class CreateCustomerModal extends Component {
   state = {
     loading: false,
     visible: false,
+    active: true,
+    activeText: 'Active',
   };
 
   showModal = () => {
@@ -28,6 +30,20 @@ export default class CreateCustomerModal extends Component {
     this.setState({ visible: false });
   };
 
+  triggerStatus = (e: any) => {
+    if (this.state.active){
+      this.setState({
+        active: false,
+        activeText: 'Inactive',
+      })
+    }
+    else{
+      this.setState({
+        active: true,
+        activeText: 'Active',
+      })
+    };
+  }
   //form
 
   
@@ -56,6 +72,7 @@ export default class CreateCustomerModal extends Component {
     const { visible, loading } = this.state;
     const { TextArea } = Input;
     const { Option } = Select;
+
     return (
       <>
         <Button type="primary" onClick={this.showModal}>
@@ -67,11 +84,6 @@ export default class CreateCustomerModal extends Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Form.Item wrapperCol={{ ...this.layout.wrapperCol, offset: 8 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>,
             <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
             </Button>,
@@ -84,23 +96,22 @@ export default class CreateCustomerModal extends Component {
             <Form.Item name={['user', 'name']} label="Customer Name" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name={['user', 'contractBeginDate']} label="Contract Begin Date" rules={[{ required: true }]}>
+            <Form.Item label="Date Range" rules={[{ required: true }]}>
               <Input.Group compact>
-                <DatePicker style={{ width: '50%' }} />
-              </Input.Group>
-            </Form.Item>
-            <Form.Item name={['user', 'contractEndDate']} label="Contact End Date" rules={[{ required: true }]}>
-              <Input.Group compact>
-                <DatePicker style={{ width: '50%' }} />
+                <DatePicker name='contractBeginDate' style={{ width: '50%' }} />
+                <DatePicker name='contractEndDate' style={{ width: '50%' }} />
               </Input.Group>
             </Form.Item>
             <Form.Item name={['user', 'contactPoint']} label="Contact Point" rules={[{ type: 'email' }, { required: true }]}>
-            <Select defaultValue="lucy" style={{ width: '100%' }}>
-              <Option value="jack">Jack</Option>
-            </Select>
+              <Select defaultValue="lucy" style={{ width: '100%' }}>
+                <Option value="jack">Jack</Option>
+              </Select>
             </Form.Item>
-            <Form.Item name={['user', 'description']} label="Description" rules={[{ type: 'email' }, { required: true }]}>
+            <Form.Item name={['user', 'description']} label="Description" rules={[{ required: true }]}>
               <TextArea rows={4} />
+            </Form.Item>
+            <Form.Item name={['user', 'status']} label="Status">
+              <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.activeText}</Button>
             </Form.Item>
           </Form>
         </Modal>

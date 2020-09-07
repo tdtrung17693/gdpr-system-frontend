@@ -2,47 +2,56 @@
 import { Collapse, Button, Card, Col, Row, Input, DatePicker } from 'antd';
 import Search from 'antd/lib/input/Search';
 import '../Customers/index.css';
+import axios from 'axios';
 
-//components
-// import OptionsExport from './Components/OptionsExport/OptionsExport';
 import ResultTable from './Components/ResultTable/ResultTable';
 import ImportButton from './Components/ImportButton/ImportButton';
 import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
 
 import { EditOutlined } from '@ant-design/icons';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const { Panel } = Collapse;
-//const { Option } = Select;
 
-// let resultmock = [
-//   {
-//     name: 'Long',
-//     ipAddress: '111111111111',
-//     startDtae: '11111',
-//     endDate: '11',
-//     owner: '11',
-//     status: '11',
-//   },
-//   {
-//     name: 'Who',
-//     ipAddress: '111',
-//     startDtae: '1111111',
-//     endDate: '111111111111111',
-//     owner: '11111',
-//     status: '111',
-//   },
-//   {
-//     name: 'Dao',
-//     ipAddress: '111',
-//     startDtae: '1',
-//     endDate: '1',
-//     owner: '1',
-//     status: '1',
-//   },
-// ];
 
-export default function Customers() {
-  return (
+
+const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const fileExtension = '.xlsx';
+
+const exportToCSV = (csvData: any, fileName: any) => {
+      const ws = XLSX.utils.json_to_sheet(csvData);
+      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const data = new Blob([excelBuffer], {type: fileType});
+      FileSaver.saveAs(data, fileName + fileExtension);
+}
+
+
+export default class Customers extends React.Component {
+  state = {
+    fromDate: Date(),
+    toDate: Date(),
+    guids: []
+  };
+
+  handleExport = (e: any) => {
+    axios.post('http://localhost:5000/api/Customer/export-csv', {
+    fromDate: this.state.fromDate,
+    toDate: this.state.toDate,
+    guids: this.state.guids,
+  })
+    .then((response) =>{
+      console.log(response.data.responsedRequest);
+      exportToCSV(response.data.responsedRequest, 'xfilename');
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    //console.log(e.target.value);
+  }
+
+  render(){ return (
     <div>
       <h2>Customers Management</h2>
       <Collapse defaultActiveKey={['1']}>
@@ -53,7 +62,7 @@ export default function Customers() {
                 <Card hoverable={true} title="FromDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker style={{ width: '100%' }} />
+                    <DatePicker onChange={value => this.setState({fromDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
@@ -61,13 +70,13 @@ export default function Customers() {
                 <Card hoverable={true} title="ToDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker style={{ width: '100%' }} />
+                    <DatePicker onChange={value => this.setState({toDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
             </Row>
           </div>
-          <Button type="primary">Process Data</Button>
+          <Button type="primary" onClick={this.handleExport}>Process Data</Button>
         </Panel>
       </Collapse>
       <div className="create-filter">
@@ -77,7 +86,7 @@ export default function Customers() {
         </div>
         <Search
           style={{ width: '400px' }}
-          placeholder="input search text"
+          placeholder="Search Keyword"
           enterButton="Search"
           size="large"
           onSearch={(value) => console.log(value)}
@@ -86,4 +95,5 @@ export default function Customers() {
       <ResultTable />
     </div>
   );
+  }
 }

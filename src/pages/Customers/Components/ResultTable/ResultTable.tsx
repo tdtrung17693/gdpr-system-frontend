@@ -1,34 +1,40 @@
-import { Table, Button } from 'antd';
+import { Table, Button, Badge } from 'antd';
 import React from 'react';
+import axios from 'axios';
 
 const columns = [
   {
     title: '#',
-    dataIndex: 'index',
+    dataIndex: 'key',
   },
   {
-    title: 'Server',
-    dataIndex: 'server',
+    title: 'Customer Name',
+    dataIndex: 'name',
   },
   {
-    title: 'Ip Address',
-    dataIndex: 'ipAddress',
+    title: 'Contact Point',
+    dataIndex: 'contactPoint',
   },
   {
-    title: 'StartDate',
-    dataIndex: 'startDate',
+    title: 'Contract Begin Date',
+    dataIndex: 'contractBeginDate',
   },
   {
-    title: 'EndDate',
-    dataIndex: 'endDate',
+    title: 'Contract End Date',
+    dataIndex: 'contractEndDate',
   },
   {
-    title: 'Owner',
-    dataIndex: 'ower',
+    title: 'Description',
+    dataIndex: 'description',
   },
   {
-    title: 'Status',
-    dataIndex: 'status',
+    title: 'Machine Owner',
+    dataIndex: 'serverOwned',
+    render: (serverOwned: any) => (
+        <Button type="primary"> Manage &nbsp;&nbsp;
+          <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
+        </Button>
+    ),
   },
   {
     title: '',
@@ -36,27 +42,45 @@ const columns = [
   },
 ];
 
-const data: any = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
+// const data: any = [];
+// for (let i = 0; i < 46; i++) {
+//   data.push({
+//     key: i,
+//     name: `Edward King ${i}`,
+//     age: 32,
+//     address: `London, Park Lane no. ${i}`,
+//   });
+// }
+
+// const header = { 
+//   "Access-Control-Allow-Origin": "*",
+//     "Access-Control-Allow-Methods": "*",
+//   'Content-Type': 'application/json'
+// }
 
 export default class ResultTable extends React.Component {
   constructor(props: any) {
     super(props);
-    this.state = {
-      selectedRowKeys: [], // Check here to configure the default column
-      loading: false,
-    };
+  }
+
+  state = {
+    selectedRowKeys: [], // Check here to configure the default column
+    loading: false,
+    data: [],
+  };
+
+  fetchData = () => {
+    axios.get('http://localhost:5000/api/Customer', /*{headers : header}*/)
+    .then( (response) =>{
+      this.setState({data: response.data});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   start = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, });
     // ajax request after empty completing
     setTimeout(() => {
       this.setState({
@@ -78,6 +102,7 @@ export default class ResultTable extends React.Component {
       onChange: this.onSelectChange,
     };
     const hasSelected = selectedRowKeys.length > 0;
+    this.fetchData();
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
@@ -86,7 +111,7 @@ export default class ResultTable extends React.Component {
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}></Table>
       </div>
     );
   }
