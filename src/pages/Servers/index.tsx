@@ -1,4 +1,5 @@
-﻿import React from 'react';
+﻿import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select } from 'antd';
 import Search from 'antd/lib/input/Search';
 import './index.css';
@@ -42,12 +43,55 @@ let mockadmins: string[] = ['long.dao@netpower.no4', 'long.dao@netpower.no5', 'l
 //   },
 // ];
 
+const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
+
+interface IServers {
+  id: string;
+  name: string;
+  ipAddress: string;
+  createBy: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+}
+
 export default function Servers() {
+  const [servers, setServers] = useState<IServers[]>([]);
+  useEffect(() => {
+    async function getAllServers() {
+      let modifiedData: IServers[] = [];
+      await axios
+        .get(`${url}api/server`, {
+          headers: { 'Access-Control-Allow-Origin': '*' },
+        })
+        .then((res) => {
+          let { data }: any = res;
+          data.map((server: any) => {
+            let modifiedServer: IServers = {
+              id: server.id,
+              name: server.name,
+              ipAddress: server.ipAddress,
+              createBy: server.createBy,
+              startDate: server.startDate,
+              endDate: server.endDate,
+              status: server.status ? 'active' : 'inactive',
+            };
+            modifiedData.push(modifiedServer);
+          });
+          //currentServers => [...currentServers, modifiedData]
+        });
+      //console.log(modifiedData);
+      setServers(servers => [...servers,...modifiedData]);
+      console.log(servers);
+    }
+    getAllServers();
+  }, []);
+
   return (
     <div>
       <h2>Servers Management</h2>
       <Collapse defaultActiveKey={['1']}>
-        <Panel header="Export Requests By Servers" key='0'>
+        <Panel header="Export Requests By Servers" key="0">
           <div className="site-card-wrapper">
             <Row gutter={16}>
               <Col span={6}>
@@ -116,7 +160,7 @@ export default function Servers() {
           onSearch={(value) => console.log(value)}
         />
       </div>
-      <ResultTable />
+      <ResultTable data={servers} />
     </div>
   );
 }
