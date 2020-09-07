@@ -60,9 +60,8 @@ export class Users extends React.Component<IUserProps> {
       { title: "Last Name", width: 150, render: (text: string, record: any) => <div>{record.lastName}</div> },
       { title: "Email", dataIndex: 'email', width: 150, render: (text: string) => <div>{text}</div> },
       {
-        title: L('IsActive'),
+        title: "Active",
         dataIndex: 'status',
-        key: 'isActive',
         width: 150,
         render: (text: boolean) => (text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>),
       },
@@ -75,14 +74,14 @@ export class Users extends React.Component<IUserProps> {
               trigger={['click']}
               overlay={
                 <Menu>
-                  <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.id })}>{L('Edit')}</Menu.Item>
-                  <Menu.Item onClick={() => this.delete({ id: item.id })}>{L('Delete')}</Menu.Item>
+                  <Menu.Item onClick={() => this.createOrUpdateModalOpen({ id: item.id })}>Edit</Menu.Item>
+                  <Menu.Item onClick={() => this.delete({ id: item.id })}>Delete</Menu.Item>
                 </Menu>
               }
               placement="bottomLeft"
             >
               <Button type="primary" >
-                {L('Actions')}
+                Actions
               </Button>
             </Dropdown>
           </div>
@@ -122,7 +121,22 @@ export class Users extends React.Component<IUserProps> {
           <Col sm={{ span: 10, offset: 0 }}>
             <Search placeholder={L('Filter')} onSearch={this.handleSearch} />
           </Col>
-          <Col sm={{ span: 10, offset: 4 }}>
+          <Col sm={{ span: 10 }} style={{marginLeft: "1rem"}}>
+            {
+            selectedRowKeys.length > 0 ?
+              <Dropdown
+                trigger={['click']}
+                overlay={
+                  <Menu>
+                    <Menu.Item>Activate</Menu.Item>
+                    <Menu.Item>Deactivate</Menu.Item>
+                  </Menu>
+                }
+                placement="bottomLeft"
+              >
+                <Button type="primary" >Bulk Actions</Button>
+              </Dropdown>
+            : ""}
 
           </Col>
         </Row>
