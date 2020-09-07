@@ -13,6 +13,7 @@ import SiderMenu from '../../components/SiderMenu';
 import { appRouters } from '../Router/router.config';
 import utils from '../../utils/utils';
 import NotFoundRoute from '../Router/NotFoundRoute';
+import ProtectedRoute from '../Router/ProtectedRoute';
 
 const { Content } = Layout;
 
@@ -49,7 +50,7 @@ class AppLayout extends React.Component<any> {
           </Layout.Header>
           <Content style={{ margin: 16 }}>
             <Switch>
-              {pathname === '/' && <Redirect from="/" to="/user/login" />}
+              {pathname === '/' && <Redirect from="/" to="/requests" />}
               {appRouters
                 .filter((item: any) => !item.isLayout)
                 .map((route: any, index: any) => (
@@ -57,8 +58,8 @@ class AppLayout extends React.Component<any> {
                     exact
                     key={index}
                     path={route.path}
-                    // render={props => <ProtectedRoute component={route.component} permission={route.permission} />}
-                    render={props => <Route component={route.component} permission={route.permission} />}
+                    render={props => <ProtectedRoute {...props} component={route.component} permission={route.permission} />}
+                    // render={props => <Route component={route.component} permission={route.permission} />}
                   />
                 ))}
               {pathname !== '/' && <NotFoundRoute />}

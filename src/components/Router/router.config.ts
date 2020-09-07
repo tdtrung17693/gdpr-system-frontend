@@ -1,4 +1,5 @@
 import LoadableComponent from './../Loadable/index';
+import { Permissions } from '../../config/permissions';
 
 export const userRouter: any = [
   {
@@ -59,7 +60,7 @@ export const appRouters: any = [
   },
   {
     path: '/users',
-    permission: 'Pages.Users',
+    permission: Permissions.VIEW_USER,
     title: 'Users',
     name: 'user',
     icon: 'user',

@@ -7,6 +7,12 @@ import { PagedUserResultRequestDto } from "./dto/PagedUserResultRequestDto";
 import { UpdateUserInput } from './dto/updateUserInput';
 import http from '../httpService';
 
+export type User = {
+  firstName: string;
+  lastName: string;
+  username: string;
+} | null;
+
 class UserService {
   public async create(createUserInput: CreateOrUpdateUserInput) {
     let result = await http.post('api/services/app/User/Create', createUserInput);
@@ -38,9 +44,14 @@ class UserService {
     return result.data.result;
   }
 
-    public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
-    let result = await http.get('api/services/app/User/GetAll', { params: pagedFilterAndSortedRequest });
-    return result.data.result;
+  public async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto): Promise<PagedResultDto<GetAllUserOutput>> {
+    let result = await http.get('api/Users', { params: pagedFilterAndSortedRequest });
+    return result.data;
+  }
+
+  public async getCurrentUser() {
+    let result = await http.get('api/accounts/me');
+    return result.data;
   }
 }
 

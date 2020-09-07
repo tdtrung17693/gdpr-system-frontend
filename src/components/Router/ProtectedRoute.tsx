@@ -3,15 +3,15 @@ import * as React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
 import { isGranted } from '../../lib/abpUtility';
+import { inject, observer } from 'mobx-react';
 
-declare var abp: any;
-
-const ProtectedRoute = ({ path, component: Component, permission, render, ...rest }: any) => {
+const ProtectedRoute = inject("authenticationStore")(observer((({ authenticationStore, path, component: Component, permission, render, ...rest }: any) => {
+  console.log(authenticationStore)
   return (
     <Route
       {...rest}
       render={props => {
-        if (!abp.session.userId)
+        if (!authenticationStore.isAuthenticated)
           return (
             <Redirect
               to={{
@@ -36,6 +36,6 @@ const ProtectedRoute = ({ path, component: Component, permission, render, ...res
       }}
     />
   );
-};
+})));
 
 export default ProtectedRoute;

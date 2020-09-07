@@ -2,14 +2,30 @@ import { action, observable } from 'mobx';
 
 import LoginModel from '../models/Login/loginModel';
 import tokenAuthService from '../services/tokenAuth/tokenAuthService';
-
-declare var abp: any;
+import { ls } from '../services/localStorage';
+import { Auth } from '../config/auth';
+import userService, { User } from '../services/user/userService';
 
 class AuthenticationStore {
   @observable loginModel: LoginModel = new LoginModel();
+  @observable loggedIn: boolean = false;
+  @observable user: User = null;
+
+  constructor() {
+    if (ls.get(Auth.TOKEN_NAME)) {
+      userService.getCurrentUser()
+        .then(user => {
+          this.loggedIn = true;
+          this.user = user;
+        })
+        .catch(() => {
+          this.logout();
+        })
+    }
+  }
 
   get isAuthenticated(): boolean {
-    if (!abp.session.userId) return false;
+    if (!this.loggedIn) return false;
 
     return true;
   }
@@ -22,16 +38,19 @@ class AuthenticationStore {
       rememberClient: model.rememberMe,
     });
 
-    var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
-    console.log(result)
-    abp.auth.setToken(result.authToken, tokenExpireDate);
+    // TODO: Implement refresh token
+    // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
+    ls.set(Auth.TOKEN_NAME, result.authToken);
+    let currentUser = await userService.getCurrentUser();
+    this.loggedIn = true;
+    this.user = currentUser;
   }
 
   @action
   logout() {
-    localStorage.clear();
-    sessionStorage.clear();
-    abp.auth.clearToken();
+    ls.remove(Auth.TOKEN_NAME);
+    this.user = null;
+    this.loggedIn = false;
   }
 }
 export default AuthenticationStore;
