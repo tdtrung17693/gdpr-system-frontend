@@ -2,7 +2,7 @@
 
 import { Row } from 'antd';
 
-export class Customers extends React.Component {
+export class Servers extends React.Component {
   render() {
     return (
       <Row> Customers </Row>
@@ -10,4 +10,4 @@ export class Customers extends React.Component {
   }
 }
 
-export default Customers;
+export default Servers;

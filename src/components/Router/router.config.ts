@@ -53,7 +53,7 @@ export const appRouters: any = [
     name: 'requests',
     permission: '',
     title: 'Requests',
-    icon: 'home',
+    icon: 'mail',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Requests')),
   },
