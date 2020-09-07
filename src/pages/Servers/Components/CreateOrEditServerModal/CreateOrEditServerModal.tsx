@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker } from 'antd';
 
-export default class CreateServerModal extends Component {
+interface ServersProps {
+  isCreate: boolean;
+  serverData: any;
+}
+
+interface ServerStates {
+  loading: boolean;
+  visible: boolean;
+  _serverData: any;
+}
+export default class CreateOrEditServerModal extends Component<ServersProps, ServerStates> {
   constructor(props: any) {
     super(props);
   }
   //modal
   state = {
+    _serverData: this.props.serverData,
     loading: false,
     visible: false,
   };
@@ -57,19 +68,14 @@ export default class CreateServerModal extends Component {
     return (
       <>
         <Button type="primary" onClick={this.showModal}>
-          Create a new server
+          {this.props.isCreate ? 'Create a new servers' : 'Edit'}
         </Button>
         <Modal
           visible={visible}
-          title="Create new server"
+          title={this.props.isCreate ? 'Create a new servers' : 'Edit server'}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Form.Item wrapperCol={{ ...this.layout.wrapperCol, offset: 8 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>,
             <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
             </Button>,
@@ -79,10 +85,20 @@ export default class CreateServerModal extends Component {
           ]}
         >
           <Form {...this.layout} name="nest-messages" onFinish={this.onFinish} validateMessages={this.validateMessages}>
-            <Form.Item name={['user', 'name']} label="Server Name" rules={[{ required: true }]}>
+            <Form.Item
+              initialValue={this.state._serverData.name ? `${this.state._serverData.name}` : ``}
+              name={['user', 'name']}
+              label="Server Name"
+              rules={[{ required: true }]}
+            >
               <Input />
             </Form.Item>
-            <Form.Item name={['user', 'ipaddress']} label="IpAddress" rules={[{ type: 'email' }, { required: true }]}>
+            <Form.Item
+              initialValue={this.state._serverData.ipAddress ? `${this.state._serverData.ipAddress}` : ``}
+              name={['user', 'ipaddress']}
+              label="IpAddress"
+              rules={[{ type: 'email' }, { required: true }]}
+            >
               <Input />
             </Form.Item>
             <Form.Item name={['user', 'startdate']} label="StartDate" rules={[{ required: true }]}>

@@ -4,11 +4,9 @@ import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select } from 'ant
 import Search from 'antd/lib/input/Search';
 import './index.css';
 
-//components
-// import OptionsExport from './Components/OptionsExport/OptionsExport';
 import ResultTable from './Components/ResultTable/ResultTable';
 import ImportButton from './Components/ImportButton/ImportButton';
-import CreateServerModal from './Components/CreateServerModal/CreateServerModal';
+import CreateOrEditServerModal from './Components/CreateOrEditServerModal/CreateOrEditServerModal';
 
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
 
@@ -16,36 +14,11 @@ const { Panel } = Collapse;
 const { Option } = Select;
 let mockusers: string[] = ['long.dao@netpower.no1', 'long.dao@netpower.no2', 'long.dao@netpower.no3'];
 let mockadmins: string[] = ['long.dao@netpower.no4', 'long.dao@netpower.no5', 'long.dao@netpower.no6'];
-// let resultmock = [
-//   {
-//     name: 'Long',
-//     ipAddress: '111111111111',
-//     startDtae: '11111',
-//     endDate: '11',
-//     owner: '11',
-//     status: '11',
-//   },
-//   {
-//     name: 'Who',
-//     ipAddress: '111',
-//     startDtae: '1111111',
-//     endDate: '111111111111111',
-//     owner: '11111',
-//     status: '111',
-//   },
-//   {
-//     name: 'Dao',
-//     ipAddress: '111',
-//     startDtae: '1',
-//     endDate: '1',
-//     owner: '1',
-//     status: '1',
-//   },
-// ];
 
 const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
 
 interface IServers {
+  key: string;
   id: string;
   name: string;
   ipAddress: string;
@@ -53,6 +26,8 @@ interface IServers {
   startDate: string;
   endDate: string;
   status: string;
+  editButton: any;
+  index: number;
 }
 
 export default function Servers() {
@@ -66,23 +41,26 @@ export default function Servers() {
         })
         .then((res) => {
           let { data }: any = res;
-          data.map((server: any) => {
+          //console.log(data);
+          data.map((server: any, index: number) => {
             let modifiedServer: IServers = {
+              key: '' + index,
               id: server.id,
               name: server.name,
               ipAddress: server.ipAddress,
-              createBy: server.createBy,
+              createBy: server.createdBy,
               startDate: server.startDate,
               endDate: server.endDate,
               status: server.status ? 'active' : 'inactive',
+              editButton: (
+                <CreateOrEditServerModal key={server.name} serverData = {server} isCreate = {false}/>
+              ),
+              index: index + 1,
             };
             modifiedData.push(modifiedServer);
           });
-          //currentServers => [...currentServers, modifiedData]
         });
-      //console.log(modifiedData);
-      setServers(servers => [...servers,...modifiedData]);
-      console.log(servers);
+      setServers((servers) => [...servers, ...modifiedData]);
     }
     getAllServers();
   }, []);
@@ -149,7 +127,7 @@ export default function Servers() {
       </Collapse>
       <div className="create-filter">
         <div>
-          <CreateServerModal />
+          <CreateOrEditServerModal isCreate serverData/>
           <ImportButton />
         </div>
         <Search

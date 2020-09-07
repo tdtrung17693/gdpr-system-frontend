@@ -8,7 +8,7 @@ const columns = [
   },
   {
     title: 'Server',
-    dataIndex: 'server',
+    dataIndex: 'name',
   },
   {
     title: 'Ip Address',
@@ -31,13 +31,14 @@ const columns = [
     dataIndex: 'status',
   },
   {
-    title: '',
-    dataIndex: 'button',
+    title: 'Button',
+    dataIndex:'editButton'
   },
 ];
 
 
 interface IServers {
+  key: string;
   id: string;
   name: string;
   ipAddress: string;
@@ -45,6 +46,7 @@ interface IServers {
   startDate: string;
   endDate: string;
   status: string;
+  editButton: any;
 }
 
 interface ServersProps {
@@ -55,19 +57,6 @@ interface ServerStates {
   servers: IServers[];
   selectedRowKeys: any;
   loading: boolean;
-}
-
-const data: IServers[] = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    id: ""+i,
-    name: `Edward King ${i}`,
-    createBy: ""+32+i,
-    ipAddress: `London, Park Lane no. ${i}`,
-    startDate: "string",
-    endDate: "string",
-    status: "string",
-  });
 }
 
 export default class ResultTable extends React.Component<ServersProps, ServerStates> {
@@ -87,13 +76,11 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   componentDidUpdate() {
     if (this.props.data.length !== this.state.servers.length) {
       this.setState({ servers: this.props.data });
-      console.log(this.state.servers);
     }
   }
-
+  
   start = () => {
     this.setState({ loading: true });
-    // ajax request after empty completing
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
