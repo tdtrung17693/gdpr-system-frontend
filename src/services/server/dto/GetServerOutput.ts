@@ -1,15 +1,15 @@
 export interface GetServerOutput {
-    id : string;
+    id? : string;
     createdBy: string;
-    createdAt: Date;
+    createdAt?: string;
     deletedBy?: string;
-    deletedAt?: Date;
-    endDate: Date;
+    deletedAt?: string;
+    endDate: string;
     ipAddress: string;
-    isDeleted: boolean;
+    isDeleted?: boolean;
     name: string;
-    startDate: Date;
-    status: boolean;
+    startDate: string;
+    status?: boolean;
     updatedAt? : any;
     updatedBy? : string
   }

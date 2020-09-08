@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, Switch } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
+import ServerStore from '../../../../stores/serverStore';
+import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
 
 //const [form] =  Form.useForm();
 
@@ -9,6 +11,7 @@ interface ServersProps {
   isCreate: boolean;
   serverData: any;
   isEdit: boolean;
+  serverStore: ServerStore;
 }
 
 interface ServerStates {
@@ -37,10 +40,11 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
 
   handleOk = () => {
+    //console.log(values);
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, visible: false });
-    }, 3000);
+    }, 1500);
   };
 
   handleCancel = () => {
@@ -67,11 +71,22 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
     },
   };
 
-  onFinish = (values: any) => {
+  onFinish = async (fieldsValue: any) => {
+    const values: CreateServerInput = {
+      ...fieldsValue.server,
+      startDate: fieldsValue.server.startDate.format('YYYY-MM-DD HH:mm:ss'),
+      endDate: fieldsValue.server.endDate.format('YYYY-MM-DD HH:mm:ss'),
+      createdBy: "B461CC44-92A8-4CC4-92AD-8AB884EB1895"
+    };
     console.log(values);
+    await this.props.serverStore.create(values);
+    console.log("OK DONE");
   };
   render() {
     const { visible, loading } = this.state;
+    const config: any = {
+      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+    };
     return (
       <>
         {this.props.isCreate ? (
@@ -108,21 +123,17 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Form.Item>
             <Form.Item
               initialValue={this.state._serverData.ipAddress ? `${this.state._serverData.ipAddress}` : ``}
-              name={['server', 'ipaddress']}
+              name={['server', 'ipAddress']}
               label="IpAddress"
               rules={[{ required: true }]}
             >
               <Input />
             </Form.Item>
-            <Form.Item name={['server', 'startdate']} label="StartDate" rules={[{ type: 'date' }]}>
-              <Input.Group compact>
-                <DatePicker style={{ width: '100%' }} />
-              </Input.Group>
+            <Form.Item name={['server', 'startDate']} label="StartDate">
+              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" {...config} />
             </Form.Item>
-            <Form.Item name={['server', 'enddate']} label="EndDate" rules={[{ type: 'date' }]}>
-              <Input.Group compact>
-                <DatePicker style={{ width: '100%' }}/>
-              </Input.Group>
+            <Form.Item name={['server', 'endDate']} label="EndDate">
+              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" {...config} />
             </Form.Item>
             {this.props.isEdit ? (
               <Form.Item name={['server', 'Status']} label="Status">

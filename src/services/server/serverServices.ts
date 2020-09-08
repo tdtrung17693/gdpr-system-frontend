@@ -8,7 +8,7 @@ import axios from 'axios';
 const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
 
 class ServerService {
-  public async create(createServerInput: CreateServerInput) {
+  public async create(createServerInput: CreateServerInput):Promise<any> {
       let result = await axios.post(`${url}api/server/create`, createServerInput);
       return result.data;
   }

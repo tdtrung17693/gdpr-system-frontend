@@ -19,8 +19,6 @@ const { Option } = Select;
 let mockusers: string[] = ['long.dao@netpower.no1', 'long.dao@netpower.no2', 'long.dao@netpower.no3'];
 let mockadmins: string[] = ['long.dao@netpower.no4', 'long.dao@netpower.no5', 'long.dao@netpower.no6'];
 
-
-
 interface IServers {
   key: string;
   id: string;
@@ -40,6 +38,7 @@ interface IServerProps {
 
 interface IServerState {
   servers: IServers[];
+  serverList: any;
 }
 
 //@inject(Stores.ServerStore)
@@ -48,6 +47,7 @@ interface IServerState {
 export default class Servers extends Component<IServerProps, IServerState> {
   //const [servers, setServers] = useState<IServers[]>([]);
   state = {
+    serverList: [],
     servers: [],
   };
   async componentDidMount() {
@@ -57,8 +57,9 @@ export default class Servers extends Component<IServerProps, IServerState> {
   async getAllServers() {
     await this.props.serverStore.getAll();
     let modifiedServerList: IServers[] = [];
-    let serverList: any = Object.assign([], this.props.serverStore.servers);
-    serverList.forEach((server: any, index: number) => {
+    //let serverList: any = Object.assign([], this.props.serverStore.servers);
+    this.setState({ serverList: Object.assign([], this.props.serverStore.servers) });
+    this.state.serverList.forEach((server: any, index: number) => {
       let serverObject: any = Object.assign({}, server);
       let modifiedServer: IServers = {
         key: '' + index,
@@ -73,7 +74,9 @@ export default class Servers extends Component<IServerProps, IServerState> {
         ) : (
           <Switch style={{ width: '65%' }} disabled={true} unCheckedChildren="inactive" />
         ),
-        editButton: <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit />,
+        editButton: (
+          <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+        ),
         index: index + 1,
       };
       modifiedServerList.push(modifiedServer);
@@ -83,7 +86,7 @@ export default class Servers extends Component<IServerProps, IServerState> {
 
   render() {
     return (
-      <div style = {{overflow: "scroll"}}>
+      <div style={{ overflow: 'scroll' }}>
         <h2>Servers Management</h2>
         <Collapse defaultActiveKey={['1']}>
           <Panel header="Export Requests By Servers" key="0">
@@ -144,7 +147,7 @@ export default class Servers extends Component<IServerProps, IServerState> {
         </Collapse>
         <div className="create-filter">
           <div>
-            <CreateOrEditServerModal isCreate serverData isEdit={false} />
+            <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore={this.props.serverStore} />
             <ImportButton />
           </div>
           <Search
@@ -161,35 +164,33 @@ export default class Servers extends Component<IServerProps, IServerState> {
   }
 }
 
-
-
 // useEffect(() => {
-  //   async function getAllServers() {
-  //     let modifiedData: IServers[] = [];
-  //     await axios
-  //       .get(`${url}api/server`, {
-  //         headers: { 'Access-Control-Allow-Origin': '*' },
-  //       })
-  //       .then((res) => {
-  //         let { data }: any = res;
-  //         //console.log(data);
-  //         data.map((server: any, index: number) => {
-  //           let modifiedServer: IServers = {
-  //             key: '' + index,
-  //             id: server.id,
-  //             name: server.name,
-  //             ipAddress: server.ipAddress,
-  //             createBy: server.createdBy,
-  //             startDate: server.startDate,
-  //             endDate: server.endDate,
-  //             status: server.status ? <Switch style = {{width : '65%'}} disabled = {true} checkedChildren="active" defaultChecked /> : <Switch style = {{width : '65%'}} disabled = {true} unCheckedChildren="inactive" />,
-  //             editButton: <CreateOrEditServerModal key={server.name} serverData={server} isCreate={false} isEdit/>,
-  //             index: index + 1,
-  //           };
-  //           modifiedData.push(modifiedServer);
-  //         });
-  //       });
-  //     setServers((servers) => [...servers, ...modifiedData]);
-  //   }
-  //   getAllServers();
-  // }, []);
+//   async function getAllServers() {
+//     let modifiedData: IServers[] = [];
+//     await axios
+//       .get(`${url}api/server`, {
+//         headers: { 'Access-Control-Allow-Origin': '*' },
+//       })
+//       .then((res) => {
+//         let { data }: any = res;
+//         //console.log(data);
+//         data.map((server: any, index: number) => {
+//           let modifiedServer: IServers = {
+//             key: '' + index,
+//             id: server.id,
+//             name: server.name,
+//             ipAddress: server.ipAddress,
+//             createBy: server.createdBy,
+//             startDate: server.startDate,
+//             endDate: server.endDate,
+//             status: server.status ? <Switch style = {{width : '65%'}} disabled = {true} checkedChildren="active" defaultChecked /> : <Switch style = {{width : '65%'}} disabled = {true} unCheckedChildren="inactive" />,
+//             editButton: <CreateOrEditServerModal key={server.name} serverData={server} isCreate={false} isEdit/>,
+//             index: index + 1,
+//           };
+//           modifiedData.push(modifiedServer);
+//         });
+//       });
+//     setServers((servers) => [...servers, ...modifiedData]);
+//   }
+//   getAllServers();
+// }, []);
