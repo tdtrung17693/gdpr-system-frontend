@@ -1,12 +1,12 @@
 ﻿import React from 'react';
-import { Collapse, Button, Card, Col, Row, Input, DatePicker } from 'antd';
-//import Search from 'antd/lib/input/Search';
+import { Collapse, Button, Card, Col, Row, Input, DatePicker, Badge, Table } from 'antd';
+import Search from 'antd/lib/input/Search';
 import '../Customers/index.css';
 import axios from 'axios';
 
-import ResultTable from './Components/ResultTable/ResultTable';
-//import ImportButton from './Components/ImportButton/ImportButton';
-//import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
+//import ResultTable from './Components/ResultTable/ResultTable';
+import ImportButton from './Components/ImportButton/ImportButton';
+import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
 
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
@@ -36,10 +36,96 @@ export default class Customers extends React.Component {
   state = {
     fromDate: Date(),
     toDate: Date(),
-    guids: []
+    guids: [],
+    //table
+    selectedRowKeys: [], // Check here to configure the default column
+    loading: false,
+    data: [],
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
+  columns = [
+    {
+      title: 'Customer Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Contact Point',
+      dataIndex: 'contactPoint',
+    },
+    {
+      title: 'Contract Begin Date',
+      dataIndex: 'contractBeginDate',
+    },
+    {
+      title: 'Contract End Date',
+      dataIndex: 'contractEndDate',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    {
+      title: 'Machine Owner',
+      dataIndex: 'serverOwned',
+      render: (serverOwned: any) => (
+          <Button type="primary"> Manage &nbsp;&nbsp;
+            <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
+          </Button>
+      ),
+    },
+    {
+      title: '',
+      render: (serverOwned: any) => (
+        <Button type="primary" danger> Edit </Button>
+    ),
+    },
+  ];
+
+  fetchData = () => {
+    axios.get('http://localhost:5000/api/Customer/', /*{headers : header}*/)
+    .then( (response) =>{
+      this.setState({data: response.data});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  filterData = (keyword: any) => {
+    axios.get('http://localhost:5000/api/Customer/' + keyword, /*{headers : header}*/)
+    .then( (response) =>{
+      this.setState({data: response.data});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  handleSearch = (keyword: any) => {
+    this.filterData(keyword)
+  }
+
+  start = () => {
+    this.setState({ loading: true, });
+    this.fetchData();
+    // ajax request after empty completing
+    setTimeout(() => {
+      this.setState({
+        selectedRowKeys: [],
+        loading: false,
+      });
+    }, 1000);
+  };
+
+  onSelectChange = (selectedRowKeys: any) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({ selectedRowKeys });     
+  };
+
+  componentWillMount() {
+    this.fetchData();
+  }
   // handleSearch = (keyword: any) => {
   //   this.resultTable.fetchData(keyword)
   // }
@@ -60,7 +146,14 @@ export default class Customers extends React.Component {
     //console.log(e.target.value);
   }
 
-  render(){ return (
+  render(){ 
+    const { loading, selectedRowKeys }:any = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
+    return (
     <div>
       <h2>Customers Management</h2>
       <Collapse defaultActiveKey={['1']}>
@@ -88,7 +181,31 @@ export default class Customers extends React.Component {
           <Button type="primary" onClick={this.handleExport}>Process Data</Button>
         </Panel>
       </Collapse>
-      <ResultTable />
+      <div>
+        <div className="create-filter">
+          <div>
+            <CreateCustomerModal />
+            <ImportButton />
+          </div>
+          <Search
+            style={{ width: '400px' }}
+            placeholder="Search Keyword"
+            enterButton="Search"
+            size="large"
+            onSearch={(value: string) => this.handleSearch(value)}
+          />
+        </div>
+        <div>
+          <div style={{ marginBottom: 16 }}>
+            <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
+              Reload
+            </Button>
+            
+            <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
+          </div>
+          <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.state.data}></Table>
+        </div>
+      </div>
     </div>
   );
   }
