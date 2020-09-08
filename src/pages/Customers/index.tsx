@@ -1,12 +1,12 @@
 ﻿import React from 'react';
 import { Collapse, Button, Card, Col, Row, Input, DatePicker } from 'antd';
-import Search from 'antd/lib/input/Search';
+//import Search from 'antd/lib/input/Search';
 import '../Customers/index.css';
 import axios from 'axios';
 
 import ResultTable from './Components/ResultTable/ResultTable';
-import ImportButton from './Components/ImportButton/ImportButton';
-import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
+//import ImportButton from './Components/ImportButton/ImportButton';
+//import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
 
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
@@ -20,7 +20,10 @@ const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sh
 const fileExtension = '.xlsx';
 
 const exportToCSV = (csvData: any, fileName: any) => {
-      const ws = XLSX.utils.json_to_sheet(csvData);
+      const csvDataRequest = csvData.map((e: any) => e.request[0]);
+      
+      const ws = XLSX.utils.json_to_sheet((csvDataRequest));
+      console.log(ws);
       const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const data = new Blob([excelBuffer], {type: fileType});
@@ -29,11 +32,17 @@ const exportToCSV = (csvData: any, fileName: any) => {
 
 
 export default class Customers extends React.Component {
+
   state = {
     fromDate: Date(),
     toDate: Date(),
     guids: []
   };
+
+  // resultTable: ResultTable = new ResultTable(this.props);
+  // handleSearch = (keyword: any) => {
+  //   this.resultTable.fetchData(keyword)
+  // }
 
   handleExport = (e: any) => {
     axios.post('http://localhost:5000/api/Customer/export-csv', {
@@ -79,19 +88,6 @@ export default class Customers extends React.Component {
           <Button type="primary" onClick={this.handleExport}>Process Data</Button>
         </Panel>
       </Collapse>
-      <div className="create-filter">
-        <div>
-          <CreateCustomerModal />
-          <ImportButton />
-        </div>
-        <Search
-          style={{ width: '400px' }}
-          placeholder="Search Keyword"
-          enterButton="Search"
-          size="large"
-          onSearch={(value) => console.log(value)}
-        />
-      </div>
       <ResultTable />
     </div>
   );

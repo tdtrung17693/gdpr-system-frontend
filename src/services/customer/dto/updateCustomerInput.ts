@@ -1,9 +1,10 @@
-export interface CreateOrUpdateUserInput {
+export interface UpdateCustomerInput {
     name: string,
     description: string,
-    status: string,
+    status: boolean,
     contractBeginDate: string,
     contratctEndDate: string,
-    contactPoint: string
+    contactPoint: string,
+    id: string,
   }
   

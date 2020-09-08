@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
+import { Modal, Button, Input, Form, DatePicker } from 'antd';
+
+import axios from 'axios'
 
 export default class CreateCustomerModal extends Component {
   constructor(props: any) {
@@ -9,8 +11,13 @@ export default class CreateCustomerModal extends Component {
   state = {
     loading: false,
     visible: false,
-    active: true,
-    activeText: 'Active',
+    status: true,
+    customerName: '',
+    contractBeginDate: Date(),
+    contractEndDate: Date(),
+    contactPoint: '',
+    description: '' ,
+    statusText: 'Active',
   };
 
   showModal = () => {
@@ -31,16 +38,16 @@ export default class CreateCustomerModal extends Component {
   };
 
   triggerStatus = (e: any) => {
-    if (this.state.active){
+    if (this.state.status){
       this.setState({
-        active: false,
-        activeText: 'Inactive',
+        status: false,
+        statusText: 'Inactive',
       })
     }
     else{
       this.setState({
-        active: true,
-        activeText: 'Active',
+        status: true,
+        statusText: 'Active',
       })
     };
   }
@@ -65,13 +72,47 @@ export default class CreateCustomerModal extends Component {
     },
   };
 
-  onFinish = (values: any) => {
-    console.log(values);
+  //Form Control
+  // onNameChange = (value: any) => {
+  //   this.setState({name: value})
+  // }
+  // onBeginDateChange = (value: any) => {
+  //   this.setState({contractBeginDate: value})
+  // }
+  // onEndDateChange = (value: any) => {
+  //   this.setState({contractEndDate: value})
+  // }
+  // onCPChange = (value: any) => {
+  //   this.setState({contactPoint: value})
+  // }
+  // onDescriptionChange = (value: any) => {
+  //   this.setState({descritpion: value})
+  // }
+
+  //Submmit
+  handleSubmit = () => {
+    axios.post('http://localhost:5000/api/Customer',{
+    contractBeginDate: this.state.contractBeginDate,
+    contractEndDate: this.state.contractEndDate,
+    description: this.state.description,
+    status: this.state.status,
+    customerName: this.state.customerName
+  })
+    .then((response) =>{
+      console.log(response);
+      this.setState({
+        visible: false,
+      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   };
+
   render() {
     const { visible, loading } = this.state;
     const { TextArea } = Input;
-    const { Option } = Select;
+    //const { Option } = Select;
 
     return (
       <>
@@ -81,10 +122,10 @@ export default class CreateCustomerModal extends Component {
         <Modal
           visible={visible}
           title="Create new Customer"
-          onOk={this.handleOk}
+          // onOk={this.handleSubmit}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
+            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleSubmit}>
               Save
             </Button>,
             <Button key="back" onClick={this.handleCancel}>
@@ -92,26 +133,27 @@ export default class CreateCustomerModal extends Component {
             </Button>,
           ]}
         >
-          <Form {...this.layout} layout="vertical" name="nest-messages" onFinish={this.onFinish} validateMessages={this.validateMessages}>
+          <Form {...this.layout} layout="vertical" name="nest-messages" onFinish={this.handleSubmit} validateMessages={this.validateMessages}>
             <Form.Item name={['user', 'name']} label="Customer Name" rules={[{ required: true }]}>
-              <Input />
+              <Input onChange={event => this.setState({ customerName: event.target.value})}/>
             </Form.Item>
             <Form.Item label="Date Range" rules={[{ required: true }]}>
               <Input.Group compact>
-                <DatePicker name='contractBeginDate' style={{ width: '50%' }} />
-                <DatePicker name='contractEndDate' style={{ width: '50%' }} />
+                <DatePicker onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' style={{ width: '50%' }} />
+                <DatePicker onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' style={{ width: '50%' }} />
               </Input.Group>
             </Form.Item>
             <Form.Item name={['user', 'contactPoint']} label="Contact Point" rules={[{ type: 'email' }, { required: true }]}>
-              <Select defaultValue="lucy" style={{ width: '100%' }}>
+              {/* <Select onChange={this.onCPChange} defaultValue="lucy" style={{ width: '100%' }}>
                 <Option value="jack">Jack</Option>
-              </Select>
+              </Select> */}
+              <Input onChange={value => this.setState({contactPoint: value})} defaultValue="lucy" style={{ width: '100%' }}/>
             </Form.Item>
             <Form.Item name={['user', 'description']} label="Description" rules={[{ required: true }]}>
-              <TextArea rows={4} />
+              <TextArea onChange={value => this.setState({descritpion: value})} rows={4} />
             </Form.Item>
             <Form.Item name={['user', 'status']} label="Status">
-              <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.activeText}</Button>
+              <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.statusText}</Button>
             </Form.Item>
           </Form>
         </Modal>
