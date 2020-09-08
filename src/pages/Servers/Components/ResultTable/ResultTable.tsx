@@ -45,7 +45,7 @@ interface IServers {
   createBy: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: any;
   editButton: any;
 }
 

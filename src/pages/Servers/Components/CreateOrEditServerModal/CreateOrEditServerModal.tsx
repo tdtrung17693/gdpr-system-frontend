@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, Switch } from 'antd';
 
 interface ServersProps {
   isCreate: boolean;
   serverData: any;
+  isEdit: boolean;
 }
 
 interface ServerStates {
@@ -67,9 +68,18 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
 
     return (
       <>
-        <Button type="primary" onClick={this.showModal}>
+        {/* <Button type="primary" onClick={this.showModal}>
           {this.props.isCreate ? 'Create a new servers' : 'Edit'}
-        </Button>
+        </Button> */}
+        {this.props.isCreate ? (
+          <Button type="primary" onClick={this.showModal}>
+            Create a new servers
+          </Button>
+        ) : (
+          <Button shape="round" danger onClick={this.showModal}>
+            Edit
+          </Button>
+        )}
         <Modal
           visible={visible}
           title={this.props.isCreate ? 'Create a new servers' : 'Edit server'}
@@ -111,6 +121,15 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
                 <DatePicker style={{ width: '100%' }} />
               </Input.Group>
             </Form.Item>
+            {this.props.isEdit ? (
+              <Form.Item name={['user', 'Status']} label="Status" rules={[{ required: true }]}>
+                {this.state._serverData.status ? (
+                  <Switch  style = {{width : '25%'}}  checkedChildren="active" unCheckedChildren="inactive" defaultChecked />
+                ) : (
+                  <Switch  style = {{width : '25%'}}  checkedChildren="active" unCheckedChildren="inactive" />
+                )}
+              </Form.Item>
+            ) : null}
           </Form>
         </Modal>
       </>

@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select } from 'antd';
+import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select, Switch } from 'antd';
 import Search from 'antd/lib/input/Search';
 import './index.css';
 
@@ -25,7 +25,7 @@ interface IServers {
   createBy: string;
   startDate: string;
   endDate: string;
-  status: string;
+  status: any;
   editButton: any;
   index: number;
 }
@@ -51,10 +51,8 @@ export default function Servers() {
               createBy: server.createdBy,
               startDate: server.startDate,
               endDate: server.endDate,
-              status: server.status ? 'active' : 'inactive',
-              editButton: (
-                <CreateOrEditServerModal key={server.name} serverData = {server} isCreate = {false}/>
-              ),
+              status: server.status ? <Switch style = {{width : '65%'}} disabled = {true} checkedChildren="active" defaultChecked /> : <Switch style = {{width : '65%'}} disabled = {true} unCheckedChildren="inactive" />,
+              editButton: <CreateOrEditServerModal key={server.name} serverData={server} isCreate={false} isEdit/>,
               index: index + 1,
             };
             modifiedData.push(modifiedServer);
@@ -127,7 +125,7 @@ export default function Servers() {
       </Collapse>
       <div className="create-filter">
         <div>
-          <CreateOrEditServerModal isCreate serverData/>
+          <CreateOrEditServerModal isCreate serverData isEdit = {false} />
           <ImportButton />
         </div>
         <Search
