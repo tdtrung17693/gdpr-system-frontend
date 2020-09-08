@@ -3,6 +3,6 @@ export interface GetRoles {
   displayName: string;
   normalizedName: string;
   description: string;
-  grantedPermissions: string[];
+  permissions: string[];
   id: number;
 }

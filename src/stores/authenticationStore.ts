@@ -6,17 +6,19 @@ import { ls } from '../services/localStorage';
 import { Auth } from '../config/auth';
 import userService, { User } from '../services/user/userService';
 
+interface AppUser extends User {
+  permissions: string[];
+}
+
 class AuthenticationStore {
   @observable loginModel: LoginModel = new LoginModel();
   @observable loggedIn: boolean = false;
-  @observable user: User = null;
-
+  @observable user: AppUser | null = null;
   constructor() {
     if (ls.get(Auth.TOKEN_NAME)) {
       userService.getCurrentUser()
         .then(user => {
-          this.loggedIn = true;
-          this.user = user;
+          this.setCurrentUser(user)
         })
         .catch(() => {
           this.logout();
@@ -31,6 +33,11 @@ class AuthenticationStore {
   }
 
   @action
+  public setCurrentUser(user: AppUser) {
+    this.loggedIn = true;
+    this.user = user;
+  }
+
   public async login(model: LoginModel) {
     let result = await tokenAuthService.authenticate({
       username: model.username,
@@ -42,8 +49,7 @@ class AuthenticationStore {
     // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
     ls.set(Auth.TOKEN_NAME, result.authToken);
     let currentUser = await userService.getCurrentUser();
-    this.loggedIn = true;
-    this.user = currentUser;
+    this.setCurrentUser(currentUser);
   }
 
   @action
@@ -51,6 +57,10 @@ class AuthenticationStore {
     ls.remove(Auth.TOKEN_NAME);
     this.user = null;
     this.loggedIn = false;
+  }
+
+  isGranted(permission: string) {
+    return this.isAuthenticated &&  this.user!.permissions?.indexOf(permission) > 0;
   }
 }
 export default AuthenticationStore;

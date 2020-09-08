@@ -4,10 +4,13 @@ import * as React from 'react';
 
 import { Avatar, Col, Layout, Menu } from 'antd';
 import { Icon } from '@ant-design/compatible';
-import { L, isGranted } from '../../lib/abpUtility';
+import { L } from '../../lib/abpUtility';
 
 import GdprLogo from '../../images/gdpr.svg';
 import { appRouters } from '../../components/Router/router.config';
+import { inject, observer } from 'mobx-react';
+import Stores from '../../stores/storeIdentifier';
+import AuthenticationStore from '../../stores/authenticationStore';
 
 const { Sider } = Layout;
 
@@ -16,9 +19,10 @@ export interface ISiderMenuProps {
   collapsed: boolean;
   onCollapse: any;
   history: any;
+  authenticationStore?: AuthenticationStore;
 }
 
-const SiderMenu = (props: ISiderMenuProps) => {
+const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenuProps) => {
   const { collapsed, history, onCollapse } = props;
   return (
     <Sider trigger={null} className={'sidebar'} width={256} collapsible collapsed={collapsed} onCollapse={onCollapse}>
@@ -36,7 +40,7 @@ const SiderMenu = (props: ISiderMenuProps) => {
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {
-            if (route.permission && !isGranted(route.permission)) return null;
+            if (route.permission && !props.authenticationStore?.isGranted(route.permission)) return null;
 
             return (
               <Menu.Item key={route.path} onClick={() => history.push(route.path)}>
@@ -48,6 +52,6 @@ const SiderMenu = (props: ISiderMenuProps) => {
       </Menu>
     </Sider>
   );
-};
+}));
 
 export default SiderMenu;

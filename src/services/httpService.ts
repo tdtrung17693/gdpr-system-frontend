@@ -56,7 +56,7 @@ http.interceptors.response.use(
         }
       })
     } else if (!error.response) {
-      Modal.error({ content: L('UnknownError') });
+      Modal.error({ content: "Unknown Error. Please try again later." });
     } 
 
     setTimeout(() => {}, 1000);

@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { Redirect, Route } from 'react-router-dom';
 
-import { isGranted } from '../../lib/abpUtility';
 import { inject, observer } from 'mobx-react';
 
 const ProtectedRoute = inject("authenticationStore")(observer((({ authenticationStore, path, component: Component, permission, render, ...rest }: any) => {
@@ -21,7 +20,7 @@ const ProtectedRoute = inject("authenticationStore")(observer((({ authentication
             />
           );
 
-        if (permission && !isGranted(permission)) {
+        if (permission && authenticationStore.user.permissions.indexOf(permission) < 0) {
           return (
             <Redirect
               to={{

@@ -43,7 +43,7 @@ class AppLayout extends React.Component<any> {
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
-        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} />
+        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} {...this.props}/>
         <Layout>
           <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
             <Header collapsed={this.state.collapsed} toggle={this.toggle} />
