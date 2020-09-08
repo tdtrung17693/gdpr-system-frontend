@@ -29,6 +29,8 @@ export default class CreateModal extends Component {
     this.setState({ visible: false });
   };
 
+
+
   //form
 
   FormItem = Form.Item;
