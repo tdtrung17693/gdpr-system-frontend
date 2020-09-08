@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, Switch } from 'antd';
+import { inject, observer } from 'mobx-react';
+import Stores from '../../../../stores/storeIdentifier';
+
+//const [form] =  Form.useForm();
 
 interface ServersProps {
   isCreate: boolean;
@@ -12,6 +16,9 @@ interface ServerStates {
   visible: boolean;
   _serverData: any;
 }
+
+@inject(Stores.ServerStore)
+@observer
 export default class CreateOrEditServerModal extends Component<ServersProps, ServerStates> {
   constructor(props: any) {
     super(props);
@@ -65,12 +72,8 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
   render() {
     const { visible, loading } = this.state;
-
     return (
       <>
-        {/* <Button type="primary" onClick={this.showModal}>
-          {this.props.isCreate ? 'Create a new servers' : 'Edit'}
-        </Button> */}
         {this.props.isCreate ? (
           <Button type="primary" onClick={this.showModal}>
             Create a new servers
@@ -86,7 +89,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
+            <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
             </Button>,
             <Button key="back" onClick={this.handleCancel}>
@@ -94,10 +97,10 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Button>,
           ]}
         >
-          <Form {...this.layout} name="nest-messages" onFinish={this.onFinish} validateMessages={this.validateMessages}>
+          <Form id="form" {...this.layout} name="form" onFinish={this.onFinish} validateMessages={this.validateMessages}>
             <Form.Item
               initialValue={this.state._serverData.name ? `${this.state._serverData.name}` : ``}
-              name={['user', 'name']}
+              name={['server', 'name']}
               label="Server Name"
               rules={[{ required: true }]}
             >
@@ -105,28 +108,28 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Form.Item>
             <Form.Item
               initialValue={this.state._serverData.ipAddress ? `${this.state._serverData.ipAddress}` : ``}
-              name={['user', 'ipaddress']}
+              name={['server', 'ipaddress']}
               label="IpAddress"
-              rules={[{ type: 'email' }, { required: true }]}
+              rules={[{ required: true }]}
             >
               <Input />
             </Form.Item>
-            <Form.Item name={['user', 'startdate']} label="StartDate" rules={[{ required: true }]}>
+            <Form.Item name={['server', 'startdate']} label="StartDate" rules={[{ type: 'date' }]}>
               <Input.Group compact>
                 <DatePicker style={{ width: '100%' }} />
               </Input.Group>
             </Form.Item>
-            <Form.Item name={['user', 'enddate']} label="EndDate" rules={[{ required: true }]}>
+            <Form.Item name={['server', 'enddate']} label="EndDate" rules={[{ type: 'date' }]}>
               <Input.Group compact>
-                <DatePicker style={{ width: '100%' }} />
+                <DatePicker style={{ width: '100%' }}/>
               </Input.Group>
             </Form.Item>
             {this.props.isEdit ? (
-              <Form.Item name={['user', 'Status']} label="Status" rules={[{ required: true }]}>
+              <Form.Item name={['server', 'Status']} label="Status">
                 {this.state._serverData.status ? (
-                  <Switch  style = {{width : '25%'}}  checkedChildren="active" unCheckedChildren="inactive" defaultChecked />
+                  <Switch style={{ width: '25%' }} checkedChildren="active" unCheckedChildren="inactive" defaultChecked />
                 ) : (
-                  <Switch  style = {{width : '25%'}}  checkedChildren="active" unCheckedChildren="inactive" />
+                  <Switch style={{ width: '25%' }} checkedChildren="active" unCheckedChildren="inactive" />
                 )}
               </Form.Item>
             ) : null}

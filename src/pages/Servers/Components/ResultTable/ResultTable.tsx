@@ -105,7 +105,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       <div>
         <div style={{ marginBottom: 16 }}>
           <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
-            Reload
+            Toggle and reload
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
