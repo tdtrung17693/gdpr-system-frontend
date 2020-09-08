@@ -1,50 +1,117 @@
 import { Table, Button } from 'antd';
-import React from 'react';
+import React, { Component } from 'react';
+import axios from 'axios';
 
-const columns = [
-  {
-    title: '#',
-    dataIndex: 'index',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'requestStatus',
-  },
-  {
-    title: 'Create Date',
-    dataIndex: 'createdDate',
-  },
-  {
-    title: 'Update Date',
-    dataIndex: 'updatedDate',
-  },
-  {
-    title: 'Server',
-    dataIndex: 'serverId',
-  },
-  {
-    title: 'Title',
-    dataIndex: 'title',
-  },
-  {
-    title: 'Request From',
-    dataIndex: 'startDate',
-  },
-  {
-    title: 'Request To',
-    dataIndex: 'endDate',
-  },
-  {
-    title: '',
-    dataIndex: 'button',
-  },
-];
 
-export default class ResultTable extends React.Component {
-  
-  render() {
+export default class ResultTable extends Component<any, any> {
+  constructor(props: any){
+    super(props);
+    this.state = {
+      index: '',
+      datas: [],
+      //for checkbox
+      selectedRowKeys: [], 
+      loading: false,
+    }
+  } 
+
+  getRequestsData() {
+    axios
+        .get(`https://localhost:44387/api/Request`)
+        .then( requests => {
+          this.setState({
+            datas: requests.data,
+          });
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
+  }
+
+  componentDidMount(){
+    this.getRequestsData();
     
+  }
+  
+  //for checkbox
+  onSelectChange = (selectedRowKeys: any) => {
+    this.setState({ selectedRowKeys });
+  };
+
+  render() {
+
+    const columns = [
+      {
+        title: 'ID',
+        dataIndex: 'index',
+        key: 'index',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'requestStatus',
+        key: 'requestStatus',
+      },
+      {
+        title: 'Create Date',
+        dataIndex: 'createdDate',
+        key: 'createdDate',
+      },
+      {
+        title: 'Update Date',
+        dataIndex: 'updatedDate',
+        key: 'updatedDate',
+      },
+      {
+        title: 'Server',
+        dataIndex: 'serverId',
+        key: 'serverId',
+      },
+      {
+        title: 'Title',
+        dataIndex: 'title',
+        key: 'title',
+      },
+      {
+        title: 'Request From',
+        dataIndex: 'startDate',
+        key: 'startDate',
+      },
+      {
+        title: 'Request To',
+        dataIndex: 'endDate',
+        key: 'endDate',
+      },
+      {
+        title: 'Action',
+        dataIndex: 'button',
+        key: 'button',
+        render: () => <Button type='primary'  >Edit</Button>
+      },
+    ];
+
+    const dataSrc = this.state.datas.map((data: { requestStatus: any; createdAt: any; updatedAt: any; serverId: any; title: any; startDate: any; endDate: any; },i: any) =>
+      ({
+        key: i,
+        requestStatus: data.requestStatus,
+        createdDate: data.createdAt,
+        updatedDate: data.updatedAt,
+        serverId: data.serverId,
+        title: data.title,
+        startDate: data.startDate,
+        endDate: data.endDate
+
+      })
+    )
+
+    const { selectedRowKeys } = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+
     return (
+      
       <div>
         <div style={{ marginBottom: 16 }}>
           <Button type="primary" >
@@ -52,7 +119,7 @@ export default class ResultTable extends React.Component {
           </Button>
           <span style={{ marginLeft: 8 }}></span>
         </div>
-        <Table columns={columns} />
+        <Table rowSelection={rowSelection} dataSource={dataSrc} columns={columns} />
       </div>
     );
   }

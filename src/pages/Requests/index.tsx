@@ -4,9 +4,7 @@ import Search from 'antd/lib/input/Search';
 import './index.css';
 
 //components
-// import OptionsExport from './Components/OptionsExport/OptionsExport';
 import ResultTable from './Components/ResultTable/ResultTable';
-import ImportButton from './Components/ImportButton/ImportButton';
 import CreateServerModal from './Components/CreateModal/CreateModal';
 
 import {EditOutlined } from '@ant-design/icons';
@@ -46,7 +44,6 @@ export default function Requests() {
       <div className="create-filter">
         <div>
           <CreateServerModal />
-          <ImportButton />
         </div>
         <Search
           style={{ width: '400px' }}
