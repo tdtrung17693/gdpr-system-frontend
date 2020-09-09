@@ -72,7 +72,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     super(props);
     this.state = {
       servers: [],
-      selectedRowKeys: [], 
+      selectedRowKeys: [],
       loading: false,
     };
   }
@@ -82,36 +82,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   }
 
   async getAllServers() {
-    await this.props.serverStore.getAll();
-    //let modifiedServerList: IServers[] = [];
-    //let serverList: any = this.props.serverStore.servers.items  //Object.assign([], this.props.serverStore.servers.items);
-    //console.log(this.props.serverStore.servers.items);
-    this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
-      // let modifiedServer: IServers = {
-      //   key: '' + index,
-      //   id: serverObject.id,
-      //   name: serverObject.name,
-      //   ipAddress: serverObject.ipAddress,
-      //   createBy: serverObject.createdBy,
-      //   startDate: serverObject.startDate,
-      //   endDate: serverObject.endDate,
-      //   status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
-      //   editButton: (
-      //     <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-      //   ),
-      //   index: index + 1,
-      //   isActive: serverObject.status,
-      // };
-      //modifiedServerList.push(modifiedServer);
-      serverObject.key = '' + index;
-      serverObject.index = index + 1;
-      serverObject.isActive = serverObject.status;
-      serverObject.status = serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />;
-      serverObject.editButton = (
-        <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-      );
-    });
     console.log(this.props.serverStore.servers.items);
+    await this.props.serverStore.getAll();
   }
 
   start = () => {
@@ -130,7 +102,17 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
-    console.log('table render');
+    if (this.props.serverStore.servers.items.length !== 0) {
+      this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
+        serverObject.key = '' + index;
+        serverObject.index = index + 1;
+        serverObject.isActive = serverObject.status;
+        serverObject.status = serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />;
+        serverObject.editButton = (
+          <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+        );
+      });
+    }
     const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -150,3 +132,20 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     );
   }
 }
+
+// let modifiedServer: IServers = {
+//   key: '' + index,
+//   id: serverObject.id,
+//   name: serverObject.name,
+//   ipAddress: serverObject.ipAddress,
+//   createBy: serverObject.createdBy,
+//   startDate: serverObject.startDate,
+//   endDate: serverObject.endDate,
+//   status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
+//   editButton: (
+//     <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+//   ),
+//   index: index + 1,
+//   isActive: serverObject.status,
+// };
+//modifiedServerList.push(modifiedServer);

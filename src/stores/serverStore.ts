@@ -14,6 +14,7 @@ class ServerStore {
   async getAll() {
     let result = await serverService.getAll();
     this.servers = result; 
+    //console.log(this.servers);
   }
 
   @action

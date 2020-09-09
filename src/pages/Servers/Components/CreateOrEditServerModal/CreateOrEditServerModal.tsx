@@ -99,13 +99,10 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
       };
       this.formRef.current.resetFields();
       console.log(values);
-      //console.log(fieldsValue);
-      //this.setState({rerender : !this.state.rerender});
     }
   };
 
   render() {
-    //console.log("modal render");
     const { visible, loading } = this.state;
     const config: any = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],
@@ -160,7 +157,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Form.Item>
             {this.props.isEdit ? (
               <Form.Item name={['checked']} label="Status">
-                {this.state._serverData.isActive ? <Switch checked  defaultChecked /> : <Switch   />}
+                {this.state._serverData.isActive ? <Switch checked defaultChecked /> : <Switch />}
               </Form.Item>
             ) : null}
           </Form>
