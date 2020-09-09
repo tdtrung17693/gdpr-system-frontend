@@ -109,7 +109,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
               <FormItem label={L('Last Name')} name="lastName" rules={rules.lastname} {...formItemLayout}>
                 <Input />
               </FormItem>
-              <FormItem label={L('UserName')} name="username" rules={rules.userName} {...formItemLayout}>
+              <FormItem label={L('Username')} name="username" rules={rules.userName} {...formItemLayout}>
                 <Input />
               </FormItem>
               <FormItem label={L('Email')} name="email" rules={rules.emailAddress} {...formItemLayout}>
@@ -117,7 +117,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
               </FormItem>
             </>) : ''}
           {this.props.modalType == 'edit' ? (
-            <Form.Item name="status" label="Status" valuePropName="checked">
+            <Form.Item name="status" label="Status" valuePropName="checked" {...formItemLayout}>
               <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
             </Form.Item>
           ) : ''}
@@ -125,6 +125,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
             name="roleId"
             label="Role"
             rules={rules.roleId}
+            {...formItemLayout}
           >
             <Select>
               {

@@ -8,6 +8,7 @@ import userService, { User } from '../services/user/userService';
 class UserStore {
   @observable users!: PagedResultDto<User>;
   @observable editUser!: User;
+  @observable loading = false;
 
   async create(createUserInput: User) {
     await userService.create(createUserInput);
@@ -52,8 +53,10 @@ class UserStore {
 
   @action
   async getAll(pagedFilterAndSortedRequest: PagedUserResultRequestDto) {
+    this.loading = true;
     let result = await userService.getAll(pagedFilterAndSortedRequest);
     this.users = result;
+    this.loading = false;
   }
 
   @action
