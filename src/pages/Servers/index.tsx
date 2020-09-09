@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select, Switch } from 'antd';
+import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select } from 'antd';
 import Search from 'antd/lib/input/Search';
 import './index.css';
 
@@ -30,6 +30,7 @@ interface IServers {
   status: any;
   editButton: any;
   index: number;
+  isActive: boolean;
 }
 
 interface IServerProps {
@@ -38,53 +39,52 @@ interface IServerProps {
 
 interface IServerState {
   servers: IServers[];
-  serverList: any;
 }
 
 //@inject(Stores.ServerStore)
 @inject(Stores.ServerStore)
 @observer
 export default class Servers extends Component<IServerProps, IServerState> {
-  //const [servers, setServers] = useState<IServers[]>([]);
-  state = {
-    serverList: [],
-    servers: [],
-  };
-  async componentDidMount() {
-    this.getAllServers();
-  }
+  // state = {
+  //   servers: [],
+  // };
+  // async componentDidMount() {
+  //   // this.getAllServers();
+  // }
 
-  async getAllServers() {
-    await this.props.serverStore.getAll();
-    let modifiedServerList: IServers[] = [];
-    //let serverList: any = Object.assign([], this.props.serverStore.servers);
-    this.setState({ serverList: Object.assign([], this.props.serverStore.servers) });
-    this.state.serverList.forEach((server: any, index: number) => {
-      let serverObject: any = Object.assign({}, server);
-      let modifiedServer: IServers = {
-        key: '' + index,
-        id: serverObject.id,
-        name: serverObject.name,
-        ipAddress: serverObject.ipAddress,
-        createBy: serverObject.createdBy,
-        startDate: serverObject.startDate,
-        endDate: serverObject.endDate,
-        status: serverObject.status ? (
-          <Switch style={{ width: '65%' }} disabled={true} checkedChildren="active" defaultChecked />
-        ) : (
-          <Switch style={{ width: '65%' }} disabled={true} unCheckedChildren="inactive" />
-        ),
-        editButton: (
-          <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-        ),
-        index: index + 1,
-      };
-      modifiedServerList.push(modifiedServer);
-    });
-    this.setState({ servers: modifiedServerList });
-  }
+  // async getAllServers() {
+  //   await this.props.serverStore.getAll();
+  //   let modifiedServerList: IServers[] = [];
+  //   let serverList: any = this.props.serverStore.servers.items  //Object.assign([], this.props.serverStore.servers.items);
+  //   serverList.forEach((serverObject: any, index: number) => {
+  //     //let serverObject: any = Object.assign({}, server);
+  //     let modifiedServer: IServers = {
+  //       key: '' + index,
+  //       id: serverObject.id,
+  //       name: serverObject.name,
+  //       ipAddress: serverObject.ipAddress,
+  //       createBy: serverObject.createdBy,
+  //       startDate: serverObject.startDate,
+  //       endDate: serverObject.endDate,
+  //       status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
+  //       editButton: (
+  //         <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+  //       ),
+  //       index: index + 1,
+  //       isActive: serverObject.status,
+  //     };
+  //     modifiedServerList.push(modifiedServer);
+  //   });
+  //   this.setState({ servers: modifiedServerList });
+  // }
 
   render() {
+    const {servers} = this.props.serverStore;
+    if(servers){
+
+      console.log(servers.items);
+    }
+    console.log("render from server main");
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Servers Management</h2>
@@ -147,7 +147,7 @@ export default class Servers extends Component<IServerProps, IServerState> {
         </Collapse>
         <div className="create-filter">
           <div>
-            <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore={this.props.serverStore} />
+            <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore = {this.props.serverStore} />
             <ImportButton />
           </div>
           <Search
@@ -158,11 +158,13 @@ export default class Servers extends Component<IServerProps, IServerState> {
             onSearch={(value) => console.log(value)}
           />
         </div>
-        <ResultTable data={this.state.servers} />
+        <ResultTable  serverStore = {this.props.serverStore} />
       </div>
     );
   }
 }
+
+//data={this.state.servers}
 
 // useEffect(() => {
 //   async function getAllServers() {

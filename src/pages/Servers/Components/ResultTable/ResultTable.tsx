@@ -1,5 +1,10 @@
-import { Table, Button } from 'antd';
+import { Table, Button, Switch } from 'antd';
 import React from 'react';
+//mobx
+import { inject, observer } from 'mobx-react';
+import ServerStore from '../../../../stores/serverStore';
+import Stores from '../../../../stores/storeIdentifier';
+import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
 const columns = [
   {
@@ -24,7 +29,7 @@ const columns = [
   },
   {
     title: 'Owner',
-    dataIndex: 'createBy',
+    dataIndex: 'createdBy',
   },
   {
     title: 'Status',
@@ -32,10 +37,9 @@ const columns = [
   },
   {
     title: 'Button',
-    dataIndex:'editButton'
+    dataIndex: 'editButton',
   },
 ];
-
 
 interface IServers {
   key: string;
@@ -47,10 +51,12 @@ interface IServers {
   endDate: string;
   status: any;
   editButton: any;
+  index: number;
+  isActive: boolean;
 }
 
 interface ServersProps {
-  data: IServers[];
+  serverStore: ServerStore;
 }
 
 interface ServerStates {
@@ -59,26 +65,55 @@ interface ServerStates {
   loading: boolean;
 }
 
+@inject(Stores.ServerStore)
+@observer
 export default class ResultTable extends React.Component<ServersProps, ServerStates> {
   constructor(props: any) {
     super(props);
     this.state = {
       servers: [],
-      selectedRowKeys: [], // Check here to configure the default column
+      selectedRowKeys: [], 
       loading: false,
     };
   }
 
   componentDidMount() {
-    this.setState({ servers: this.props.data });
+    this.getAllServers();
   }
 
-  componentDidUpdate() {
-    if (this.props.data.length !== this.state.servers.length) {
-      this.setState({ servers: this.props.data });
-    }
+  async getAllServers() {
+    await this.props.serverStore.getAll();
+    //let modifiedServerList: IServers[] = [];
+    //let serverList: any = this.props.serverStore.servers.items  //Object.assign([], this.props.serverStore.servers.items);
+    //console.log(this.props.serverStore.servers.items);
+    this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
+      // let modifiedServer: IServers = {
+      //   key: '' + index,
+      //   id: serverObject.id,
+      //   name: serverObject.name,
+      //   ipAddress: serverObject.ipAddress,
+      //   createBy: serverObject.createdBy,
+      //   startDate: serverObject.startDate,
+      //   endDate: serverObject.endDate,
+      //   status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
+      //   editButton: (
+      //     <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+      //   ),
+      //   index: index + 1,
+      //   isActive: serverObject.status,
+      // };
+      //modifiedServerList.push(modifiedServer);
+      serverObject.key = '' + index;
+      serverObject.index = index + 1;
+      serverObject.isActive = serverObject.status;
+      serverObject.status = serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />;
+      serverObject.editButton = (
+        <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
+      );
+    });
+    console.log(this.props.serverStore.servers.items);
   }
-  
+
   start = () => {
     this.setState({ loading: true });
     setTimeout(() => {
@@ -95,6 +130,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
+    console.log('table render');
     const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -109,7 +145,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.servers} />
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.serverStore.servers.items} />
       </div>
     );
   }
