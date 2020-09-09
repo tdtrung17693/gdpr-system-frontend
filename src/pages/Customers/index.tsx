@@ -5,8 +5,9 @@ import '../Customers/index.css';
 import axios from 'axios';
 
 //import ResultTable from './Components/ResultTable/ResultTable';
-import ImportButton from './Components/ImportButton/ImportButton';
-import CreateCustomerModal from './Components/CreateCustomerModal/CreateCustomerModal';
+import ImportButton from './Components/ImportButton';
+import CreateCustomerModal from './Components/CreateCustomerModal';
+import ManageServerModal from './Components/ManageServerModal';
 
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
@@ -32,7 +33,7 @@ const exportToCSV = (csvData: any, fileName: any) => {
 
 
 export default class Customers extends React.Component {
-
+  modalRef = React.createRef<ManageServerModal>();
   state = {
     fromDate: Date(),
     toDate: Date(),
@@ -41,6 +42,8 @@ export default class Customers extends React.Component {
     selectedRowKeys: [], // Check here to configure the default column
     loading: false,
     data: [],
+    //server manage modal
+    modalVisible: false,
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -69,7 +72,7 @@ export default class Customers extends React.Component {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
       render: (serverOwned: any) => (
-          <Button type="primary"> Manage &nbsp;&nbsp;
+          <Button onClick={() => this.setState({modalVisible: true})} type="primary"> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
@@ -77,7 +80,7 @@ export default class Customers extends React.Component {
     {
       title: '',
       render: (serverOwned: any) => (
-        <Button type="primary" danger> Edit </Button>
+        <Button type="primary"  danger > Edit </Button>
     ),
     },
   ];
@@ -185,6 +188,16 @@ export default class Customers extends React.Component {
         <div className="create-filter">
           <div>
             <CreateCustomerModal />
+            <ManageServerModal
+              ref={this.modalRef}
+              visible={this.state.modalVisible}
+              onCancel={() =>
+                this.setState({
+                  modalVisible: false,
+                })
+              }
+              {...this.props}
+            />
             <ImportButton />
           </div>
           <Search
