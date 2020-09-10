@@ -148,7 +148,7 @@ export class Users extends React.Component<IUserProps> {
 
   handleSave = async (user: User | null, validatingErrors: Store) => {
     if (user) {
-      this.waitForProcess(async () => {
+      await this.waitForProcess(async () => {
         if (this.state.editingUserId) {
           await this.props.userStore.update(this.state.editingUserId, user);
         } else {

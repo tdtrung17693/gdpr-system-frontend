@@ -27,6 +27,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   formRef = React.createRef<FormInstance>();
   state = {
     confirmDirty: false,
+    processing: false
   };
 
   public setFieldsValues = (user: User) => {
@@ -45,10 +46,17 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
   handleOkClicked = () => {
     this.formRef.current?.validateFields()
       .then((values: any) => {
-        this.props.onSave(
-          values,
-          null
-        )
+        this.setState({
+          processing: true
+        }, async () => {
+          await this.props.onSave(
+            values,
+            null
+          )
+          this.setState({
+            processing: false
+          })
+        })
       })
       .catch(errors => {
         this.props.onSave(null, errors)
@@ -99,7 +107,15 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
 
 
     return (
-      <Modal transitionName="fade" visible={visible} cancelText={L('Cancel')} okText={L('OK')} onCancel={onCancel} onOk={this.handleOkClicked} title={modalType == 'edit' ? 'Edit User' : 'Create User'}>
+      <Modal 
+        transitionName="fade"
+        visible={visible}
+        cancelText={L('Cancel')}
+        okText={L('OK')}
+        onCancel={onCancel}
+        onOk={this.handleOkClicked}
+        okButtonProps={{disabled: this.state.processing}}
+        title={modalType == 'edit' ? 'Edit User' : 'Create User'}>
         <Form ref={this.formRef}>
           {this.props.modalType == 'create' ? (
             <>
