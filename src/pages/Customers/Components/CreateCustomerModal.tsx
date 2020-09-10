@@ -69,7 +69,6 @@ export default class CreateCustomerModal extends Component {
       })
     };
   }
-  //form
   
   layout = {
     labelCol: { span: 8 },
@@ -97,7 +96,7 @@ export default class CreateCustomerModal extends Component {
     customerName: this.state.customerName
   })
     .then((response) =>{
-      console.log(response);
+      //console.log(response);
       this.setState({
         visible: false,
       });
@@ -110,9 +109,6 @@ export default class CreateCustomerModal extends Component {
   render() {
     const { visible, loading, data } = this.state;
     const { TextArea } = Input;
-    console.log(data[0]);
-    //const { Option } = Select;
-    
 
     return (
       <>
@@ -139,8 +135,8 @@ export default class CreateCustomerModal extends Component {
             </Form.Item>
             <Form.Item label="Date Range" rules={[{ required: true }]}>
               <Input.Group compact>
-                <DatePicker onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' style={{ width: '50%' }} />
-                <DatePicker onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' style={{ width: '50%' }} />
+                <DatePicker onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
+                <DatePicker onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
               </Input.Group>
             </Form.Item>
             <Form.Item name={['user', 'contactPoint']} label="Contact Point" rules={[{ required: true }]}>
@@ -149,7 +145,6 @@ export default class CreateCustomerModal extends Component {
                   <Option key={d.id} value={d.id}>{d.email}</Option>
                 ))}
               </Select>
-              {/* <Input onChange={value => this.setState({contactPoint: value})} defaultValue="lucy" style={{ width: '100%' }}/> */}
             </Form.Item>
             <Form.Item name={['user', 'description']} label="Description" rules={[{ required: true }]}>
               <TextArea onChange={value => this.setState({descritpion: value})} rows={4} />

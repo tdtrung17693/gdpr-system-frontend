@@ -44,6 +44,7 @@ export default class Customers extends React.Component {
     data: [],
     //server manage modal
     modalVisible: false,
+    modalKey: '',
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -71,15 +72,15 @@ export default class Customers extends React.Component {
     {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
-      render: (serverOwned: any) => (
-          <Button onClick={() => this.setState({modalVisible: true})} type="primary"> Manage &nbsp;&nbsp;
+      render: (serverOwned: any, key: any) => (
+          <Button onClick={() => this.setState({modalVisible: true, modalKey: key.key})} type="primary"> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
     },
     {
       title: '',
-      render: (serverOwned: any) => (
+      render: () => (
         <Button type="primary"  danger > Edit </Button>
     ),
     },
@@ -137,11 +138,11 @@ export default class Customers extends React.Component {
     axios.post('http://localhost:5000/api/Customer/export-csv', {
     fromDate: this.state.fromDate,
     toDate: this.state.toDate,
-    guids: this.state.guids,
+    guids: this.state.selectedRowKeys,
   })
     .then((response) =>{
       console.log(response.data.responsedRequest);
-      exportToCSV(response.data.responsedRequest, 'xfilename');
+      exportToCSV(response.data.responsedRequest, 'RequestList');
     })
     .catch(function (error) {
       console.log(error);
@@ -191,9 +192,11 @@ export default class Customers extends React.Component {
             <ManageServerModal
               ref={this.modalRef}
               visible={this.state.modalVisible}
+              modalKey={this.state.modalKey}
               onCancel={() =>
                 this.setState({
                   modalVisible: false,
+                  modalKey: '',
                 })
               }
               {...this.props}

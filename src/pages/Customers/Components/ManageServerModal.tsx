@@ -8,6 +8,7 @@ import Search from 'antd/lib/input/Search';
 import '../index.css';
 
 export interface IManageServerModalProps {
+  modalKey: string;
   visible: boolean;
   onCancel: () => void;
 }
@@ -25,9 +26,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
   //modal
   state = {
     loading: false,
-    visible: false,
+    btnloading: false,
     data: [],
-    //loading: false,
     hasMore: true,
     optionValue: 'all',
   };
@@ -37,6 +37,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     this.fetchServer();
   }
 
+  //api fetch call 
   fetchServer = async () => {
     await axios.get('http://localhost:5000/api/customer/server/', /*{headers : header}*/)
     .then( (response) =>{
@@ -77,37 +78,38 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     });
   }
 
+  //infinite load on scroller
   handleInfiniteOnLoad = () => {
-    let { data } = this.state;
-    this.setState({
-      loading: true,
-    });
-    if (data.length > 14) {
-      //message.warning('Infinite List loaded all');
-      this.setState({
-        hasMore: false,
-        loading: false,
-      });
-      return;
-    };
+    // let { data } = this.state;
+    // this.setState({
+    //   loading: true,
+    // });
+    // if (data.length > 14) {
+    //   //message.warning('Infinite List loaded all');
+    //   this.setState({
+    //     hasMore: false,
+    //     loading: false,
+    //   });
+    //   return;
+    // };
   };
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
+  // showModal = () => {
+  //   this.setState({
+  //     visible: true,
+  //   });
+  // };
 
   handleOk = () => {
-    this.setState({ loading: true });
+    this.setState({ btnloading: true });
     setTimeout(() => {
-      this.setState({ loading: false, visible: false });
+      this.setState({ btnloading: false, visible: false });
     }, 3000);
   };
 
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
+  // handleCancel = () => {
+  //   this.setState({ visible: false });
+  // };
 
   layout = {
     labelCol: { span: 8 },
@@ -127,18 +129,19 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
   //change button group
   onOptionChange = (e: any) => {
+    this.setState({
+      optionValue: e.target.value,
+    });
     if (e.target.value == 'all'){
       this.fetchServer();
     }
     else if (e.target.value == 'owned'){
-      console.log(e.target.value)
+      this.getOwnedServer(this.props.modalKey);
     }
     else{
       this.getAvailableServer();
     }
-    this.setState({
-      optionValue: e.target.value,
-    });
+    
   };
 
   //Search
@@ -154,22 +157,22 @@ export default class ManageServerModal extends Component<IManageServerModalProps
   };
 
   render() {
-    const { loading, optionValue } = this.state;
-    const { visible, onCancel } = this.props;
-    //const { Option } = Select;
+    const { btnloading, optionValue } = this.state;
+    const { visible, onCancel, modalKey } = this.props;
 
     return (
       <>
         <Modal
           visible={visible}
+          key = {modalKey}
           title="Manage Server of:"
           // onOk={this.handleSubmit}
           onCancel={onCancel}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleSubmit}>
+            <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
               Save
             </Button>,
-            <Button key="back" onClick={this.handleCancel}>
+            <Button key="back" >
               Cancel
             </Button>,
           ]}
