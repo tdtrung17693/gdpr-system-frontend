@@ -1,4 +1,5 @@
 export interface GetServerOutput {
+  id?: string;
   key?: string;
   createdBy: string;
   endDate: string;

@@ -8,83 +8,76 @@ import { inject, observer } from 'mobx-react';
 
 import ResultTable from './Components/ResultTable/ResultTable';
 import ImportButton from './Components/ImportButton/ImportButton';
-import CreateOrEditServerModal from './Components/CreateOrEditServerModal/CreateOrEditServerModal';
+//import CreateOrEditServerModal from './Components/CreateOrEditServerModal/CreateOrEditServerModal';
 
 import { UserOutlined, EditOutlined } from '@ant-design/icons';
 import Stores from '../../stores/storeIdentifier';
 import ServerStore from '../../stores/serverStore';
+import CreateOrUpdateModal from './Components/CreateOrEditServerModal/CreateOrUpdateModal';
+import { GetServerOutput } from '../../services/server/dto/GetServerOutput';
+import { Store } from 'antd/lib/form/interface';
+//import ModalToggle from './Components/CreateOrEditServerModal/ModalToggle';
+//import CollectionCreateOrEditForm from './Components/CreateOrEditServerModal/CollectionCreateOrEditForm';
 
 const { Panel } = Collapse;
 const { Option } = Select;
 let mockusers: string[] = ['long.dao@netpower.no1', 'long.dao@netpower.no2', 'long.dao@netpower.no3'];
 let mockadmins: string[] = ['long.dao@netpower.no4', 'long.dao@netpower.no5', 'long.dao@netpower.no6'];
 
-interface IServers {
-  key: string;
-  id: string;
-  name: string;
-  ipAddress: string;
-  createBy: string;
-  startDate: string;
-  endDate: string;
-  status: any;
-  editButton: any;
-  index: number;
-  isActive: boolean;
-}
-
 interface IServerProps {
   serverStore: ServerStore;
 }
 
-interface IServerState {
-  servers: IServers[];
-}
-
-//@inject(Stores.ServerStore)
 @inject(Stores.ServerStore)
 @observer
-export default class Servers extends Component<IServerProps, IServerState> {
-  // state = {
-  //   servers: [],
-  // };
-  // async componentDidMount() {
-  //   // this.getAllServers();
-  // }
+export default class Servers extends Component<IServerProps> {
+  modalRef = React.createRef<CreateOrUpdateModal>();
+  constructor(props:IServerProps){
+    super(props);
+    this.createOrUpdateModalOpen = this.createOrUpdateModalOpen.bind(this);
+  }
+  state = {
+    modalVisible : false,
+    editingServerId: "",
+  };
 
-  // async getAllServers() {
-  //   await this.props.serverStore.getAll();
-  //   let modifiedServerList: IServers[] = [];
-  //   let serverList: any = this.props.serverStore.servers.items  //Object.assign([], this.props.serverStore.servers.items);
-  //   serverList.forEach((serverObject: any, index: number) => {
-  //     //let serverObject: any = Object.assign({}, server);
-  //     let modifiedServer: IServers = {
-  //       key: '' + index,
-  //       id: serverObject.id,
-  //       name: serverObject.name,
-  //       ipAddress: serverObject.ipAddress,
-  //       createBy: serverObject.createdBy,
-  //       startDate: serverObject.startDate,
-  //       endDate: serverObject.endDate,
-  //       status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
-  //       editButton: (
-  //         <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-  //       ),
-  //       index: index + 1,
-  //       isActive: serverObject.status,
-  //     };
-  //     modifiedServerList.push(modifiedServer);
-  //   });
-  //   this.setState({ servers: modifiedServerList });
-  // }
+  async createOrUpdateModalOpen(params: any) {
+    if (params.id && params.id.length > 0) {
+      await this.props.serverStore.get(params.id);
+    } else {
+      await this.props.serverStore.createServer();
+    }
+
+    this.setState({
+      editingServerId: this.props.serverStore.editServer!.id
+    })
+    console.log("come across");
+    this.toggleModal(() => {
+      this.modalRef.current?.setFieldsValues(this.props.serverStore.editServer);
+    });
+  }
+
+  toggleModal = (cb: Function = () => { }) => {
+    this.setState({ modalVisible: !this.state.modalVisible }, () => {
+      cb();
+    })
+  }
+
+  handleSave = async (server: GetServerOutput | null, validatingErrors: Store) => {
+    if (server) {
+      if (this.state.editingServerId) {
+        //await this.props.serverStore.update(this.state.editingUserId, user);
+      } else {
+        await this.props.serverStore.create(server);
+      }
+      this.toggleModal(async () => {
+        await this.props.serverStore.getAll();
+      });
+    }
+  }
 
   render() {
-    const {servers} = this.props.serverStore;
-    if(servers){
-
-      console.log(servers.items);
-    }
-    console.log("render from server main");
+    //const { servers } = this.props.serverStore;
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Servers Management</h2>
@@ -147,7 +140,14 @@ export default class Servers extends Component<IServerProps, IServerState> {
         </Collapse>
         <div className="create-filter">
           <div>
-            <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore = {this.props.serverStore} />
+            <Button
+              // size="small"
+              // style={{ display: 'inline-block', verticalAlign: 'middle' }}
+              type="primary"
+              onClick={() => this.createOrUpdateModalOpen({ id: '' })}
+            >Create new server</Button>
+            {/* <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore = {this.props.serverStore} /> */}
+            {/* <ModalToggle modal = {CollectionCreateOrEditForm} isCreate isEdit={false} serverData serverStore = {this.props.serverStore} /> */}
             <ImportButton />
           </div>
           <Search
@@ -158,7 +158,21 @@ export default class Servers extends Component<IServerProps, IServerState> {
             onSearch={(value) => console.log(value)}
           />
         </div>
-        <ResultTable  serverStore = {this.props.serverStore} />
+        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen = {this.createOrUpdateModalOpen} />
+
+
+        <CreateOrUpdateModal
+          ref={this.modalRef}
+          visible={this.state.modalVisible}
+          onCancel={() =>
+            this.setState({
+              modalVisible: false,
+            })
+          }
+          modalType={this.state.editingServerId === "" ? 'create' : 'edit'}
+          onSave={this.handleSave}
+          {...this.props}
+        />
       </div>
     );
   }

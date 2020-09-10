@@ -4,42 +4,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import ServerStore from '../../../../stores/serverStore';
 import Stores from '../../../../stores/storeIdentifier';
-import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
-
-const columns = [
-  {
-    title: '#',
-    dataIndex: 'index',
-  },
-  {
-    title: 'Server',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Ip Address',
-    dataIndex: 'ipAddress',
-  },
-  {
-    title: 'StartDate',
-    dataIndex: 'startDate',
-  },
-  {
-    title: 'EndDate',
-    dataIndex: 'endDate',
-  },
-  {
-    title: 'Owner',
-    dataIndex: 'createdBy',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-  },
-  {
-    title: 'Button',
-    dataIndex: 'editButton',
-  },
-];
+//import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
 interface IServers {
   key: string;
@@ -57,6 +22,7 @@ interface IServers {
 
 interface ServersProps {
   serverStore: ServerStore;
+  createOrUpdateModalOpen: any;
 }
 
 interface ServerStates {
@@ -82,7 +48,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   }
 
   async getAllServers() {
-    console.log(this.props.serverStore.servers.items);
     await this.props.serverStore.getAll();
   }
 
@@ -102,15 +67,49 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
+    const columns = [
+      {
+        title: '#',
+        dataIndex: 'index',
+      },
+      {
+        title: 'Server',
+        dataIndex: 'name',
+      },
+      {
+        title: 'Ip Address',
+        dataIndex: 'ipAddress',
+      },
+      {
+        title: 'StartDate',
+        dataIndex: 'startDate',
+      },
+      {
+        title: 'EndDate',
+        dataIndex: 'endDate',
+      },
+      {
+        title: 'Owner',
+        dataIndex: 'createdBy',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (status: boolean) => (status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />),
+      },
+      {
+        title: 'Button',
+        render: (text: string, item: any) => (
+          <Button shape = "round" danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
+            Edit
+          </Button>
+        ),
+      },
+    ];
+
     if (this.props.serverStore.servers.items.length !== 0) {
       this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
-        serverObject.key = '' + index;
-        serverObject.index = index + 1;
-        serverObject.isActive = serverObject.status;
-        serverObject.status = serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />;
-        serverObject.editButton = (
-          <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-        );
+        this.props.serverStore.handleServerMember(serverObject.status, index);
       });
     }
     const { loading, selectedRowKeys }: any = this.state;
@@ -127,25 +126,12 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={this.props.serverStore.servers.items} />
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
+        />
       </div>
     );
   }
 }
-
-// let modifiedServer: IServers = {
-//   key: '' + index,
-//   id: serverObject.id,
-//   name: serverObject.name,
-//   ipAddress: serverObject.ipAddress,
-//   createBy: serverObject.createdBy,
-//   startDate: serverObject.startDate,
-//   endDate: serverObject.endDate,
-//   status: serverObject.status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />,
-//   editButton: (
-//     <CreateOrEditServerModal key={serverObject.name} serverData={serverObject} isCreate={false} isEdit serverStore={this.props.serverStore} />
-//   ),
-//   index: index + 1,
-//   isActive: serverObject.status,
-// };
-//modifiedServerList.push(modifiedServer);

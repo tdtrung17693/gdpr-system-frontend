@@ -5,23 +5,57 @@ import serverService from '../services/server/serverServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 
 class ServerStore {
-  @observable servers:  PagedResultDto<GetServerOutput> = {
-    totalCount: 0 ,
-    items: []
-  };//PagedResultDto<GetServerOutput>[]
+  @observable servers: PagedResultDto<GetServerOutput> = {
+    totalCount: 0,
+    items: [],
+  }; 
+  @observable editServer! : GetServerOutput;
 
   @action
   async getAll() {
     let result = await serverService.getAll();
-    this.servers = result; 
+    this.servers = result;
     //console.log(this.servers);
   }
 
   @action
-  async create(server:CreateServerInput){
-   
+  async create(server: CreateServerInput) {
     await serverService.create(server);
+  }
 
+  @action
+  async createServer() {
+    this.editServer = {
+      id: '',
+      name: '',
+      ipAddress: '',
+      createdBy: '',
+      status: true,
+      startDate: '',
+      endDate: '',
+    };
+  }
+
+  @action 
+  handleServerMember(status: boolean, index: number) {
+    this.servers.items[index].key = '' + index;
+    this.servers.items[index].index = index + 1;
+    this.servers.items[index].isActive = this.servers.items[index].status;
+  }
+
+  @action 
+  async get(serverId: string){
+    let result = await serverService.get(serverId);
+    this.editServer = {
+      id: result.id,
+      name: result.name,
+      ipAddress: result.ipAddress,
+      createdBy: result.createdBy,
+      status: result.status,
+      startDate: result.startDate,
+      endDate: result.endDate,
+    };
+    console.log(this.editServer);
   }
 }
 export default ServerStore;

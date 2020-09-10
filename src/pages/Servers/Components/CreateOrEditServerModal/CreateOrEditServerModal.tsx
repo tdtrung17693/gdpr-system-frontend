@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, Switch } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, Radio } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 import ServerStore from '../../../../stores/serverStore';
@@ -17,6 +17,7 @@ interface ServerStates {
   loading: boolean;
   visible: boolean;
   _serverData: any;
+  formRef: any;
 }
 
 @inject(Stores.ServerStore)
@@ -30,6 +31,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
     _serverData: this.props.serverData,
     loading: false,
     visible: false,
+    formRef : React.createRef<any>(),
   };
 
   componentDidMount() {
@@ -46,7 +48,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
     //console.log(values);
     this.setState({ loading: true });
     setTimeout(() => {
-      this.setState({ loading: false, visible: false });
+      this.setState({ loading: false, visible: false});
     }, 500);
   };
 
@@ -57,7 +59,6 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   //form
 
   FormItem = Form.Item;
-  formRef = React.createRef<any>();
 
   layout = {
     labelCol: { span: 8 },
@@ -76,7 +77,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
 
   onFinish = async (fieldsValue: any) => {
-    if (fieldsValue.checked === undefined) {
+    if (this.props.isCreate) {
       const values: CreateServerInput = {
         ...fieldsValue,
         startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
@@ -84,25 +85,28 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
         createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
       };
       console.log(values);
-      await this.props.serverStore.create(values);
-      await this.props.serverStore.getAll();
-      this.formRef.current.resetFields();
+      //await this.props.serverStore.create(values);
+      //await this.props.serverStore.getAll();
+      this.state.formRef.current.resetFields();
       console.log('OK DONE');
-      // this.setState({rerender : !this.state.rerender});
     } else {
+      if (fieldsValue.radiogroup === undefined){
+        fieldsValue.radiogroup = this.props.serverData.isActive;
+      }
       const values: UpdateServerInput = {
         ...fieldsValue,
         startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
         endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
         updatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-        status: fieldsValue.checked,
+        status: fieldsValue.radiogroup,
       };
-      this.formRef.current.resetFields();
+      this.state.formRef.current.resetFields();
       console.log(values);
     }
   };
 
   render() {
+    console.log("i am rendering");
     const { visible, loading } = this.state;
     const config: any = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],
@@ -132,7 +136,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Button>,
           ]}
         >
-          <Form ref={this.formRef} id="form" {...this.layout} name="form" onFinish={this.onFinish} validateMessages={this.validateMessages}>
+          <Form ref={this.state.formRef} id="form" {...this.layout} name="form" onFinish={this.onFinish} validateMessages={this.validateMessages}>
             <Form.Item
               initialValue={this.state._serverData.name ? `${this.state._serverData.name}` : ``}
               name="name"
@@ -156,8 +160,11 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
               <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             {this.props.isEdit ? (
-              <Form.Item name={['checked']} label="Status">
-                {this.state._serverData.isActive ? <Switch checked defaultChecked /> : <Switch />}
+              <Form.Item name='radiogroup' label="Status">
+                <Radio.Group defaultValue = {this.state._serverData.isActive}>
+                  <Radio value={true}>Active</Radio>
+                  <Radio value={false}>InActive</Radio>
+                </Radio.Group>
               </Form.Item>
             ) : null}
           </Form>

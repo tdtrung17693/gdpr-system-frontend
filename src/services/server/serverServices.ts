@@ -23,8 +23,15 @@ class ServerService {
       items: result.data,
       totalCount: result.data.length,
     };
-    //console.log(resultList);
     return resultList;
+  }
+
+  public async get(serverId: string): Promise<GetServerOutput> {
+    let result = await axios.get(`${url}api/server/detail/${serverId}`, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
+    console.log(result.data);
+    return result.data;
   }
 }
 
