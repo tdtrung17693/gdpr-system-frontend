@@ -55,7 +55,7 @@ http.interceptors.response.use(
           window.location.pathname = "/logout"
         }
       })
-    } else if (!error.response) {
+    } else  {
       Modal.error({ content: "Unknown Error. Please try again later." });
     } 
 

@@ -99,7 +99,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
 
 
     return (
-      <Modal visible={visible} cancelText={L('Cancel')} okText={L('OK')} onCancel={onCancel} onOk={this.handleOkClicked} title={modalType == 'edit' ? 'Edit User' : 'Create User'}>
+      <Modal transitionName="fade" visible={visible} cancelText={L('Cancel')} okText={L('OK')} onCancel={onCancel} onOk={this.handleOkClicked} title={modalType == 'edit' ? 'Edit User' : 'Create User'}>
         <Form ref={this.formRef}>
           {this.props.modalType == 'create' ? (
             <>

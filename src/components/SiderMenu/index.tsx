@@ -19,13 +19,23 @@ export interface ISiderMenuProps {
   collapsed: boolean;
   onCollapse: any;
   history: any;
+  location?: any;
   authenticationStore?: AuthenticationStore;
+  style?: React.CSSProperties
 }
 
 const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenuProps) => {
   const { collapsed, history, onCollapse } = props;
   return (
-    <Sider trigger={null} className={'sidebar'} width={256} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <Sider 
+      trigger={null}
+      className={'sidebar'}
+      width={256}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      style={props.style}
+    >
       {collapsed ? (
         <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
           <Avatar shape="square" style={{ height: 50, width: 50 }} src={GdprLogo} />
@@ -36,7 +46,7 @@ const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenu
         </Col>
       )}
 
-      <Menu theme="dark" mode="inline">
+      <Menu theme="dark" mode="inline" selectedKeys={[props.location.pathname]}>
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {

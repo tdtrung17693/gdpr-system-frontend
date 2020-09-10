@@ -43,9 +43,29 @@ class AppLayout extends React.Component<any> {
 
     const layout = (
       <Layout style={{ minHeight: '100vh' }}>
-        <SiderMenu path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} {...this.props}/>
-        <Layout>
-          <Layout.Header style={{ background: '#fff', minHeight: 52, padding: 0 }}>
+        <SiderMenu
+          style={{
+            overflow: 'auto',
+            height: '100vh',
+            position: 'fixed',
+            left: 0,
+            zIndex: 1000
+          }}
+
+          path={path} onCollapse={this.onCollapse} history={history} collapsed={collapsed} {...this.props}/>
+        <Layout style={{marginLeft: collapsed ? 80 : 256, marginTop: 64, transition: '0.2s all'}}>
+          <Layout.Header
+            style={{
+              background: '#fff',
+              minHeight: 52,
+              padding: 0,
+              position: 'fixed',
+              top: 0,
+              left: collapsed ? 80 : 256,
+              right: 0,
+              transition: '0.2s all',
+              zIndex: 1000
+            }}>
             <Header collapsed={this.state.collapsed} toggle={this.toggle} />
           </Layout.Header>
           <Content style={{ margin: 16 }}>
