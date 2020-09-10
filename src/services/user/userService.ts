@@ -1,4 +1,4 @@
-import { ChangeLanguageInput } from './dto/changeLanguageInput';
+import { ChangeLanguagaInput } from './dto/changeLanguageInput';
 import { CreateOrUpdateUserInput } from './dto/createOrUpdateUserInput';
 import { EntityDto } from '../../services/dto/entityDto';
 import { GetAllUserOutput } from './dto/getAllUserOutput';
@@ -28,7 +28,7 @@ class UserService {
     return result.data.result.items;
   }
 
-  public async changeLanguage(changeLanguageInput: ChangeLanguageInput) {
+  public async changeLanguage(changeLanguageInput: ChangeLanguagaInput) {
     let result = await http.post('api/services/app/User/ChangeLanguage', changeLanguageInput);
     return result.data;
   }

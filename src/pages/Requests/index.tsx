@@ -4,7 +4,7 @@ import './index.css';
 
 //components
 import ResultTable from './Components/ResultTable/ResultTable';
-import CreateModal from './Components/CreateModal/CreateModal';
+import CreateServerModal from './Components/CreateModal/CreateModal';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 
 
@@ -18,7 +18,7 @@ export default function Requests() {
         </div>
       <div className="create-filter">
         <div>
-          <CreateModal />
+          <CreateServerModal />
         </div>
         <Search
           style={{ width: '400px' }}

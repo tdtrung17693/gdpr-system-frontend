@@ -1,16 +1,9 @@
 import { Table, Button } from 'antd';
 import React, { Component } from 'react';
 import axios from 'axios';
-import RequestStore from '../../../../stores/requestStore';
-import { inject, observer } from 'mobx-react';
-import Stores from '../../../../stores/storeIdentifier';
-export interface IUserProps {
-  requestStore?: RequestStore;
-}
 
-@inject(Stores.RequestStore)
-@observer
-export default class ResultTable extends Component<IUserProps,any> {
+
+export default class ResultTable extends Component<any, any> {
   constructor(props: any){
     super(props);
     this.state = {
@@ -111,7 +104,6 @@ export default class ResultTable extends Component<IUserProps,any> {
       })
     )
 
-    //const dataSrc = this.props.requestStore?.requests.items;
     const { selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,

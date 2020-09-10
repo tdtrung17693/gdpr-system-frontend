@@ -1,3 +1,3 @@
-export interface ChangeLanguageInput {
+export interface ChangeLanguagaInput {
   languageName: string;
 }
