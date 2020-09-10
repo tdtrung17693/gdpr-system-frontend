@@ -7,8 +7,11 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 
 class ServerStore {
   @observable servers: PagedResultDto<GetServerOutput> = {
-    totalCount: 0,
+    totalItems: 0,
     items: [],
+    // FIXME: Replace placeholder number
+    totalPages: 10,
+    page: 1
   };
   @observable editServer!: GetServerOutput;
 

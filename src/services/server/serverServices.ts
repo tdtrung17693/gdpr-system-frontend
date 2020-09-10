@@ -22,7 +22,9 @@ class ServerService {
 
     let resultList : PagedResultDto<GetServerOutput> = {
       items: result.data,
-      totalCount: result.data.length,
+      totalPages: Number(result.data.length),
+      page: 1,
+      totalItems: result.data.length
     };
     return resultList;
   }
