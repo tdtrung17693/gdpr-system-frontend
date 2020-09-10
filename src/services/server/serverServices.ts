@@ -1,6 +1,6 @@
 //import { PagedResultDto } from '../dto/pagedResultDto';
 import { GetServerOutput} from './dto/GetServerOutput';
-import { CreateServerInput } from './dto/CreateServerInput';
+//import { CreateServerInput } from './dto/CreateServerInput';
 
 import axios from 'axios';
 import { PagedResultDto } from '../dto/pagedResultDto';
@@ -10,7 +10,7 @@ import { PagedResultDto } from '../dto/pagedResultDto';
 const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
 
 class ServerService {
-  public async create(createServerInput: CreateServerInput){
+  public async create(createServerInput: GetServerOutput){
       let result = await axios.post(`${url}api/server/create`, createServerInput);
       return result.data;
   }
@@ -27,15 +27,16 @@ class ServerService {
     return resultList;
   }
 
-  public async get(serverId: string): Promise<GetServerOutput> {
+  public async get(serverId: string): Promise<any> {
     let result = await axios.get(`${url}api/server/detail/${serverId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
     console.log(result.data);
-    return result.data;
+    return result.data; 
   }
 
   public async update(serverId: string, server: GetServerOutput){
+    console.log(server);
     let result = await axios.put(`${url}api/server`, server);
     console.log(result);
   }

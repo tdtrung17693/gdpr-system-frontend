@@ -39,11 +39,11 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
   public setFieldsValues = (server: GetServerOutput) => {
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
-        name: server?.name,
-        ipAddress: server?.ipAddress,
+        Name: server?.Name,
+        IpAddress: server?.IpAddress,
         // startDate: server?.startDate,
         // endDate: server?.endDate,
-        radiogroup: server?.status,
+        Status: server?.Status,
       });
     });
   };
@@ -52,11 +52,12 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        const valuesUpdate: GetServerOutput = {
+        console.log(values);
+        let valuesUpdate: any = {
           ...values,
-          startDate: values.startDate.format('YYYY-MM-DD HH:mm:ss'),
-          endDate: values.endDate.format('YYYY-MM-DD HH:mm:ss'),
-          createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+          StartDate: values.StartDate.format('YYYY-MM-DD HH:mm:ss'),
+          EndDate: values.EndDate.format('YYYY-MM-DD HH:mm:ss'),
+          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',  
         };
         console.log(valuesUpdate);
         this.props.onSave(valuesUpdate, null);
@@ -115,20 +116,20 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
           ]}
         >
           <Form ref={this.formRef} id="form" {...this.layout} name="form" validateMessages={this.validateMessages}>
-            <Form.Item name="name" label="Server Name" rules={[{ required: true }]}>
+            <Form.Item name="Name" label="Server Name" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="ipAddress" label="IpAddress" rules={[{ required: true }]}>
+            <Form.Item name="IpAddress" label="IpAddress" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="startDate" label="StartDate" {...config}>
+            <Form.Item name="StartDate" label="StartDate" {...config}>
               <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
-            <Form.Item name="endDate" label="EndDate" {...config}>
+            <Form.Item name="EndDate" label="EndDate" {...config}>
               <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             {this.props.modalType === 'edit' ? (
-              <Form.Item name="radiogroup" label="Status">
+              <Form.Item name="Status" label="Status">
                 <Radio.Group>
                   <Radio value={true}>Active</Radio>
                   <Radio value={false}>InActive</Radio>

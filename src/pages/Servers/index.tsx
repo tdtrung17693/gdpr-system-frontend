@@ -49,7 +49,7 @@ export default class Servers extends Component<IServerProps> {
     }
 
     this.setState({
-      editingServerId: this.props.serverStore.editServer!.id,
+      editingServerId: this.props.serverStore.editServer!.Id,
     });
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.serverStore.editServer);
@@ -67,9 +67,9 @@ export default class Servers extends Component<IServerProps> {
       if (this.state.editingServerId) {
         server = {
           ...server,
-          id: this.state.editingServerId
+          Id: this.state.editingServerId
         }
-        //console.log(server);
+        console.log(server);
         await this.props.serverStore.update(this.state.editingServerId, server);
       } else {
         await this.props.serverStore.create(server);

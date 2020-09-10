@@ -70,7 +70,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     const columns = [
       {
         title: '#',
-        dataIndex: 'index',
+        dataIndex: 'Index',
       },
       {
         title: 'Server',
