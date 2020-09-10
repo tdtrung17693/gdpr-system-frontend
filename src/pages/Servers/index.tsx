@@ -69,7 +69,6 @@ export default class Servers extends Component<IServerProps> {
           ...server,
           Id: this.state.editingServerId
         }
-        console.log(server);
         await this.props.serverStore.update(this.state.editingServerId, server);
       } else {
         await this.props.serverStore.create(server);

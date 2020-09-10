@@ -31,7 +31,6 @@ class ServerService {
     let result = await axios.get(`${url}api/server/detail/${serverId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-    console.log(result.data);
     return result.data; 
   }
 

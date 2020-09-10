@@ -60,8 +60,13 @@ class ServerStore {
 
   @action
   async update(serverId: string, server: GetServerOutput) {
-    let result  = await serverService.update(serverId, server);
-    console.log(result);
+    await serverService.update(serverId, server);
+    this.servers.items = this.servers.items.map((oldServer:GetServerOutput)=>{
+      if(oldServer?.Id === serverId){
+        oldServer = {...oldServer,...server};
+      }
+      return oldServer;
+    });
   }
 }
 export default ServerStore;

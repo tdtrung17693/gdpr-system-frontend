@@ -67,7 +67,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
-    const columns = [
+    console.log("i am coming to redender");
+    let columns = [
       {
         title: '#',
         dataIndex: 'Index',
@@ -95,7 +96,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: 'Status',
         dataIndex: 'status',
-        render: (status: boolean) => (status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />),
+        render: (status: booleangi) => (status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />),
       },
       {
         title: 'Button',
