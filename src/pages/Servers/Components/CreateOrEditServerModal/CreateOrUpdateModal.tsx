@@ -7,6 +7,7 @@ import Stores from '../../../../stores/storeIdentifier';
 //import { UpdateServerInput } from '../../../../services/server/dto/UpdateServerInput';
 import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
 import { FormInstance } from 'antd/lib/form';
+//import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
 
 interface ServersProps {
   visible: boolean;
@@ -40,6 +41,8 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       this.formRef.current?.setFieldsValue({
         name: server?.name,
         ipAddress: server?.ipAddress,
+        // startDate: server?.startDate,
+        // endDate: server?.endDate,
         radiogroup: server?.status,
       });
     });
@@ -49,8 +52,14 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
-        this.props.onSave(values, null);
+        const valuesUpdate: GetServerOutput = {
+          ...values,
+          startDate: values.startDate.format('YYYY-MM-DD HH:mm:ss'),
+          endDate: values.endDate.format('YYYY-MM-DD HH:mm:ss'),
+          createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+        };
+        console.log(valuesUpdate);
+        this.props.onSave(valuesUpdate, null);
       })
       .catch((errors) => {
         this.props.onSave(null, errors);
@@ -80,35 +89,6 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       range: '${label} must be between ${min} and ${max}',
     },
   };
-
-  // onFinish = async (fieldsValue: any) => {
-  //   if (this.props.modalType !== 'edit') {
-  //     const values: CreateServerInput = {
-  //       ...fieldsValue,
-  //       startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-  //       endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-  //       createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-  //     };
-  //     console.log(values);
-  //     //await this.props.serverStore.create(values);
-  //     //await this.props.serverStore.getAll();
-  //     this.state.formRef.current.resetFields();
-  //     console.log('OK DONE');
-  //   } else {
-  //     // if (fieldsValue.radiogroup === undefined) {
-  //     //   fieldsValue.radiogroup = this.props.serverData.isActive;
-  //     // }
-  //     const values: UpdateServerInput = {
-  //       ...fieldsValue,
-  //       startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-  //       endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-  //       updatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-  //       status: fieldsValue.radiogroup,
-  //     };
-  //     this.state.formRef.current.resetFields();
-  //     console.log(values);
-  //   }
-  // };
 
   render() {
     const { loading } = this.state;

@@ -32,13 +32,13 @@ interface IServerProps {
 @observer
 export default class Servers extends Component<IServerProps> {
   modalRef = React.createRef<CreateOrUpdateModal>();
-  constructor(props:IServerProps){
+  constructor(props: IServerProps) {
     super(props);
     this.createOrUpdateModalOpen = this.createOrUpdateModalOpen.bind(this);
   }
   state = {
-    modalVisible : false,
-    editingServerId: "",
+    modalVisible: false,
+    editingServerId: '',
   };
 
   async createOrUpdateModalOpen(params: any) {
@@ -49,24 +49,28 @@ export default class Servers extends Component<IServerProps> {
     }
 
     this.setState({
-      editingServerId: this.props.serverStore.editServer!.id
-    })
-    console.log("come across");
+      editingServerId: this.props.serverStore.editServer!.id,
+    });
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.serverStore.editServer);
     });
   }
 
-  toggleModal = (cb: Function = () => { }) => {
+  toggleModal = (cb: Function = () => {}) => {
     this.setState({ modalVisible: !this.state.modalVisible }, () => {
       cb();
-    })
-  }
+    });
+  };
 
   handleSave = async (server: GetServerOutput | null, validatingErrors: Store) => {
     if (server) {
       if (this.state.editingServerId) {
-        //await this.props.serverStore.update(this.state.editingUserId, user);
+        server = {
+          ...server,
+          id: this.state.editingServerId
+        }
+        //console.log(server);
+        await this.props.serverStore.update(this.state.editingServerId, server);
       } else {
         await this.props.serverStore.create(server);
       }
@@ -74,7 +78,7 @@ export default class Servers extends Component<IServerProps> {
         await this.props.serverStore.getAll();
       });
     }
-  }
+  };
 
   render() {
     //const { servers } = this.props.serverStore;
@@ -145,7 +149,9 @@ export default class Servers extends Component<IServerProps> {
               // style={{ display: 'inline-block', verticalAlign: 'middle' }}
               type="primary"
               onClick={() => this.createOrUpdateModalOpen({ id: '' })}
-            >Create new server</Button>
+            >
+              Create new server
+            </Button>
             {/* <CreateOrEditServerModal isCreate serverData isEdit={false} serverStore = {this.props.serverStore} /> */}
             {/* <ModalToggle modal = {CollectionCreateOrEditForm} isCreate isEdit={false} serverData serverStore = {this.props.serverStore} /> */}
             <ImportButton />
@@ -158,8 +164,7 @@ export default class Servers extends Component<IServerProps> {
             onSearch={(value) => console.log(value)}
           />
         </div>
-        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen = {this.createOrUpdateModalOpen} />
-
+        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
 
         <CreateOrUpdateModal
           ref={this.modalRef}
@@ -169,7 +174,7 @@ export default class Servers extends Component<IServerProps> {
               modalVisible: false,
             })
           }
-          modalType={this.state.editingServerId === "" ? 'create' : 'edit'}
+          modalType={this.state.editingServerId === '' ? 'create' : 'edit'}
           onSave={this.handleSave}
           {...this.props}
         />

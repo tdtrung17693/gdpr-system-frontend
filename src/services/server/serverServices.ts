@@ -4,6 +4,7 @@ import { CreateServerInput } from './dto/CreateServerInput';
 
 import axios from 'axios';
 import { PagedResultDto } from '../dto/pagedResultDto';
+//import { UpdateServerInput } from './dto/UpdateServerInput';
 
 
 const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
@@ -32,6 +33,11 @@ class ServerService {
     });
     console.log(result.data);
     return result.data;
+  }
+
+  public async update(serverId: string, server: GetServerOutput){
+    let result = await axios.put(`${url}api/server`, server);
+    console.log(result);
   }
 }
 

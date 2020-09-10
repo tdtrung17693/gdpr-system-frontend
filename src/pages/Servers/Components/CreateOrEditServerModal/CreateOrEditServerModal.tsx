@@ -3,8 +3,8 @@ import { Modal, Button, Input, Form, DatePicker, Radio } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 import ServerStore from '../../../../stores/serverStore';
-import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
-import { UpdateServerInput } from '../../../../services/server/dto/UpdateServerInput';
+//import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
+//import { UpdateServerInput } from '../../../../services/server/dto/UpdateServerInput';
 
 interface ServersProps {
   isCreate: boolean;
@@ -76,34 +76,32 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
     },
   };
 
-  onFinish = async (fieldsValue: any) => {
-    if (this.props.isCreate) {
-      const values: CreateServerInput = {
-        ...fieldsValue,
-        startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-        endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-        createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-      };
-      console.log(values);
-      //await this.props.serverStore.create(values);
-      //await this.props.serverStore.getAll();
-      this.state.formRef.current.resetFields();
-      console.log('OK DONE');
-    } else {
-      if (fieldsValue.radiogroup === undefined){
-        fieldsValue.radiogroup = this.props.serverData.isActive;
-      }
-      const values: UpdateServerInput = {
-        ...fieldsValue,
-        startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-        endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-        updatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-        status: fieldsValue.radiogroup,
-      };
-      this.state.formRef.current.resetFields();
-      console.log(values);
-    }
-  };
+  // onFinish = async (fieldsValue: any) => {
+  //   // if (this.props.isCreate) {
+  //   //   const values: CreateServerInput = {
+  //   //     ...fieldsValue,
+  //   //     startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
+  //   //     endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
+  //   //     createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+  //   //   };
+  //   //   //await this.props.serverStore.create(values);
+  //   //   //await this.props.serverStore.getAll();
+  //   //   this.state.formRef.current.resetFields();
+  //   // } else {
+  //   //   if (fieldsValue.radiogroup === undefined){
+  //   //     fieldsValue.radiogroup = this.props.serverData.isActive;
+  //   //   }
+  //   //   const values: UpdateServerInput = {
+  //   //     ...fieldsValue,
+  //   //     startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
+  //   //     endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
+  //   //     updatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+  //   //     status: fieldsValue.radiogroup,
+  //   //   };
+  //   //   this.state.formRef.current.resetFields();
+  //   //   console.log(values);
+  //   // }
+  // };
 
   render() {
     console.log("i am rendering");
@@ -136,7 +134,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
             </Button>,
           ]}
         >
-          <Form ref={this.state.formRef} id="form" {...this.layout} name="form" onFinish={this.onFinish} validateMessages={this.validateMessages}>
+          <Form ref={this.state.formRef} id="form" {...this.layout} name="form" validateMessages={this.validateMessages}>
             <Form.Item
               initialValue={this.state._serverData.name ? `${this.state._serverData.name}` : ``}
               name="name"
