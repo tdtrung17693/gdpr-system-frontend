@@ -4,10 +4,13 @@ import * as React from 'react';
 
 import { Avatar, Col, Layout, Menu } from 'antd';
 import { Icon } from '@ant-design/compatible';
-import { L, isGranted } from '../../lib/abpUtility';
+import { L } from '../../lib/abpUtility';
 
-import AbpLogo from '../../images/abp-logo-long.png';
+import GdprLogo from '../../images/gdpr.svg';
 import { appRouters } from '../../components/Router/router.config';
+import { inject, observer } from 'mobx-react';
+import Stores from '../../stores/storeIdentifier';
+import AuthenticationStore from '../../stores/authenticationStore';
 
 const { Sider } = Layout;
 
@@ -16,27 +19,38 @@ export interface ISiderMenuProps {
   collapsed: boolean;
   onCollapse: any;
   history: any;
+  location?: any;
+  authenticationStore?: AuthenticationStore;
+  style?: React.CSSProperties
 }
 
-const SiderMenu = (props: ISiderMenuProps) => {
+const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenuProps) => {
   const { collapsed, history, onCollapse } = props;
   return (
-    <Sider trigger={null} className={'sidebar'} width={256} collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <Sider 
+      trigger={null}
+      className={'sidebar'}
+      width={256}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      style={props.style}
+    >
       {collapsed ? (
         <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 27, width: 64 }} src={AbpLogo} />
+          <Avatar shape="square" style={{ height: 50, width: 50 }} src={GdprLogo} />
         </Col>
       ) : (
         <Col style={{ textAlign: 'center', marginTop: 15, marginBottom: 10 }}>
-          <Avatar shape="square" style={{ height: 54, width: 128 }} src={AbpLogo} />
+          <Avatar shape="square" style={{ height: 100, width: 100 }} src={GdprLogo} />
         </Col>
       )}
 
-      <Menu theme="dark" mode="inline">
+      <Menu theme="dark" mode="inline" selectedKeys={[props.location.pathname]}>
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {
-            if (route.permission && !isGranted(route.permission)) return null;
+            if (route.permission && !props.authenticationStore?.isGranted(route.permission)) return null;
 
             return (
               <Menu.Item key={route.path} onClick={() => history.push(route.path)}>
@@ -48,6 +62,6 @@ const SiderMenu = (props: ISiderMenuProps) => {
       </Menu>
     </Sider>
   );
-};
+}));
 
 export default SiderMenu;

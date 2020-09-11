@@ -1,4 +1,6 @@
 export interface PagedResultDto<T> {
-  totalCount: number;
+  totalItems: number;
+  totalPages: number;
+  page: number;
   items: T[];
 }

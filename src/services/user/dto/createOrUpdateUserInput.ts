@@ -1,10 +1,9 @@
 export interface CreateOrUpdateUserInput {
-  userName: string;
-  name: string;
-  surname: string;
-  emailAddress: string;
-  isActive: boolean;
-  roleNames: string[];
-  password: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  status: boolean;
+  roleId: string;
   id: number;
 }

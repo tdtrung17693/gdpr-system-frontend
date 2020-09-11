@@ -1,4 +1,5 @@
 import LoadableComponent from './../Loadable/index';
+import { Permissions } from '../../config/permissions';
 
 export const userRouter: any = [
   {
@@ -53,13 +54,22 @@ export const appRouters: any = [
     name: 'requests',
     permission: '',
     title: 'Requests',
-    icon: 'home',
+    icon: 'mail',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Requests')),
   },
   {
+    path: '/requests/editrequest',
+    name: 'editrequest',
+    permission: '',
+    title: 'Edit Request',
+    icon: 'mail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/EditRequest')),
+  },
+  {
     path: '/users',
-    permission: 'Pages.Users',
+    permission: Permissions.VIEW_USER,
     title: 'Users',
     name: 'user',
     icon: 'user',
