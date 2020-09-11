@@ -199,11 +199,13 @@ export default class Customers extends React.Component {
               ref={this.createModalRef}
               visible={this.state.createModalVisible}
               modalKey={this.state.createModalKey}
-              onCancel={() =>
-                this.setState({
+              onCancel={async () =>
+                {this.setState({
                   createModalVisible: false,
                   createModalKey: '',
-                })
+                });
+                await this.fetchData();
+                }
               }
               {...this.props}
              />
@@ -212,10 +214,10 @@ export default class Customers extends React.Component {
               visible={this.state.modalVisible}
               modalKey={this.state.modalKey}
               onCancel={() =>
-                this.setState({
+                {this.setState({
                   modalVisible: false,
                   modalKey: '',
-                })
+                }, async () => await this.fetchData())}
               }
               {...this.props}
             />

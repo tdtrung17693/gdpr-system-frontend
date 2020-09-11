@@ -95,9 +95,9 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   };
 
   //Submmit
-  handleSubmit = () => {
+  handleSubmit = async () => {
     if (this.props.modalKey.name == undefined){
-      http.post('http://localhost:5000/api/Customer',{
+      await http.post('http://localhost:5000/api/Customer',{
         contractBeginDate: this.state.contractBeginDate,
         contractEndDate: this.state.contractEndDate,
         contactPoint: this.state.contactPoint,
@@ -114,7 +114,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
       this.props.onCancel()
     }
     else{
-      http.put('http://localhost:5000/api/Customer',{
+      await http.put('http://localhost:5000/api/Customer',{
         contractBeginDate: this.state.contractBeginDate,
         contractEndDate: this.state.contractEndDate,
         description: this.state.description,
@@ -157,23 +157,23 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         >
           <Form {...this.layout} layout="vertical" name="nest-messages" validateMessages={this.validateMessages}>
             <Form.Item name={['user', 'name']} label="Customer Name" rules={[{ required: true }]}>
-              <Input onChange={event => this.setState({ customerName: event.target.value})}/>
+              <Input placeholder={modalKey.name} value={modalKey.name} onChange={event => this.setState({ customerName: event.target.value})}/>
             </Form.Item>
             <Form.Item label="Date Range" rules={[{ required: true }]}>
               <Input.Group compact>
-                <DatePicker onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
-                <DatePicker onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
+                <DatePicker placeholder={modalKey.contractBeginDate} onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
+                <DatePicker placeholder={modalKey.contractEndDate} onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
               </Input.Group>
             </Form.Item>
             <Form.Item name={['user', 'contactPoint']} label="Contact Point" rules={[{ required: true }]}>
-              <Select onChange={value => this.setState({contactPoint: value})} defaultValue="Select contact point" style={{ width: '100%' }}>
+              <Select onChange={value => this.setState({contactPoint: value})} defaultValue="Select a contact point" style={{ width: '100%' }}>
                 {data.map((d: any) => (
                   <Option key={d.id} value={d.id}>{d.email}</Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item name={['user', 'description']} label="Description" rules={[{ required: true }]}>
-              <Input onChange={e => {this.setState({descritpion: e.target.value})}}  />
+            <Form.Item name={['user', 'description']} label="Description">
+              <Input defaultValue={modalKey.description} onChange={e => {this.setState({descritpion: e.target.value})}}  />
             </Form.Item>
             <Form.Item name={['user', 'status']} label="Status">
               <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.statusText}</Button>

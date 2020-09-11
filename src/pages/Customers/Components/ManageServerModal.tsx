@@ -8,6 +8,8 @@ import Search from 'antd/lib/input/Search';
 import '../index.css';
 import http from '../../../services/httpService';
 
+//import Customer from '../index';
+
 export interface IManageServerModalProps {
   modalKey: any;
   visible: boolean;
@@ -171,26 +173,25 @@ export default class ManageServerModal extends Component<IManageServerModalProps
   }
 
   //Submmit
-  handleSubmit = () => {
+  handleSubmit = async () => {
     if (this.state.assignedServers.length != 0){
-      http.post('http://localhost:5000/api/customer/server', {
+      await http.post('http://localhost:5000/api/customer/server', {
         customerId: this.props.modalKey.key,
         serverIds: this.state.assignedServers,
         action: true,
       })
       this.setState({assignedServers: []});
-      this.fetchServer();
     }
     if (this.state.unassignedServers.length != 0){
-      http.delete('http://localhost:5000/api/customer/server', {data: {
+      await http.delete('http://localhost:5000/api/customer/server', {data: {
         customerId: this.props.modalKey.key,
         serverIds: this.state.unassignedServers,
         action: false,
       }})
       this.setState({unassignedServers: []});
     }
-    console.log(this.state.assignedServers)
     this.props.onCancel();
+    //console.log(this.state.assignedServers)
   };
 
   render() {
