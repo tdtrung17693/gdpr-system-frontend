@@ -29,6 +29,8 @@ interface UsersTableState  {
   selectedRowKeys: string[];
   modalVisible: boolean;
   editingUserId: string;
+  isDirty: boolean;
+  firstRun: boolean;
 }
 
 const Search = Input.Search;
@@ -47,7 +49,9 @@ export class Users extends React.Component<IUserProps> {
     sortOrder: "",
     selectedRowKeys: [],
     modalVisible: false,
-    editingUserId: ""
+    editingUserId: "",
+    isDirty: false,
+    firstRun: true
   }
 
   getAll = lodash.throttle(async () => {
@@ -161,9 +165,15 @@ export class Users extends React.Component<IUserProps> {
       }, "User is saved successfully", "User cannot be saved. Please check again.");
     }
   }
-
+// old: [a,b,c,d,e], new: [a,b]
   onSelectChange = (selectedRowKeys: Key[]) => {
-    this.setState({ selectedRowKeys });
+    const { selectedRowKeys: previousSelectedRowKeys } = this.state;
+    const inStoreIds = this.props.userStore.ids;
+    const previousSelectedIdsNotInStore = previousSelectedRowKeys.filter(id => !inStoreIds.includes(String(id)))
+    const previousSelectedIdsInStore = previousSelectedRowKeys.filter(id => inStoreIds.includes(String(id)))
+    const willBeSelectedIds = new Set([...previousSelectedIdsInStore.filter(id => selectedRowKeys.includes(id)), ...selectedRowKeys]);
+
+    this.setState({ selectedRowKeys: [...willBeSelectedIds, ...previousSelectedIdsNotInStore]})
   };
 
   componentDidMount() {
