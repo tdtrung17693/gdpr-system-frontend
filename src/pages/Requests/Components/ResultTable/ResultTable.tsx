@@ -1,6 +1,7 @@
-import { Table, Button } from 'antd';
+import { Table,  Tag } from 'antd';
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button } from 'react-bootstrap';
 
 
 export default class ResultTable extends Component<any, any> {
@@ -17,7 +18,7 @@ export default class ResultTable extends Component<any, any> {
 
   getRequestsData() {
     axios
-        .get(`https://localhost:44387/api/Request`)
+        .get(`https://localhost:44304/api/Request`)
         .then( requests => {
           this.setState({
             datas: requests.data,
@@ -51,6 +52,13 @@ export default class ResultTable extends Component<any, any> {
         title: 'Status',
         dataIndex: 'requestStatus',
         key: 'requestStatus',
+        render: (requestStatus: string) => (
+          <>            
+                <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
+                  {requestStatus}
+                </Tag>
+          </>
+        ),
       },
       {
         title: 'Create Date',
@@ -86,7 +94,7 @@ export default class ResultTable extends Component<any, any> {
         title: 'Action',
         dataIndex: 'button',
         key: 'button',
-        render: () => <Button type='primary'  >Edit</Button>
+        render: () => <Button variant="success">Edit</Button>
       },
     ];
 
@@ -100,7 +108,6 @@ export default class ResultTable extends Component<any, any> {
         title: data.title,
         startDate: data.startDate,
         endDate: data.endDate
-
       })
     )
 
@@ -114,7 +121,7 @@ export default class ResultTable extends Component<any, any> {
       
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" >
+          <Button variant="success" >
             Accept/Decline
           </Button>
           <span style={{ marginLeft: 8 }}></span>

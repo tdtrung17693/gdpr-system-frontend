@@ -19,7 +19,7 @@ export default class ExportCollapse extends Component<any, any> {
 
   getRequestsData() {
     axios
-      .get(`https://localhost:44387/api/Request`)
+      .get(`https://localhost:44304/api/Request`)
       .then((requests) => {
         this.setState({
           datas: requests.data,
