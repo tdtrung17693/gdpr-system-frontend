@@ -42,7 +42,7 @@ http.interceptors.response.use(
         title: error.response.data.error.message,
         content: error.response.data.error.details,
       });
-    } else if (!!error.response && !!error.response.data.error && error.response.data.error.code == "login_failure") {
+    } else if (!!error.response && !!error.response.data.error && error.response.data.error.code === "login_failure") {
       Modal.error({
         title: L('Login Failed'),
         content: error.response.data.error.description,

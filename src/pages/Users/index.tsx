@@ -13,6 +13,7 @@ import RoleStore from '../../stores/roleStore';
 import { Store } from 'antd/lib/form/interface';
 import { User } from '../../services/user/userService';
 import { PlusOutlined } from '@ant-design/icons';
+import Title from 'antd/lib/typography/Title';
 
 export interface IUserProps {
   userStore: UserStore;
@@ -237,24 +238,20 @@ export class Users extends React.Component<IUserProps> {
       onChange: this.onSelectChange,
     };
     return (
-      <Card>
-        <Row>
-          <Col
-          >
-            <Space size="middle" style={{ marginBottom: "1rem" }}>
-              <h2 style={{ display: "inline-block", margin: 0 }}>Users</h2>
-              <Button
-                size="small"
-                style={{ display: "inline-block", verticalAlign: "middle" }}
-                type="primary"
-                onClick={()=>this.createOrUpdateModalOpen({id: ""})}
-              >
-                  New <PlusOutlined />
-              </Button>
-            </Space>
+      <>
+      <Space size="middle" style={{ marginBottom: "1rem" }}>
+        <Title style={{ display: "inline-block", margin: 0 }} level={2}>Users</Title>
+        <Button
+          size="small"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+          type="primary"
+          onClick={()=>this.createOrUpdateModalOpen({id: ""})}
+        >
+            New <PlusOutlined />
+        </Button>
 
-          </Col>
-        </Row>
+      </Space>
+      <Card>
         <Row>
           <Col sm={{ span: 10, offset: 0 }}>
             <Search placeholder="Search users" onSearch={this.handleSearch} />
@@ -313,6 +310,7 @@ export class Users extends React.Component<IUserProps> {
           {...this.props}
         />
       </Card>
+      </>
     );
   }
 }
