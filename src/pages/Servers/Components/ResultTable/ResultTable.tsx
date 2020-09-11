@@ -1,13 +1,12 @@
-import { Table, Button } from 'antd';
+import { Table, Button, Tag } from 'antd';
 import React from 'react';
 //mobx
 import { inject, observer } from 'mobx-react';
 import ServerStore from '../../../../stores/serverStore';
 import Stores from '../../../../stores/storeIdentifier';
 import { BulkServerStatus } from '../../../../services/server/dto/BulkServerStatus';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 //import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
-
-
 
 interface ServersProps {
   serverStore: ServerStore;
@@ -40,16 +39,16 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
 
   start = async () => {
     this.setState({ loading: true });
-    const listId: any= []
-    this.state.selectedRowKeys.map((e: string, index:number)=>{
+    const listId: any = [];
+    this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[index].id);
     });
     console.log(listId);
-    let bulkReq : BulkServerStatus = {
-      serverIdList : listId,
-      status : true,
-      updator: "B461CC44-92A8-4CC4-92AD-8AB884EB1895",
-    }
+    let bulkReq: BulkServerStatus = {
+      serverIdList: listId,
+      status: true,
+      updator: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+    };
     await this.props.serverStore.updateBulkServerStatus(bulkReq);
     await this.props.serverStore.getAll();
     setTimeout(() => {
@@ -93,13 +92,25 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       },
       {
         title: 'Status',
+        key: 'IsActive',
         dataIndex: 'IsActive',
-        // render: (isActive:string) => (isActive === 'active'? <Switch defaultChecked />: <Switch />) 
+        render: (IsActive: string) => {
+          return (
+            IsActive === 'active' ?
+            <Tag icon={<CheckCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'green' key={IsActive}>
+              {IsActive.toLocaleUpperCase()}
+            </Tag>
+            : 
+            <Tag icon={<CloseCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'geekblue' key={IsActive}>
+              {IsActive.toLocaleUpperCase()}
+            </Tag>
+          );
+        },
       },
       {
         title: 'Button',
         render: (text: string, item: any) => (
-          <Button shape = "round" danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
+          <Button shape="round" danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
             Edit
           </Button>
         ),

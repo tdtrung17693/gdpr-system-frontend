@@ -41,7 +41,8 @@ class ServerService {
   }
 
   public async updateBulkServerStatus(bulkReq: BulkServerStatus){
-    await axios.put(`${url}api/server/bulkStatus`, bulkReq);
+    let result = await axios.put(`${url}api/server/bulkStatus`, bulkReq);
+    console.log(result);
   }
 }
 
