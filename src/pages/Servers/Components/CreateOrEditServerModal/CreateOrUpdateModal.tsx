@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, Radio } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
-//import ServerStore from '../../../../stores/serverStore';
-//import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
-//import { UpdateServerInput } from '../../../../services/server/dto/UpdateServerInput';
-import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
+//import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
 import { FormInstance } from 'antd/lib/form';
-//import { CreateServerInput } from '../../../../services/server/dto/CreateServerInput';
+import { GetServerInput } from '../../../../services/server/dto/GetServerInput';
+import moment from "moment";
 
 interface ServersProps {
   visible: boolean;
   onCancel: () => void;
   modalType: string;
-  onSave: (user: GetServerOutput | null, errors: any) => void;
+  onSave: (server: GetServerInput | null, errors: any) => void;
 }
 
 interface ServerStates {
@@ -36,14 +34,14 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.setState({});
   }
 
-  public setFieldsValues = (server: GetServerOutput) => {
+  public setFieldsValues = (server: any) => {
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,
         IpAddress: server?.IpAddress,
-        // startDate: server?.startDate,
-        // endDate: server?.endDate,
-        Status: server?.Status,
+        StartDate: this.props.modalType === 'edit' ? moment(server?.StartDate): '', 
+        EndDate: this.props.modalType === 'edit' ? moment(server?.EndDate): '',
+        status: server?.Status,
       });
     });
   };
@@ -52,14 +50,13 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
         let valuesUpdate: any = {
           ...values,
           StartDate: values.StartDate.format('YYYY-MM-DD HH:mm:ss'),
           EndDate: values.EndDate.format('YYYY-MM-DD HH:mm:ss'),
           UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',  
+          CreatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895'
         };
-        console.log(valuesUpdate);
         this.props.onSave(valuesUpdate, null);
       })
       .catch((errors) => {
@@ -129,7 +126,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
               <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             {this.props.modalType === 'edit' ? (
-              <Form.Item name="Status" label="Status">
+              <Form.Item name="status" label="Status">
                 <Radio.Group>
                   <Radio value={true}>Active</Radio>
                   <Radio value={false}>InActive</Radio>
