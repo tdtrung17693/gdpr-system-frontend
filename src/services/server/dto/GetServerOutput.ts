@@ -1,13 +1,13 @@
 export interface GetServerOutput {
-  Id?: string;
+  id?: string;
   key?: string;
   CreatedBy: string;
   EndDate: string;
   IpAddress: string;
   Name: string;
   StartDate: string;
-  Status?: any;
+  status?: boolean;
   EditButton?: any;
   Index?: number;
-  IsActive?: boolean;
+  IsActive?: string;
 }
