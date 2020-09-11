@@ -1,24 +1,13 @@
-import { Table, Button, Switch } from 'antd';
+import { Table, Button } from 'antd';
 import React from 'react';
 //mobx
 import { inject, observer } from 'mobx-react';
 import ServerStore from '../../../../stores/serverStore';
 import Stores from '../../../../stores/storeIdentifier';
+import { BulkServerStatus } from '../../../../services/server/dto/BulkServerStatus';
 //import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
-interface IServers {
-  key: string;
-  id: string;
-  name: string;
-  ipAddress: string;
-  createBy: string;
-  startDate: string;
-  endDate: string;
-  status: any;
-  editButton: any;
-  index: number;
-  isActive: boolean;
-}
+
 
 interface ServersProps {
   serverStore: ServerStore;
@@ -26,7 +15,6 @@ interface ServersProps {
 }
 
 interface ServerStates {
-  servers: IServers[];
   selectedRowKeys: any;
   loading: boolean;
 }
@@ -37,7 +25,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   constructor(props: any) {
     super(props);
     this.state = {
-      servers: [],
       selectedRowKeys: [],
       loading: false,
     };
@@ -51,8 +38,20 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     await this.props.serverStore.getAll();
   }
 
-  start = () => {
+  start = async () => {
     this.setState({ loading: true });
+    const listId: any= []
+    this.state.selectedRowKeys.map((e: string, index:number)=>{
+      listId.push(this.props.serverStore.servers.items[index].id);
+    });
+    console.log(listId);
+    let bulkReq : BulkServerStatus = {
+      serverIdList : listId,
+      status : true,
+      updator: "B461CC44-92A8-4CC4-92AD-8AB884EB1895",
+    }
+    await this.props.serverStore.updateBulkServerStatus(bulkReq);
+    await this.props.serverStore.getAll();
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
@@ -67,7 +66,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
-    console.log("i am coming to redender");
     let columns = [
       {
         title: '#',
@@ -95,8 +93,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       },
       {
         title: 'Status',
-        dataIndex: 'status',
-        render: (status: booleangi) => (status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />),
+        dataIndex: 'IsActive',
+        // render: (isActive:string) => (isActive === 'active'? <Switch defaultChecked />: <Switch />) 
       },
       {
         title: 'Button',

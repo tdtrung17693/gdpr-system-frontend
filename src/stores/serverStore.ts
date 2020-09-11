@@ -1,8 +1,10 @@
 //import { CreateServerInput } from './../services/server/dto/CreateServerInput';
 import { action, observable } from 'mobx';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
+import { GetServerInput } from '../services/server/dto/GetServerInput';
 import serverService from '../services/server/serverServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
+import { BulkServerStatus } from '../services/server/dto/BulkServerStatus';
 //import { UpdateServerInput } from '../services/server/dto/UpdateServerInput';
 
 class ServerStore {
@@ -10,17 +12,17 @@ class ServerStore {
     totalCount: 0,
     items: [],
   };
-  @observable editServer!: GetServerOutput;
+  @observable editServer!: GetServerInput;
 
   @action
   async getAll() {
     let result = await serverService.getAll();
-    this.servers = result;
-    console.log(this.servers);
+    this.servers.items = [...result.items];
+    this.servers.totalCount = result.totalCount;
   }
 
   @action
-  async create(server: GetServerOutput) {
+  async create(server: GetServerInput) {
     await serverService.create(server);
   }
 
@@ -41,7 +43,7 @@ class ServerStore {
   handleServerMember(status: boolean, index: number) {
     this.servers.items[index].key = '' + index;
     this.servers.items[index].Index = index + 1;
-    this.servers.items[index].IsActive = this.servers.items[index].Status;
+    this.servers.items[index].IsActive = this.servers.items[index].status?"active":"inactive";
   }
 
   @action
@@ -59,14 +61,19 @@ class ServerStore {
   }
 
   @action
-  async update(serverId: string, server: GetServerOutput) {
+  async update(serverId: string, server: GetServerInput) {
     await serverService.update(serverId, server);
-    this.servers.items = this.servers.items.map((oldServer:GetServerOutput)=>{
-      if(oldServer?.Id === serverId){
-        oldServer = {...oldServer,...server};
+    this.servers.items = this.servers.items.map((oldServer: GetServerOutput, index: number) => {
+      if (oldServer?.id === serverId) {
+        oldServer = { ...oldServer, status: server.Status, ...server };
       }
       return oldServer;
     });
+  }
+
+  @action
+  async updateBulkServerStatus(bulkReq: BulkServerStatus){
+    await serverService.updateBulkServerStatus(bulkReq);
   }
 }
 export default ServerStore;

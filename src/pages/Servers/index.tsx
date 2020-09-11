@@ -14,8 +14,9 @@ import { UserOutlined, EditOutlined } from '@ant-design/icons';
 import Stores from '../../stores/storeIdentifier';
 import ServerStore from '../../stores/serverStore';
 import CreateOrUpdateModal from './Components/CreateOrEditServerModal/CreateOrUpdateModal';
-import { GetServerOutput } from '../../services/server/dto/GetServerOutput';
+//import { GetServerOutput } from '../../services/server/dto/GetServerOutput';
 import { Store } from 'antd/lib/form/interface';
+import { GetServerInput } from '../../services/server/dto/GetServerInput';
 //import ModalToggle from './Components/CreateOrEditServerModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditServerModal/CollectionCreateOrEditForm';
 
@@ -53,6 +54,7 @@ export default class Servers extends Component<IServerProps> {
     });
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.serverStore.editServer);
+
     });
   }
 
@@ -62,7 +64,7 @@ export default class Servers extends Component<IServerProps> {
     });
   };
 
-  handleSave = async (server: GetServerOutput | null, validatingErrors: Store) => {
+  handleSave = async (server: GetServerInput | null, validatingErrors: Store) => {
     if (server) {
       if (this.state.editingServerId) {
         server = {
@@ -80,7 +82,6 @@ export default class Servers extends Component<IServerProps> {
   };
 
   render() {
-    //const { servers } = this.props.serverStore;
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Servers Management</h2>
