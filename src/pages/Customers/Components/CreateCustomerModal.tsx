@@ -2,10 +2,18 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
 
 import axios from 'axios'
+import http from '../../../services/httpService';
 
 const { Option } = Select;
 
-export default class CreateCustomerModal extends Component {
+export interface ICreateCustomerProps {
+  modalKey: any;
+  visible: boolean;
+  onCancel: () => void;
+}
+
+
+export default class CreateCustomerModal extends Component<ICreateCustomerProps> {
   constructor(props: any) {
     super(props);
   }
@@ -88,48 +96,66 @@ export default class CreateCustomerModal extends Component {
 
   //Submmit
   handleSubmit = () => {
-    axios.post('http://localhost:5000/api/Customer',{
-    contractBeginDate: this.state.contractBeginDate,
-    contractEndDate: this.state.contractEndDate,
-    description: this.state.description,
-    status: this.state.status,
-    customerName: this.state.customerName
-  })
-    .then((response) =>{
-      //console.log(response);
-      this.setState({
-        visible: false,
-      });
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    if (this.props.modalKey.name == undefined){
+      http.post('http://localhost:5000/api/Customer',{
+        contractBeginDate: this.state.contractBeginDate,
+        contractEndDate: this.state.contractEndDate,
+        contactPoint: this.state.contactPoint,
+        description: this.state.description,
+        status: this.state.status,
+        customerName: this.state.customerName
+      })
+        .then((response) =>{
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      this.props.onCancel()
+    }
+    else{
+      http.put('http://localhost:5000/api/Customer',{
+        contractBeginDate: this.state.contractBeginDate,
+        contractEndDate: this.state.contractEndDate,
+        description: this.state.description,
+        contactPoint: this.state.contactPoint,
+        status: this.state.status,
+        customerName: this.state.customerName,
+        id: this.props.modalKey.key
+      })
+        .then((response) =>{
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      this.props.onCancel()
+    }
   };
 
   render() {
-    const { visible, loading, data } = this.state;
-    const { TextArea } = Input;
+    const { loading, data } = this.state;
+    const { visible, onCancel, modalKey } = this.props;
+    //const { TextArea } = Input;
 
     return (
       <>
-        <Button type="primary" onClick={this.showModal}>
-          Create new Customer
-        </Button>
         <Modal
           visible={visible}
-          title="Create new Customer"
+          title={modalKey.name == undefined? "Create new Customer" : "Edit Customer: " + modalKey.name}
+          key = {modalKey.key}
           // onOk={this.handleSubmit}
-          onCancel={this.handleCancel}
+          onCancel={onCancel}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleSubmit}>
               Save
             </Button>,
-            <Button key="back" onClick={this.handleCancel}>
+            <Button key="back" onClick={onCancel}>
               Cancel
             </Button>,
           ]}
         >
-          <Form {...this.layout} layout="vertical" name="nest-messages" onFinish={this.handleSubmit} validateMessages={this.validateMessages}>
+          <Form {...this.layout} layout="vertical" name="nest-messages" validateMessages={this.validateMessages}>
             <Form.Item name={['user', 'name']} label="Customer Name" rules={[{ required: true }]}>
               <Input onChange={event => this.setState({ customerName: event.target.value})}/>
             </Form.Item>
@@ -147,7 +173,7 @@ export default class CreateCustomerModal extends Component {
               </Select>
             </Form.Item>
             <Form.Item name={['user', 'description']} label="Description" rules={[{ required: true }]}>
-              <TextArea onChange={value => this.setState({descritpion: value})} rows={4} />
+              <Input onChange={e => {this.setState({descritpion: e.target.value})}}  />
             </Form.Item>
             <Form.Item name={['user', 'status']} label="Status">
               <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.statusText}</Button>

@@ -16,7 +16,7 @@ class Exception extends React.Component<any, any> {
       {
         errorCode: '401',
         errorImg: error401,
-        errorDescription: 'Sorry, you dont have access to this page',
+        errorDescription: 'Sorry, you don\'t have access to this page',
       },
       { errorCode: '500', errorImg: error500, errorDescription: 'Sorry, the server is reporting an error' },
     ];

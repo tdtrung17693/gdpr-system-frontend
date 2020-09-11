@@ -2,10 +2,11 @@ import AppConsts from './../lib/appconst';
 import { L } from '../lib/abpUtility';
 import { Modal } from 'antd';
 import axios from 'axios';
+import { ls } from './localStorage';
+import { Auth } from '../config/auth';
 
 const qs = require('qs');
 
-declare var abp: any;
 
 const http = axios.create({
   baseURL: AppConsts.remoteServiceBaseUrl,
@@ -19,12 +20,10 @@ const http = axios.create({
 
 http.interceptors.request.use(
   function(config) {
-    if (!!abp.auth.getToken()) {
-      config.headers.common['Authorization'] = 'Bearer ' + abp.auth.getToken();
-    }
+    if (!!ls.get(Auth.TOKEN_NAME)) {
 
-    config.headers.common['.AspNetCore.Culture'] = abp.utils.getCookieValue('Abp.Localization.CultureName');
-    config.headers.common['Abp.TenantId'] = abp.multiTenancy.getTenantIdCookie();
+      config.headers.common['Authorization'] = `Bearer ${ ls.get(Auth.TOKEN_NAME) }`;
+    }
 
     return config;
   },
@@ -38,19 +37,27 @@ http.interceptors.response.use(
     return response;
   },
   error => {
-    if (!!error.response && !!error.response.data.error && !!error.response.data.error.message && error.response.data.error.details) {
+    if (error.response && error.response.data.error && error.response.data.error.message && error.response.data.error.details) {
       Modal.error({
         title: error.response.data.error.message,
         content: error.response.data.error.details,
       });
-    } else if (!!error.response && !!error.response.data.error && !!error.response.data.error.message) {
+    } else if (!!error.response && !!error.response.data.error && error.response.data.error.code == "login_failure") {
       Modal.error({
-        title: L('LoginFailed'),
-        content: error.response.data.error.message,
+        title: L('Login Failed'),
+        content: error.response.data.error.description,
       });
-    } else if (!error.response) {
-      Modal.error({ content: L('UnknownError') });
-    }
+    } else if (error.response && error.response.status === 401) {
+      Modal.error({
+        title: 'Session timeout',
+        content: 'Your session has been timed out. Please log in again.',
+        onOk: () => {
+          window.location.pathname = "/logout"
+        }
+      })
+    } else  {
+      Modal.error({ content: "Unknown Error. Please try again later." });
+    } 
 
     setTimeout(() => {}, 1000);
 

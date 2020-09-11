@@ -1,13 +1,33 @@
-﻿import * as React from 'react';
+﻿import React from 'react';
+import Search from 'antd/lib/input/Search';
+import './index.css';
 
-import { Row } from 'antd';
+//components
+import ResultTable from './Components/ResultTable/ResultTable';
+import CreateServerModal from './Components/CreateModal/CreateModal';
+import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 
-export class Requests extends React.Component {
-  render() {
-    return (
-      <Row> Requests </Row>
-    )
-  }
+
+
+export default function Requests() {
+  return (
+    <div>
+      <h2>Requests Management</h2>
+      <div>
+          <ExportCollapse />
+        </div>
+      <div className="create-filter">
+        <div>
+          <CreateServerModal />
+        </div>
+        <Search
+          style={{ width: '400px' }}
+          enterButton="Search"
+          size="large"
+          onSearch={(value) => console.log(value)}
+        />
+      </div>
+      <ResultTable />
+    </div>
+  );
 }
-
-export default Requests;

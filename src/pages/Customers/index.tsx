@@ -34,6 +34,8 @@ const exportToCSV = (csvData: any, fileName: any) => {
 
 export default class Customers extends React.Component {
   modalRef = React.createRef<ManageServerModal>();
+  createModalRef = React.createRef<CreateCustomerModal>();
+
   state = {
     fromDate: Date(),
     toDate: Date(),
@@ -44,7 +46,9 @@ export default class Customers extends React.Component {
     data: [],
     //server manage modal
     modalVisible: false,
-    modalKey: '',
+    modalKey: [],
+    createModalVisible: false,
+    createModalKey: [],
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -73,16 +77,16 @@ export default class Customers extends React.Component {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
       render: (serverOwned: any, key: any) => (
-          <Button onClick={() => this.setState({modalVisible: true, modalKey: key.key})} type="primary"> Manage &nbsp;&nbsp;
+          <Button onClick={() => this.setState({modalVisible: true, modalKey: key})} type="primary"> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
     },
     {
       title: '',
-      render: () => (
-        <Button type="primary"  danger > Edit </Button>
-    ),
+      render: (key: any) => (
+        <Button type="primary" onClick={() => this.setState({createModalVisible: true, createModalKey: key})} danger > Edit </Button>
+      ),
     },
   ];
 
@@ -188,7 +192,21 @@ export default class Customers extends React.Component {
       <div>
         <div className="create-filter">
           <div>
-            <CreateCustomerModal />
+            <Button type="primary" onClick={() => this.setState({createModalVisible: true})}>
+              Create new Customer
+            </Button>
+            <CreateCustomerModal
+              ref={this.createModalRef}
+              visible={this.state.createModalVisible}
+              modalKey={this.state.createModalKey}
+              onCancel={() =>
+                this.setState({
+                  createModalVisible: false,
+                  createModalKey: '',
+                })
+              }
+              {...this.props}
+             />
             <ManageServerModal
               ref={this.modalRef}
               visible={this.state.modalVisible}

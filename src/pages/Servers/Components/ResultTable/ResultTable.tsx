@@ -1,63 +1,58 @@
-import { Table, Button } from 'antd';
+import { Table, Button, Switch } from 'antd';
 import React from 'react';
+//mobx
+import { inject, observer } from 'mobx-react';
+import ServerStore from '../../../../stores/serverStore';
+import Stores from '../../../../stores/storeIdentifier';
+//import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
-const columns = [
-  {
-    title: '#',
-    dataIndex: 'index',
-  },
-  {
-    title: 'Server',
-    dataIndex: 'server',
-  },
-  {
-    title: 'Ip Address',
-    dataIndex: 'ipAddress',
-  },
-  {
-    title: 'StartDate',
-    dataIndex: 'startDate',
-  },
-  {
-    title: 'EndDate',
-    dataIndex: 'endDate',
-  },
-  {
-    title: 'Owner',
-    dataIndex: 'ower',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-  },
-  {
-    title: '',
-    dataIndex: 'button',
-  },
-];
-
-const data: any = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
+interface IServers {
+  key: string;
+  id: string;
+  name: string;
+  ipAddress: string;
+  createBy: string;
+  startDate: string;
+  endDate: string;
+  status: any;
+  editButton: any;
+  index: number;
+  isActive: boolean;
 }
 
-export default class ResultTable extends React.Component {
+interface ServersProps {
+  serverStore: ServerStore;
+  createOrUpdateModalOpen: any;
+}
+
+interface ServerStates {
+  servers: IServers[];
+  selectedRowKeys: any;
+  loading: boolean;
+}
+
+@inject(Stores.ServerStore)
+@observer
+export default class ResultTable extends React.Component<ServersProps, ServerStates> {
   constructor(props: any) {
     super(props);
     this.state = {
-      selectedRowKeys: [], // Check here to configure the default column
+      servers: [],
+      selectedRowKeys: [],
       loading: false,
     };
   }
 
+  componentDidMount() {
+    this.getAllServers();
+  }
+
+  async getAllServers() {
+    await this.props.serverStore.getAll();
+  }
+
   start = () => {
     this.setState({ loading: true });
-    // ajax request after empty completing
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
@@ -68,11 +63,56 @@ export default class ResultTable extends React.Component {
 
   onSelectChange = (selectedRowKeys: any) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });     
+    this.setState({ selectedRowKeys });
   };
 
   render() {
-    const { loading, selectedRowKeys }:any = this.state;
+    const columns = [
+      {
+        title: '#',
+        dataIndex: 'Index',
+      },
+      {
+        title: 'Server',
+        dataIndex: 'name',
+      },
+      {
+        title: 'Ip Address',
+        dataIndex: 'ipAddress',
+      },
+      {
+        title: 'StartDate',
+        dataIndex: 'startDate',
+      },
+      {
+        title: 'EndDate',
+        dataIndex: 'endDate',
+      },
+      {
+        title: 'Owner',
+        dataIndex: 'createdBy',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        render: (status: boolean) => (status ? <Switch disabled={true} defaultChecked /> : <Switch disabled={true} />),
+      },
+      {
+        title: 'Button',
+        render: (text: string, item: any) => (
+          <Button shape = "round" danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
+            Edit
+          </Button>
+        ),
+      },
+    ];
+
+    if (this.props.serverStore.servers.items.length !== 0) {
+      this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
+        this.props.serverStore.handleServerMember(serverObject.status, index);
+      });
+    }
+    const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -82,11 +122,15 @@ export default class ResultTable extends React.Component {
       <div>
         <div style={{ marginBottom: 16 }}>
           <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
-            Reload
+            Toggle and reload
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
+        />
       </div>
     );
   }

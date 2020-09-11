@@ -1,7 +1,7 @@
 import { L } from '../../lib/abpUtility';
 
 const rules = {
-  userNameOrEmailAddress: [
+  username: [
     {
       required: true,
       message: L('ThisFieldIsRequired'),

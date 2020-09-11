@@ -6,9 +6,10 @@ import axios from 'axios'
 import Search from 'antd/lib/input/Search';
 
 import '../index.css';
+import http from '../../../services/httpService';
 
 export interface IManageServerModalProps {
-  modalKey: string;
+  modalKey: any;
   visible: boolean;
   onCancel: () => void;
 }
@@ -22,6 +23,7 @@ const options = [
 export default class ManageServerModal extends Component<IManageServerModalProps> {
   constructor(props: any) {
     super(props);
+    //this.handleSubmit = this.handleSubmit.bind(this);
   }
   //modal
   state = {
@@ -30,6 +32,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     data: [],
     hasMore: true,
     optionValue: 'all',
+    assignedServers: [],
+    unassignedServers: [],
   };
 
 
@@ -94,12 +98,6 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     // };
   };
 
-  // showModal = () => {
-  //   this.setState({
-  //     visible: true,
-  //   });
-  // };
-
   handleOk = () => {
     this.setState({ btnloading: true });
     setTimeout(() => {
@@ -136,13 +134,36 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       this.fetchServer();
     }
     else if (e.target.value == 'owned'){
-      this.getOwnedServer(this.props.modalKey);
+      this.getOwnedServer(this.props.modalKey.key);
     }
     else{
       this.getAvailableServer();
     }
     
   };
+
+  //Checkbox (de)selected
+
+  handleCheckboxChange = (e: any) => {
+    if (e.target.checked){
+      if (e.target.value.customerid != this.props.modalKey.key){
+        this.setState({assignedServers: this.state.assignedServers.concat(e.target.value.id)});
+      }
+      else{
+        this.setState({unassignedServers: this.state.unassignedServers.filter(id => id != e.target.value.id)});
+      }
+    }
+    else{
+      if (e.target.value.customerid != this.props.modalKey.key){
+        this.setState({assignedServers: this.state.assignedServers.filter(id => id != e.target.value.id)});
+      }
+      else{
+        this.setState({unassignedServers: this.state.unassignedServers.concat(e.target.value.id)});
+      }
+    }
+    console.log(this.state.assignedServers)
+    console.log(this.state.unassignedServers)
+  }
 
   //Search
   handleSearch = (value: any) => {
@@ -151,9 +172,25 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
   //Submmit
   handleSubmit = () => {
-      this.setState({
-        visible: false,
-      });
+    if (this.state.assignedServers.length != 0){
+      http.post('http://localhost:5000/api/customer/server', {
+        customerId: this.props.modalKey.key,
+        serverIds: this.state.assignedServers,
+        action: true,
+      })
+      this.setState({assignedServers: []});
+      this.fetchServer();
+    }
+    if (this.state.unassignedServers.length != 0){
+      http.delete('http://localhost:5000/api/customer/server', {data: {
+        customerId: this.props.modalKey.key,
+        serverIds: this.state.unassignedServers,
+        action: false,
+      }})
+      this.setState({unassignedServers: []});
+    }
+    console.log(this.state.assignedServers)
+    this.props.onCancel();
   };
 
   render() {
@@ -164,15 +201,15 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       <>
         <Modal
           visible={visible}
-          key = {modalKey}
-          title="Manage Server of:"
+          key = {modalKey.key}
+          title={"Manage Server of: "  + modalKey.name} 
           // onOk={this.handleSubmit}
           onCancel={onCancel}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
               Save
             </Button>,
-            <Button key="back" >
+            <Button key="back" onClick={onCancel} >
               Cancel
             </Button>,
           ]}
@@ -206,7 +243,10 @@ export default class ManageServerModal extends Component<IManageServerModalProps
                 renderItem={(item: any) => (
                   <List.Item key={item.id}  style={item.ownedBy.length != 0 ? {backgroundColor: '#ccc'} : {backgroundColor: 'white'}}>
                     <List.Item.Meta 
-                      title={<Checkbox disabled={item.ownedBy.length != 0}>{item.name}</Checkbox>}
+                      title={
+                      <Checkbox defaultChecked={item.customerid == modalKey.key} value={item} onChange={e => this.handleCheckboxChange(e)} disabled={item.ownedBy.length != 0 && item.customerid != modalKey.key}>
+                        {item.name}
+                      </Checkbox>}
                       description={<><i>{item.ownedBy[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
                       
                     />

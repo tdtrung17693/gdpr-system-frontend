@@ -1,8 +1,7 @@
 import { observable } from 'mobx';
 
 class LoginModel {
-  tenancyName!: string;
-  userNameOrEmailAddress!: string;
+  username!: string;
   password!: string;
   @observable rememberMe!: boolean;
   @observable showModal!: boolean;
