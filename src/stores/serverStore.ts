@@ -3,12 +3,12 @@ import { action, observable } from 'mobx';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 import { GetServerInput } from '../services/server/dto/GetServerInput';
 import serverService from '../services/server/serverServices';
-import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { BulkServerStatus } from '../services/server/dto/BulkServerStatus';
+import { PagedResultDtoServer } from '../services/server/dto/pagedResultDto';
 //import { UpdateServerInput } from '../services/server/dto/UpdateServerInput';
 
 class ServerStore {
-  @observable servers: PagedResultDto<GetServerOutput> = {
+  @observable servers: PagedResultDtoServer<GetServerOutput> = {
     totalCount: 0,
     items: [],
   };
