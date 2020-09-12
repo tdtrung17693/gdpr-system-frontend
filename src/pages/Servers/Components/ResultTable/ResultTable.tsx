@@ -43,7 +43,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[index].id);
     });
-    console.log(listId);
+    //console.log(listId);
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -88,7 +88,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       },
       {
         title: 'Owner',
-        dataIndex: 'createdBy',
+        dataIndex: 'nameOwner',
       },
       {
         title: 'Status',

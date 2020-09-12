@@ -5,7 +5,7 @@ import Stores from '../../../../stores/storeIdentifier';
 //import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
 import { FormInstance } from 'antd/lib/form';
 import { GetServerInput } from '../../../../services/server/dto/GetServerInput';
-import moment from "moment";
+import moment from 'moment';
 
 interface ServersProps {
   visible: boolean;
@@ -39,8 +39,10 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,
         IpAddress: server?.IpAddress,
-        StartDate: this.props.modalType === 'edit' ? moment(server?.StartDate): '', 
-        EndDate: this.props.modalType === 'edit' ? moment(server?.EndDate): '',
+        StartDate:
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.StartDate).getFullYear() ? moment(server?.StartDate) : '',
+        EndDate:
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.StartDate).getFullYear() ? moment(server?.EndDate) : '',
         status: server?.Status,
       });
     });
@@ -52,11 +54,12 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       .then((values: any) => {
         let valuesUpdate: any = {
           ...values,
-          StartDate: values.StartDate.format('YYYY-MM-DD HH:mm:ss'),
-          EndDate: values.EndDate.format('YYYY-MM-DD HH:mm:ss'),
-          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',  
-          CreatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895'
+          StartDate: values.StartDate ? values.StartDate.format('YYYY-MM-DD HH:mm:ss') : null,
+          EndDate: values.EndDate ? values.EndDate.format('YYYY-MM-DD HH:mm:ss') : null,
+          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+          CreatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
         };
+        console.log(values);
         this.props.onSave(valuesUpdate, null);
       })
       .catch((errors) => {
@@ -92,10 +95,6 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     const { loading } = this.state;
     const { visible, onCancel, modalType } = this.props;
 
-    const config: any = {
-      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-    };
-
     return (
       <>
         <Modal
@@ -119,11 +118,11 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
             <Form.Item name="IpAddress" label="IpAddress" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item name="StartDate" label="StartDate" {...config}>
-              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
+            <Form.Item name="StartDate" label="StartDate">
+              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD" />
             </Form.Item>
-            <Form.Item name="EndDate" label="EndDate" {...config}>
-              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD HH:mm:ss" />
+            <Form.Item name="EndDate" label="EndDate">
+              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD" />
             </Form.Item>
             {this.props.modalType === 'edit' ? (
               <Form.Item name="status" label="Status">

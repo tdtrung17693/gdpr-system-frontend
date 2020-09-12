@@ -2,10 +2,10 @@ export interface GetServerInput {
     Id?: string;
     key?: string;
     CreatedBy: string;
-    EndDate: string;
+    EndDate?: string;
     IpAddress: string;
     Name: string;
-    StartDate: string;
+    StartDate?: string;
     Status: boolean;
     EditButton?: any;
     Index?: number;

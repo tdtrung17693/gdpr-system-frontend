@@ -1,3 +1,4 @@
+
 //import { CreateServerInput } from './../services/server/dto/CreateServerInput';
 import { action, observable } from 'mobx';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
@@ -19,6 +20,7 @@ class ServerStore {
     let result = await serverService.getAll();
     this.servers.items = [...result.items];
     this.servers.totalCount = result.totalCount;
+    console.log(this.servers);
   }
 
   @action
@@ -41,9 +43,17 @@ class ServerStore {
 
   @action
   handleServerMember(status: boolean, index: number) {
+    if (new Date(0).getFullYear() > new Date(this.servers.items[index].startDate).getFullYear()) {
+      this.servers.items[index].startDate = '';
+    }
+    if (new Date(0).getFullYear() > new Date(this.servers.items[index].endDate).getFullYear()) {
+      this.servers.items[index].endDate = '';
+    }
+    //this.servers.items[index].StartDate = ((new Date(0)).getFullYear() < (new Date(this.servers.items[index].StartDate)).getFullYear()) ? this.servers.items[index]?.StartDate : '',
+    this.servers.items[index].nameOwner =  this.servers.items[index].firstName + ' ' + this.servers.items[index].lastName; 
     this.servers.items[index].key = '' + index;
     this.servers.items[index].Index = index + 1;
-    this.servers.items[index].IsActive = this.servers.items[index].status?"active":"inactive";
+    this.servers.items[index].IsActive = this.servers.items[index].status ? 'active' : 'inactive';
   }
 
   @action
@@ -72,7 +82,7 @@ class ServerStore {
   }
 
   @action
-  async updateBulkServerStatus(bulkReq: BulkServerStatus){
+  async updateBulkServerStatus(bulkReq: BulkServerStatus) {
     await serverService.updateBulkServerStatus(bulkReq);
   }
 }
