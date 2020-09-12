@@ -85,16 +85,15 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/AccountSetting')),
   },
-  
   {
     path: '/logout',
-    permission: '',
     title: 'Logout',
     name: 'logout',
     icon: 'info-circle',
     showInMenu: false,
     component: LoadableComponent(() => import('../../components/Logout')),
   },
+  
   {
     path: '/exception?:type',
     permission: '',

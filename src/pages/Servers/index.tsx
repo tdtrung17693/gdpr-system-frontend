@@ -1,4 +1,4 @@
-﻿﻿import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import { Collapse, Button, Card, Col, Row, Input, DatePicker, Select } from 'antd';
 import Search from 'antd/lib/input/Search';
 import './index.css';

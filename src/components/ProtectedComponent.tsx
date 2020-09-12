@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { observer, inject } from 'mobx-react';
 import Stores from '../stores/storeIdentifier';
 import AuthenticationStore from '../stores/authenticationStore';
@@ -6,14 +6,13 @@ import AuthenticationStore from '../stores/authenticationStore';
 interface IProtectedComponentProps {
     authenticationStore: AuthenticationStore;
     requiredPermission: string;
+    children?: any;
+    style?: React.CSSProperties
 };
 
-@inject(Stores.AuthenticationStore)
-@observer
-class ProtectedComponent extends React.Component<IProtectedComponentProps> {
-    
-    render() {
-        const {requiredPermission} = this.props;
-        return this.props.authenticationStore.isGranted(requiredPermission) ? this.props.children : '';
-    }
-}
+const ProtectedComponent = inject(Stores.AuthenticationStore)(observer((props: IProtectedComponentProps) => {
+    const {authenticationStore: auth, requiredPermission} = props;
+    return auth.isGranted(requiredPermission) ? props.children : '';
+}));
+
+export default ProtectedComponent;

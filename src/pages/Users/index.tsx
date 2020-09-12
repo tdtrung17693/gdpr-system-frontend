@@ -129,7 +129,7 @@ export class Users extends React.Component<IUserProps> {
       filterString = `status:${statusValue}`
     }
     if (filters.roleId) {
-      if (filterString != "") filterString += ",";
+      if (filterString !== "") filterString += ",";
       filterString += `roleId:${filters.roleId[0]}`
     }
     this.setState({ pageSize: pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, searchQuery: filterString }, async () => await this.getAll());

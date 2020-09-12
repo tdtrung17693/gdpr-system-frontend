@@ -5,8 +5,9 @@ import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
 import { Auth } from '../config/auth';
 import userService, { User } from '../services/user/userService';
-import { UpdateProfileInfoInput } from '../services/account/dto/registerInput copy';
+import { UpdateProfileInfoInput } from '../services/account/dto/updateProfileInfoInput';
 import accountService from '../services/account/accountService';
+import { ChangePasswordInput } from '../services/account/dto/changePasswordInput';
 
 interface AppUser extends User {
   permissions: string[];
@@ -33,6 +34,10 @@ class AuthenticationStore {
     await accountService.updateInfo(updateInfo);
     this.user!.firstName = updateInfo.firstName;
     this.user!.lastName = updateInfo.lastName;
+  }
+
+  public async changeUserPassword(values: ChangePasswordInput) {
+    await accountService.changePassword(values);
   }
 
   @action

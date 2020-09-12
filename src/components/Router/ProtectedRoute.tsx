@@ -5,7 +5,6 @@ import { Redirect, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 const ProtectedRoute = inject("authenticationStore")(observer((({ authenticationStore, path, component: Component, permission, render, ...rest }: any) => {
-  console.log(authenticationStore)
   return (
     <Route
       {...rest}

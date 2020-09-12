@@ -19,9 +19,6 @@ const options = [
 ];
 
 export default class ManageServerModal extends Component<IManageServerModalProps> {
-  constructor(props: any) {
-    super(props);
-  }
   //modal
   state = {
     loading: false,
