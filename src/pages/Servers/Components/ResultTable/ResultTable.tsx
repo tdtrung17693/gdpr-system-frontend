@@ -39,11 +39,10 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
 
   start = async () => {
     this.setState({ loading: true });
-    const listId: any = [];
+    let listId: any = [];
     this.state.selectedRowKeys.map((e: string, index: number) => {
-      listId.push(this.props.serverStore.servers.items[index].id);
-    });
-    //console.log(listId);
+      listId.push(this.props.serverStore.servers.items[Number(e)].id);
+    }); 
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -60,7 +59,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    //console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 

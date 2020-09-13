@@ -10,5 +10,7 @@ export interface GetServerInput {
     EditButton?: any;
     Index?: number;
     IsActive?: string;
+    startDate?: any;
+    endDate?: any;
   }
   

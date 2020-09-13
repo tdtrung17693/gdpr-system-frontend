@@ -6,19 +6,21 @@ import Stores from '../../../../stores/storeIdentifier';
 import { FormInstance } from 'antd/lib/form';
 import { GetServerInput } from '../../../../services/server/dto/GetServerInput';
 import moment from 'moment';
+import AuthenticationStore from '../../../../stores/authenticationStore';
 
 interface ServersProps {
   visible: boolean;
   onCancel: () => void;
   modalType: string;
   onSave: (server: GetServerInput | null, errors: any) => void;
+  authenticationStore: AuthenticationStore;
 }
 
 interface ServerStates {
   loading: boolean;
 }
 
-@inject(Stores.ServerStore)
+@inject(Stores.ServerStore, Stores.AuthenticationStore)
 @observer
 export default class CreateOrUpdateModal extends Component<ServersProps, ServerStates> {
   formRef = React.createRef<FormInstance>();
@@ -35,14 +37,15 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
   }
 
   public setFieldsValues = (server: any) => {
+    //console.log(this.props.authenticationStore.user);
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,
         IpAddress: server?.IpAddress,
         StartDate:
-          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.StartDate).getFullYear() ? moment(server?.StartDate) : '',
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.startDate).getFullYear() ? moment(server?.etartDate) : null,
         EndDate:
-          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.StartDate).getFullYear() ? moment(server?.EndDate) : '',
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.endDate).getFullYear() ? moment(server?.endDate) : null,
         status: server?.Status,
       });
     });
@@ -52,14 +55,16 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
+        let id = this.props.authenticationStore.user?.id;
         let valuesUpdate: any = {
           ...values,
-          StartDate: values.StartDate ? values.StartDate.format('YYYY-MM-DD HH:mm:ss') : null,
-          EndDate: values.EndDate ? values.EndDate.format('YYYY-MM-DD HH:mm:ss') : null,
-          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-          CreatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
+          StartDate: values.StartDate ? values.StartDate.format('YYYY-MM-DD') : null,
+          EndDate: values.EndDate ? values.EndDate.format('YYYY-MM-DD') : null,
+          UpdatedBy: id ? id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
+          CreatedBy: id ? id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
         };
-        console.log(values);
+
+        //console.log(valuesUpdate);
         this.props.onSave(valuesUpdate, null);
       })
       .catch((errors) => {
@@ -119,10 +124,10 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
               <Input />
             </Form.Item>
             <Form.Item name="StartDate" label="StartDate">
-              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD" />
+              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
             </Form.Item>
             <Form.Item name="EndDate" label="EndDate">
-              <DatePicker style={{ width: '100%' }} showTime format="YYYY-MM-DD" />
+              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
             </Form.Item>
             {this.props.modalType === 'edit' ? (
               <Form.Item name="status" label="Status">

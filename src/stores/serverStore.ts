@@ -1,4 +1,3 @@
-
 //import { CreateServerInput } from './../services/server/dto/CreateServerInput';
 import { action, observable } from 'mobx';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
@@ -6,6 +5,7 @@ import { GetServerInput } from '../services/server/dto/GetServerInput';
 import serverService from '../services/server/serverServices';
 import { BulkServerStatus } from '../services/server/dto/BulkServerStatus';
 import { PagedResultDtoServer } from '../services/server/dto/pagedResultDto';
+import { GetListServerFilter } from '../services/server/dto/GetListServerFilter';
 //import { UpdateServerInput } from '../services/server/dto/UpdateServerInput';
 
 class ServerStore {
@@ -20,7 +20,7 @@ class ServerStore {
     let result = await serverService.getAll();
     this.servers.items = [...result.items];
     this.servers.totalCount = result.totalCount;
-    console.log(this.servers);
+    //console.log(this.servers);
   }
 
   @action
@@ -44,13 +44,13 @@ class ServerStore {
   @action
   handleServerMember(status: boolean, index: number) {
     if (new Date(0).getFullYear() > new Date(this.servers.items[index].startDate).getFullYear()) {
-      this.servers.items[index].startDate = '';
+      this.servers.items[index].startDate = null;
     }
     if (new Date(0).getFullYear() > new Date(this.servers.items[index].endDate).getFullYear()) {
-      this.servers.items[index].endDate = '';
+      this.servers.items[index].endDate = null;
     }
     //this.servers.items[index].StartDate = ((new Date(0)).getFullYear() < (new Date(this.servers.items[index].StartDate)).getFullYear()) ? this.servers.items[index]?.StartDate : '',
-    this.servers.items[index].nameOwner =  this.servers.items[index].firstName + ' ' + this.servers.items[index].lastName; 
+    this.servers.items[index].nameOwner = this.servers.items[index].firstName + ' ' + this.servers.items[index].lastName;
     this.servers.items[index].key = '' + index;
     this.servers.items[index].Index = index + 1;
     this.servers.items[index].IsActive = this.servers.items[index].status ? 'active' : 'inactive';
@@ -84,6 +84,23 @@ class ServerStore {
   @action
   async updateBulkServerStatus(bulkReq: BulkServerStatus) {
     await serverService.updateBulkServerStatus(bulkReq);
+  }
+
+  @action
+  async importFileServer(file: FormData) {
+    await serverService.importFileServer(file);
+  }
+
+  @action
+  public async getListServerByFilter(filter: GetListServerFilter) {
+    if (filter.filterKey.length !== 0) {
+      let listServerByFilter = await serverService.getListServerByFilter(filter);
+      this.servers.items = listServerByFilter;
+      this.servers.totalCount = listServerByFilter.length;
+    }
+    else{
+      this.getAll();
+    }
   }
 }
 export default ServerStore;

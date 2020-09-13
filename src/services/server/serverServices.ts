@@ -1,12 +1,11 @@
-//import { PagedResultDto } from '../dto/pagedResultDto';
 import { GetServerOutput } from './dto/GetServerOutput';
-//import { CreateServerInput } from './dto/CreateServerInput';
 import { GetServerInput } from './dto/GetServerInput';
 import { BulkServerStatus } from './dto/BulkServerStatus';
 import { PagedResultDtoServer } from './dto/pagedResultDto';
-//import { UpdateServerInput } from './dto/UpdateServerInput';
 
 import http from '../httpService';
+import { GetListServerFilter } from './dto/GetListServerFilter';
+
 
 const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
 
@@ -17,7 +16,6 @@ class ServerService {
   }
 
   public async getAll(): Promise<PagedResultDtoServer<GetServerOutput>> {
-    // Promise<PagedResultDto<GetServerOutput>>
     let result = await http.get(`${url}api/server/listServer`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
@@ -40,9 +38,24 @@ class ServerService {
     await http.put(`${url}api/server`, server);
   }
 
-  public async updateBulkServerStatus(bulkReq: BulkServerStatus){
-    let result = await http.put(`${url}api/server/bulkStatus`, bulkReq);
+  public async updateBulkServerStatus(bulkReq: BulkServerStatus) {
+    await http.put(`${url}api/server/bulkStatus`, bulkReq);
+  }
+
+  public async importFileServer(file: FormData) {
+    console.log(file);
+    let result = await http.post(`${url}api/server/B461CC44-92A8-4CC4-92AD-8AB884EB1895/import`, file, {
+      headers: {'Accept': '*/*', 'Content-Type': 'multipart/form-data  boundary=----WebKitFormBoundarymx2fSWqWSd0OxQqq'},
+    });
+    // , {
+    //   headers : {'Content-Type': 'multipart/form-data'},
+    // }
     console.log(result);
+  }
+
+  public async getListServerByFilter(filter: GetListServerFilter) {
+    let result = await http.get(`${url}api/server/filter/${filter.filterKey}`);
+    return result.data;
   }
 }
 
