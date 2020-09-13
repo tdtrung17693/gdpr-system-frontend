@@ -5,6 +5,7 @@ import AuthenticationStore from './authenticationStore';
 import AccountStore from './accountStore';
 import ServerStore from './serverStore';
 import customerStore from './customerStore';
+import CommentStore from './commentStore';
 
 export default function initializeStores() {
   return {
@@ -15,5 +16,6 @@ export default function initializeStores() {
     accountStore: new AccountStore(),
     serverStore: new ServerStore(),
     customerStore: new customerStore(),
+    commentStore: new CommentStore()
   };
 }
