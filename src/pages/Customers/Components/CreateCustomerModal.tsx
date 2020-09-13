@@ -3,6 +3,7 @@ import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
 
 import axios from 'axios'
 import http from '../../../services/httpService';
+import { FormInstance } from 'antd/lib/form';
 
 const { Option } = Select;
 
@@ -14,6 +15,7 @@ export interface ICreateCustomerProps {
 
 
 export default class CreateCustomerModal extends Component<ICreateCustomerProps> {
+  formRef = React.createRef<FormInstance>();
   constructor(props: any) {
     super(props);
   }
@@ -24,10 +26,10 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     visible: false,
     status: true,
     customerName: '',
-    contractBeginDate: Date(),
-    contractEndDate: Date(),
+    contractBeginDate: Date() || null,
+    contractEndDate: Date() || null,
     contactPoint: '',
-    description: '' ,
+    description: '',
     statusText: 'Active',
   };
 
@@ -35,6 +37,18 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     this.fetchData();
   }
 
+  // public setFieldsValues = (server: any) => {
+  //   this.setState({}, () => {
+  //     this.formRef.current?.setFieldsValue({
+  //       name: server?.Name,
+  //       description: server?.description,
+  //       contractBeginDate: this.props.modalType === 'edit' ? moment(server?.StartDate): '', 
+  //       contractEndDate: this.props.modalType === 'edit' ? moment(server?.EndDate): '',
+  //       status: server?.Status,
+  //     });
+  //   });
+  // };
+  
   fetchData = async () => {
     await axios.get('http://localhost:5000/api/customer/contact-point', /*{headers : header}*/)
     .then( (response) =>{
@@ -156,26 +170,26 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
           ]}
         >
           <Form {...this.layout} layout="vertical" name="nest-messages" validateMessages={this.validateMessages}>
-            <Form.Item name={['user', 'name']} label="Customer Name" rules={[{ required: true }]}>
-              <Input placeholder={modalKey.name} value={modalKey.name} onChange={event => this.setState({ customerName: event.target.value})}/>
+            <Form.Item name='name' label="Customer Name" rules={[{ required: true }]}>
+              <Input onChange={event => this.setState({ customerName: event.target.value})}/>
             </Form.Item>
             <Form.Item label="Date Range" rules={[{ required: true }]}>
               <Input.Group compact>
-                <DatePicker placeholder={modalKey.contractBeginDate} onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
-                <DatePicker placeholder={modalKey.contractEndDate} onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
+                <DatePicker  onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
+                <DatePicker  onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
               </Input.Group>
             </Form.Item>
-            <Form.Item name={['user', 'contactPoint']} label="Contact Point" rules={[{ required: true }]}>
+            <Form.Item name='contactPoint' initialValue={modalKey.contactPoint} label="Contact Point" rules={[{ required: true }]}>
               <Select onChange={value => this.setState({contactPoint: value})} defaultValue="Select a contact point" style={{ width: '100%' }}>
                 {data.map((d: any) => (
                   <Option key={d.id} value={d.id}>{d.email}</Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item name={['user', 'description']} label="Description">
-              <Input defaultValue={modalKey.description} onChange={e => {this.setState({descritpion: e.target.value})}}  />
+            <Form.Item name='description' initialValue={modalKey.description} label="Description">
+              <Input onChange={e => {console.log(e.target.value); this.setState({description: e.target.value})}}  />
             </Form.Item>
-            <Form.Item name={['user', 'status']} label="Status">
+            <Form.Item name='status' label="Status">
               <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.statusText}</Button>
             </Form.Item>
           </Form>

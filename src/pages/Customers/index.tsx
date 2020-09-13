@@ -77,7 +77,7 @@ export default class Customers extends React.Component {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
       render: (serverOwned: any, key: any) => (
-          <Button onClick={() => this.setState({modalVisible: true, modalKey: key})} type="primary"> Manage &nbsp;&nbsp;
+          <Button onClick={() => {this.setState({modalVisible: true, modalKey: key}); console.log(key)}} type="primary"> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
@@ -134,9 +134,6 @@ export default class Customers extends React.Component {
   componentWillMount() {
     this.fetchData();
   }
-  // handleSearch = (keyword: any) => {
-  //   this.resultTable.fetchData(keyword)
-  // }
 
   handleExport = (e: any) => {
     axios.post('http://localhost:5000/api/Customer/export-csv', {
@@ -172,7 +169,7 @@ export default class Customers extends React.Component {
                 <Card hoverable={true} title="FromDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker onChange={value => this.setState({fromDate: value})} style={{ width: '100%' }} />
+                    <DatePicker onChange={(value: any) => this.setState({fromDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
@@ -180,7 +177,7 @@ export default class Customers extends React.Component {
                 <Card hoverable={true} title="ToDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker onChange={value => this.setState({toDate: value})} style={{ width: '100%' }} />
+                    <DatePicker onChange={(value: any) => this.setState({toDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
@@ -202,7 +199,7 @@ export default class Customers extends React.Component {
               onCancel={async () =>
                 {this.setState({
                   createModalVisible: false,
-                  createModalKey: '',
+                  createModalKey: [],
                 });
                 await this.fetchData();
                 }
@@ -216,7 +213,7 @@ export default class Customers extends React.Component {
               onCancel={() =>
                 {this.setState({
                   modalVisible: false,
-                  modalKey: '',
+                  modalKey: [],
                 }, async () => await this.fetchData())}
               }
               {...this.props}

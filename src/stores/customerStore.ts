@@ -11,6 +11,7 @@ import { PagedCustomerResultRequestDto } from '../services/customer/dto/PagedCus
 class customerStore {
   @observable customers!: PagedResultDto<GetCustomerOutput>;
   @observable editCustomer!: CreateOrUpdateCustomerInput;
+  @observable servers!: PagedResultDto<GetCustomerOutput>;
 
   @action
   async create(createCustomerInput: CreateOrUpdateCustomerInput) {
@@ -48,13 +49,13 @@ class customerStore {
         contractBeginDate: Date(),
         contratctEndDate: Date(),
         contactPoint: '',
-        id: '',
+        id: "",
     };
   }
 
   @action
-  async getAll(pagedFilterAndSortedRequest: PagedCustomerResultRequestDto) {
-    let result = await customerService.getAll();
+  async getCustomerList(pagedFilterAndSortedRequest: PagedCustomerResultRequestDto) {
+    let result = await customerService.getCustomerList();
     this.customers = result;
   }
 }

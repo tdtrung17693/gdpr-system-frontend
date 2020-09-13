@@ -40,11 +40,11 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
 
   componentDidMount() {
-    this.fetchServer();
+    this.getAllServer();
   }
 
   //api fetch call 
-  fetchServer = async () => {
+  getAllServer = async () => {
     await axios.get('http://localhost:5000/api/customer/server/', /*{headers : header}*/)
     .then( (response) =>{
       this.setState({data: response.data});
@@ -86,18 +86,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
   //infinite load on scroller
   handleInfiniteOnLoad = () => {
-    // let { data } = this.state;
-    // this.setState({
-    //   loading: true,
-    // });
-    // if (data.length > 14) {
-    //   //message.warning('Infinite List loaded all');
-    //   this.setState({
-    //     hasMore: false,
-    //     loading: false,
-    //   });
-    //   return;
-    // };
+
   };
 
   handleOk = () => {
@@ -106,10 +95,6 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       this.setState({ btnloading: false, visible: false });
     }, 3000);
   };
-
-  // handleCancel = () => {
-  //   this.setState({ visible: false });
-  // };
 
   layout = {
     labelCol: { span: 8 },
@@ -133,9 +118,10 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       optionValue: e.target.value,
     });
     if (e.target.value == 'all'){
-      this.fetchServer();
+      this.getAllServer();
     }
     else if (e.target.value == 'owned'){
+      console.log(this.props.modalKey.key);
       this.getOwnedServer(this.props.modalKey.key);
     }
     else{
@@ -205,7 +191,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
           key = {modalKey.key}
           title={"Manage Server of: "  + modalKey.name} 
           // onOk={this.handleSubmit}
-          onCancel={onCancel}
+          onCancel={() => {this.props.onCancel(); this.setState({optionValue: 'all'}); this.getAllServer()}}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
               Save
@@ -245,10 +231,11 @@ export default class ManageServerModal extends Component<IManageServerModalProps
                   <List.Item key={item.id}  style={item.ownedBy.length != 0 ? {backgroundColor: '#ccc'} : {backgroundColor: 'white'}}>
                     <List.Item.Meta 
                       title={
-                      <Checkbox defaultChecked={item.customerid == modalKey.key} value={item} onChange={e => this.handleCheckboxChange(e)} disabled={item.ownedBy.length != 0 && item.customerid != modalKey.key}>
+                      <Checkbox defaultChecked={item.customerid[0] == modalKey.key} value={item} onChange={e => this.handleCheckboxChange(e)} 
+                      disabled={item.ownedBy.length != 0 && item.customerid[0] != modalKey.key}>
                         {item.name}
                       </Checkbox>}
-                      description={<><i>{item.ownedBy[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
+                      description={<><i>{item.customerid[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
                       
                     />
                   </List.Item>
