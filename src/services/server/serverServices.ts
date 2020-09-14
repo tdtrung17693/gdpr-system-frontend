@@ -31,6 +31,7 @@ class ServerService {
     let result = await http.get(`${url}api/server/detail/${serverId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log( result.data);
     return result.data;
   }
 
@@ -42,14 +43,8 @@ class ServerService {
     await http.put(`${url}api/server/bulkStatus`, bulkReq);
   }
 
-  public async importFileServer(file: FormData) {
-    console.log(file);
-    let result = await http.post(`${url}api/server/B461CC44-92A8-4CC4-92AD-8AB884EB1895/import`, file, {
-      headers: {'Accept': '*/*', 'Content-Type': 'multipart/form-data  boundary=----WebKitFormBoundarymx2fSWqWSd0OxQqq'},
-    });
-    // , {
-    //   headers : {'Content-Type': 'multipart/form-data'},
-    // }
+  public async importFileServer(listServer: any) {
+    let result = await http.post(`${url}api/server/importExcel`, listServer);
     console.log(result);
   }
 

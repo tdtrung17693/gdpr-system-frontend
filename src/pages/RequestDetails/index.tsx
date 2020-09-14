@@ -28,7 +28,7 @@ export class RequestDetails extends React.Component<IRequestDetails> {
     return (
       <Row>
         <Col span={24}>
-          <CommentBox  requestId={this.props.match.params.id}/>
+          <CommentBox  requestId={this.props.match.params.id.toLowerCase()}/>
         </Col>
       </Row>
     )

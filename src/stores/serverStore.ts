@@ -91,8 +91,8 @@ class ServerStore {
   }
 
   @action
-  async importFileServer(file: FormData) {
-    await serverService.importFileServer(file);
+  async importFileServer(listServer: any) {
+    await serverService.importFileServer(listServer);
   }
 
   @action

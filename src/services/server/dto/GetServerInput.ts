@@ -6,7 +6,7 @@ export interface GetServerInput {
     IpAddress: string;
     Name: string;
     StartDate?: string;
-    Status: boolean;
+    Status?: boolean;
     EditButton?: any;
     Index?: number;
     IsActive?: string;

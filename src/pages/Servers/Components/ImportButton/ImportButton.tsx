@@ -6,9 +6,13 @@ import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 import ServerStore from '../../../../stores/serverStore';
 
+import * as XLSX from 'xlsx';
+import AuthenticationStore from '../../../../stores/authenticationStore';
+//import { GetServerInput } from '../../../../services/server/dto/GetServerInput';
 
 interface ImportProps {
   serverStore: ServerStore;
+  authenticationStore: AuthenticationStore;
 }
 
 interface ImportStates {
@@ -16,7 +20,7 @@ interface ImportStates {
   file: any;
 }
 
-@inject(Stores.ServerStore)
+@inject(Stores.ServerStore, Stores.AuthenticationStore)
 @observer
 export default class ImportButton extends Component<ImportProps, ImportStates> {
   constructor(props: ImportProps) {
@@ -42,15 +46,36 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   async onChange(info: any) {
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
+      //reader.readAsBinaryString(new Blob(info.fileList));
+      reader.readAsBinaryString(info.file.originFileObj);
       reader.onload = async (e: any) => {
+        //console.log(e.target.result);
+        let data = e.target.result;
+        let wordbook = XLSX.read(data, { type: 'binary' });
+        //console.log(wordbook);
+        let ListNewServer: any = [];
+        wordbook.SheetNames.forEach((sheet: any) => {
+          let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
+          rowObject.forEach((row: any) => {
+            ListNewServer.push({
+              Name: row.Name,
+              IpAddress: row.IpAddress,
+              StartDate: row.StartDate ? row.StartDate.toString() : null,
+              EndDate: row.EndDate? row.EndDate.toString() : null,
+              CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
+            });
+          });
+        });
+        console.log(ListNewServer);
+        await this.props.serverStore.importFileServer(ListNewServer);
         //this.setState({ isImportinng: true, file: e.target.files[0]});
         //let formData = new FormData();
-        //formData.append('body', e.target.files[0]);
-        console.log(info.fileList);
-        //await this.props.serverStore.importFileServer(formData);
+        //formData.append('body', i);
+        //let fileReader = new FileReader();
+        //let data= fileReader.readAsBinaryString(new Blob(e.target.result));
+        //console.log(data);
         //console.log(this.state.file);
       };
-      reader.readAsText(info.file.originFileObj);
     }
     if (info.file.status === 'done') {
       message.success(`${info.file.name} file uploaded successfully`);
@@ -63,8 +88,8 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
     name: 'file',
     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
     headers: {
-      "accept": "text/plain",
-      "content-type": 'multipart/form-data; boundary=----WebKitFormBoundaryWKHQobYZxYD1JIyA',
+      accept: 'text/plain',
+      'content-type': 'multipart/form-data; boundary=----WebKitFormBoundaryWKHQobYZxYD1JIyA',
     },
   };
 

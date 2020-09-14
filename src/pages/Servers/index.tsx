@@ -35,6 +35,7 @@ const exportToCSV = (csvData: any, fileName: any) => {
   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   const data = new Blob([excelBuffer], { type: fileType });
   FileSaver.saveAs(data, fileName + fileExtension);
+
 };
 
 const { Panel } = Collapse;
@@ -165,7 +166,7 @@ export default class Servers extends Component<IServerProps> {
             >
               Create new server
             </Button>
-            <ImportButton serverStore={this.props.serverStore} />
+            <ImportButton serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} />
           </div>
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
