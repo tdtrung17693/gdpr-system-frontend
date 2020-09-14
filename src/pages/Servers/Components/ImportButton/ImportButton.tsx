@@ -43,11 +43,11 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
       reader.onload = async (e: any) => {
-        this.setState({ isImportinng: true, file: e.target.files[0]});
-        let formData = new FormData();
-        formData.append('body', e.target.files[0]);
-        //console.log(formData.get('formFile'));
-        await this.props.serverStore.importFileServer(formData);
+        //this.setState({ isImportinng: true, file: e.target.files[0]});
+        //let formData = new FormData();
+        //formData.append('body', e.target.files[0]);
+        console.log(info.fileList);
+        //await this.props.serverStore.importFileServer(formData);
         //console.log(this.state.file);
       };
       reader.readAsText(info.file.originFileObj);
