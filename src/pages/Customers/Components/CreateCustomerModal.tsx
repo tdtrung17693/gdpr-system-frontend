@@ -4,6 +4,9 @@ import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
 import axios from 'axios'
 import http from '../../../services/httpService';
 import { FormInstance } from 'antd/lib/form';
+import { L } from '../../../lib/abpUtility';
+import moment from 'moment';
+//import moment from 'moment';
 
 const { Option } = Select;
 
@@ -13,12 +16,12 @@ export interface ICreateCustomerProps {
   onCancel: () => void;
 }
 
-
 export default class CreateCustomerModal extends Component<ICreateCustomerProps> {
   formRef = React.createRef<FormInstance>();
   constructor(props: any) {
     super(props);
   }
+
   //modal
   state = {
     data: [],
@@ -26,29 +29,17 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     visible: false,
     status: true,
     customerName: '',
-    contractBeginDate: Date() || null,
-    contractEndDate: Date() || null,
+    contractBeginDate: null,
+    contractEndDate: null,
     contactPoint: '',
-    description: '',
+    description: null,
     statusText: 'Active',
   };
 
-  componentDidMount() {
+  componentWillMount() {
     this.fetchData();
   }
 
-  // public setFieldsValues = (server: any) => {
-  //   this.setState({}, () => {
-  //     this.formRef.current?.setFieldsValue({
-  //       name: server?.Name,
-  //       description: server?.description,
-  //       contractBeginDate: this.props.modalType === 'edit' ? moment(server?.StartDate): '', 
-  //       contractEndDate: this.props.modalType === 'edit' ? moment(server?.EndDate): '',
-  //       status: server?.Status,
-  //     });
-  //   });
-  // };
-  
   fetchData = async () => {
     await axios.get('http://localhost:5000/api/customer/contact-point', /*{headers : header}*/)
     .then( (response) =>{
@@ -60,12 +51,6 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     });
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-
   handleOk = () => {
     this.setState({ loading: true });
     setTimeout(() => {
@@ -73,11 +58,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     }, 3000);
   };
 
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  triggerStatus = (e: any) => {
+  triggerStatus = () => {
     if (this.state.status){
       this.setState({
         status: false,
@@ -90,6 +71,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         statusText: 'Active',
       })
     };
+    console.log(this.state.customerName)
   }
   
   layout = {
@@ -109,15 +91,16 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   };
 
   //Submmit
-  handleSubmit = async () => {
+  handleSubmit = async (e: any) => {
+    e.preventDefault();
     if (this.props.modalKey.name == undefined){
-      await http.post('http://localhost:5000/api/Customer',{
-        contractBeginDate: this.state.contractBeginDate,
-        contractEndDate: this.state.contractEndDate,
-        contactPoint: this.state.contactPoint,
-        description: this.state.description,
-        status: this.state.status,
-        customerName: this.state.customerName
+      await http.post('api/Customer',{
+        contractBeginDate:  this.formRef.current?.getFieldValue('contractBeginDate'),
+        contractEndDate: this.formRef.current?.getFieldValue('contractEndDate'),
+        contactPoint: this.formRef.current?.getFieldValue('contactPoint'),
+        description: this.formRef.current?.getFieldValue('description'),
+        status: this.formRef.current?.getFieldValue('status'),
+        customerName: this.formRef.current?.getFieldValue('name'),
       })
         .then((response) =>{
           console.log(response);
@@ -125,16 +108,16 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         .catch(function (error) {
           console.log(error);
         });
-      this.props.onCancel()
+      this.handleCancel();
     }
     else{
-      await http.put('http://localhost:5000/api/Customer',{
-        contractBeginDate: this.state.contractBeginDate,
-        contractEndDate: this.state.contractEndDate,
-        description: this.state.description,
-        contactPoint: this.state.contactPoint,
-        status: this.state.status,
-        customerName: this.state.customerName,
+      await http.put('api/Customer',{
+        contractBeginDate:  this.formRef.current?.getFieldValue('contractBeginDate'),
+        contractEndDate: this.formRef.current?.getFieldValue('contractEndDate'),
+        contactPoint: this.formRef.current?.getFieldValue('contactPoint'),
+        description: this.formRef.current?.getFieldValue('description'),
+        status: this.formRef.current?.getFieldValue('status'),
+        customerName: this.formRef.current?.getFieldValue('name'),
         id: this.props.modalKey.key
       })
         .then((response) =>{
@@ -143,15 +126,22 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         .catch(function (error) {
           console.log(error);
         });
-      this.props.onCancel()
+      
+      this.handleCancel();
     }
+    console.log(e);
   };
+
+  handleCancel = () => {
+    this.props.onCancel();
+    this.formRef.current?.resetFields();
+    this.triggerStatus();
+  }
 
   render() {
     const { loading, data } = this.state;
-    const { visible, onCancel, modalKey } = this.props;
-    //const { TextArea } = Input;
-
+    const { visible, modalKey } = this.props;
+    
     return (
       <>
         <Modal
@@ -159,38 +149,42 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
           title={modalKey.name == undefined? "Create new Customer" : "Edit Customer: " + modalKey.name}
           key = {modalKey.key}
           // onOk={this.handleSubmit}
-          onCancel={onCancel}
+          onCancel={this.handleCancel}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleSubmit}>
+            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={(e:any) => this.handleSubmit(e)}>
               Save
             </Button>,
-            <Button key="back" onClick={onCancel}>
+            <Button key="back" onClick={this.handleCancel}>
               Cancel
             </Button>,
           ]}
         >
-          <Form {...this.layout} layout="vertical" name="nest-messages" validateMessages={this.validateMessages}>
-            <Form.Item name='name' label="Customer Name" rules={[{ required: true }]}>
+          <Form ref={this.formRef} layout="vertical" name="nest-messages" validateMessages={this.validateMessages}>
+            <Form.Item initialValue={modalKey.name} name='name' label="Customer Name" rules={[{ required: true }]}>
               <Input onChange={event => this.setState({ customerName: event.target.value})}/>
             </Form.Item>
-            <Form.Item label="Date Range" rules={[{ required: true }]}>
-              <Input.Group compact>
-                <DatePicker  onChange={value => this.setState({contractBeginDate: value})} name='contractBeginDate' showTime={true} style={{ width: '50%' }} />
-                <DatePicker  onChange={value => this.setState({contractEndDate: value})} name='contractEndDate' showTime={true} style={{ width: '50%' }} />
-              </Input.Group>
-            </Form.Item>
-            <Form.Item name='contactPoint' initialValue={modalKey.contactPoint} label="Contact Point" rules={[{ required: true }]}>
-              <Select onChange={value => this.setState({contactPoint: value})} defaultValue="Select a contact point" style={{ width: '100%' }}>
+            <Input.Group compact>
+                <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractBeginDate) : null} name='contractBeginDate' 
+                label="Contract Begin Date" rules={[{ required: true }]}  style={{ width: '50%' }}>
+                    <DatePicker onChange={value => this.setState({contractBeginDate: value})}  style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractEndDate) : null} name='contractEndDate' 
+                label="Contract End Date" style={{ width: '50%' }}>
+                    <DatePicker onChange={value => this.setState({contractEndDate: value})}  style={{ width: '100%' }} />
+                </Form.Item>
+            </Input.Group>
+            <Form.Item initialValue={modalKey.contactPointID} name='contactPoint' label="Contact Point" rules={[{ required: true, message: L('ThisFieldIsRequired') }]}>
+              <Select onChange={value => this.setState({contactPoint: value})} style={{ width: '100%' }}>
                 {data.map((d: any) => (
                   <Option key={d.id} value={d.id}>{d.email}</Option>
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item name='description' initialValue={modalKey.description} label="Description">
-              <Input onChange={e => {console.log(e.target.value); this.setState({description: e.target.value})}}  />
+            <Form.Item initialValue={modalKey.description} name='description' label="Description">
+              <Input defaultValue={modalKey.description} onChange={e => {console.log(e.target.value); this.setState({description: e.target.value})}}  />
             </Form.Item>
-            <Form.Item name='status' label="Status">
-              <Button defaultValue='Active' onClick={this.triggerStatus}>{this.state.statusText}</Button>
+            <Form.Item initialValue={modalKey.status} name='status' label="Status">
+              <Button onClick={this.triggerStatus}>{this.state.status ? 'Active' : 'Inactive'}</Button>
             </Form.Item>
           </Form>
         </Modal>

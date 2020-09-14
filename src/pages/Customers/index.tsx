@@ -12,6 +12,7 @@ import ManageServerModal from './Components/ManageServerModal';
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
@@ -48,7 +49,7 @@ export default class Customers extends React.Component {
     modalVisible: false,
     modalKey: [],
     createModalVisible: false,
-    createModalKey: [],
+    createModalKey: {},
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -56,18 +57,26 @@ export default class Customers extends React.Component {
     {
       title: 'Customer Name',
       dataIndex: 'name',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
     },
     {
       title: 'Contact Point',
       dataIndex: 'contactPoint',
+      // sortDirection: ['descend', 'ascend'],
+      // sorter: (a: any, b: any) => a.contactPoint.localeCompare(b.contactPoint),
     },
     {
       title: 'Contract Begin Date',
       dataIndex: 'contractBeginDate',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => moment(a.contractBeginDate).unix() - moment(b.contractBeginDate).unix(),
     },
     {
       title: 'Contract End Date',
       dataIndex: 'contractEndDate',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => moment(a.contractEndDate).unix() - moment(b.contractEndDate).unix(),
     },
     {
       title: 'Description',
@@ -76,8 +85,10 @@ export default class Customers extends React.Component {
     {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => a.serverOwned - b.serverOwned,
       render: (serverOwned: any, key: any) => (
-          <Button onClick={() => {this.setState({modalVisible: true, modalKey: key}); console.log(key)}} type="primary"> Manage &nbsp;&nbsp;
+          <Button onClick={() => {this.setState({modalVisible: true, modalKey: key});}} type="primary"> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
@@ -85,7 +96,7 @@ export default class Customers extends React.Component {
     {
       title: '',
       render: (key: any) => (
-        <Button type="primary" onClick={() => this.setState({createModalVisible: true, createModalKey: key})} danger > Edit </Button>
+        <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: key}); console.log(key.key)}} danger > Edit </Button>
       ),
     },
   ];
@@ -189,19 +200,20 @@ export default class Customers extends React.Component {
       <div>
         <div className="create-filter">
           <div>
-            <Button type="primary" onClick={() => this.setState({createModalVisible: true})}>
+            <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: {}}); console.log(this.state.createModalKey)}}>
               Create new Customer
             </Button>
             <CreateCustomerModal
               ref={this.createModalRef}
               visible={this.state.createModalVisible}
               modalKey={this.state.createModalKey}
-              onCancel={async () =>
+              onCancel={async () =>{
                 {this.setState({
                   createModalVisible: false,
-                  createModalKey: [],
+                  createModalKey: {},
                 });
                 await this.fetchData();
+              }
                 }
               }
               {...this.props}
@@ -213,7 +225,7 @@ export default class Customers extends React.Component {
               onCancel={() =>
                 {this.setState({
                   modalVisible: false,
-                  modalKey: [],
+                  modalKey: {},
                 }, async () => await this.fetchData())}
               }
               {...this.props}

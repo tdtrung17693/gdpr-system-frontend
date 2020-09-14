@@ -149,8 +149,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         this.setState({unassignedServers: this.state.unassignedServers.concat(e.target.value.id)});
       }
     }
-    console.log(this.state.assignedServers)
-    console.log(this.state.unassignedServers)
+    // console.log(this.state.assignedServers)
+    // console.log(this.state.unassignedServers)
   }
 
   //Search
@@ -176,13 +176,19 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       }})
       this.setState({unassignedServers: []});
     }
-    this.props.onCancel();
-    //console.log(this.state.assignedServers)
+    this.handleCancel();
   };
+
+  handleCancel = () => {
+    this.props.onCancel();
+    this.setState({optionValue: 'all'}); 
+    this.getAllServer(); 
+    //console.log(this.state.optionValue);
+  }
 
   render() {
     const { btnloading, optionValue } = this.state;
-    const { visible, onCancel, modalKey } = this.props;
+    const { visible, modalKey } = this.props;
 
     return (
       <>
@@ -191,12 +197,12 @@ export default class ManageServerModal extends Component<IManageServerModalProps
           key = {modalKey.key}
           title={"Manage Server of: "  + modalKey.name} 
           // onOk={this.handleSubmit}
-          onCancel={() => {this.props.onCancel(); this.setState({optionValue: 'all'}); this.getAllServer()}}
+          onCancel={() => {this.handleCancel()}}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
               Save
             </Button>,
-            <Button key="back" onClick={onCancel} >
+            <Button key="back" onClick={() => this.handleCancel()} >
               Cancel
             </Button>,
           ]}
