@@ -1,5 +1,5 @@
 export interface CreateCommentInput {
   content: string;
-  parent: string;
+  parentId?: string;
   requestId: string;
 }
