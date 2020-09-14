@@ -41,7 +41,12 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
   };
 
   componentDidMount() {
+    this.getServer();
     this.setState({});
+  }
+
+  async getServer() {
+    await this.props.requestStore.getServerList();
   }
 
   public setFieldsValues = (request: GetRequestOutput) => {
@@ -161,14 +166,15 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
                 placeholder="Select a server"
                 optionFilterProp="children"
                 
-                filterOption={(input, option) =>
-                (option!=undefined) ?  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 : true
-                }
+                // filterOption={(input, option) =>
+                // (option!=undefined) ?  option.indexOf(input.toLowerCase()) >= 0 : true
+                // }
+                filterOption = {true}
               >
               {
               (this.props.requestStore.serversList != undefined)?
               this.props.requestStore.serversList.map((server: any, i: any) =>
-                <Option value={server.id}>{server.name} - {server.ip}</Option>
+                <Option value={server.id}>{server.name} - {server.ipAddress}</Option>
               ): null}
             </Select>
             </Form.Item>

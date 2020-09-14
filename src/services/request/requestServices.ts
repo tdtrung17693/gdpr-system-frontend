@@ -38,13 +38,13 @@ class RequestService {
     let result = await axios.put(`${url}/api/request`, request);
     console.log(result);
   }
-  
+
   public async getServerList(){
     //let result = await axios.get(`${url}/api/request`,{
     let result = await axios.get(`https://localhost:44317/api/Server`,{
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-    console.log(result);
+    (result)?console.log(result):console.log("huhu");
     return result.data; 
   }
 }
