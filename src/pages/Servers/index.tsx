@@ -27,10 +27,10 @@ const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sh
 const fileExtension = '.xlsx';
 
 const exportToCSV = (csvData: any, fileName: any) => {
-  const csvDataRequest = csvData.map((e: any) => e.request[0]);
+  const csvDataRequest = csvData.map((e: any) => e[0]);
 
   const ws = XLSX.utils.json_to_sheet(csvDataRequest);
-  console.log(ws);
+  //console.log(ws);
   const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   const data = new Blob([excelBuffer], { type: fileType });
@@ -115,15 +115,15 @@ export default class Servers extends Component<IServerProps> {
       .post('http://localhost:5000/api/server/export-csv', {
         fromDate: this.state.fromDate,
         toDate: this.state.toDate,
-        guids: [this.props.authenticationStore.user?.id],
+        guids: [],
       })
       .then((response) => {
-        console.log(response.data.responsedRequest);
+        //console.log(response.data.responsedRequest);
         exportToCSV(response.data.responsedRequest, 'xfilename');
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      // .catch(function (error) {
+      //   console.log(error);
+      // });
   }
 
   render() {
