@@ -20,7 +20,7 @@ class ServerStore {
     let result = await serverService.getAll();
     this.servers.items = [...result.items];
     this.servers.totalCount = result.totalCount;
-    //console.log(this.servers);
+    console.log(this.servers);
   }
 
   @action

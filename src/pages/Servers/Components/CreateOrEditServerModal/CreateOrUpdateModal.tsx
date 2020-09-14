@@ -127,7 +127,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
               <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
             </Form.Item>
             <Form.Item name="EndDate" label="EndDate">
-              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+              <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD"/>
             </Form.Item>
             {this.props.modalType === 'edit' ? (
               <Form.Item name="status" label="Status">
