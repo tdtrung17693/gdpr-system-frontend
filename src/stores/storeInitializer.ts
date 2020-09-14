@@ -18,8 +18,10 @@ interface RootStore  {
   customerStore?: customerStore;
   commentStore?: CommentStore;
   notificationStore?: NotificationStore;
+  requestStore?: RequestStore;
 }
 export let stores:RootStore = {};
+import RequestStore from './requestStore';
 
 export default function initializeStores() {
 
@@ -32,7 +34,8 @@ export default function initializeStores() {
     serverStore: new ServerStore(),
     customerStore: new customerStore(),
     commentStore: new CommentStore(),
-    notificationStore: new NotificationStore()
+    notificationStore: new NotificationStore(),
+    requestStore: new RequestStore()
   };
 
   return stores

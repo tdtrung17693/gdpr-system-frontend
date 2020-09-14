@@ -2,59 +2,89 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, TimePicker } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
-import RequestStore from '../../../../stores/requestStore';
-import TextArea from 'antd/lib/input/TextArea';
+//import RequestStore from '../../../../stores/RequestStore';
 //import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
 //import { UpdateRequestInput } from '../../../../services/request/dto/UpdateRequestInput';
+import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
+import { FormInstance } from 'antd/lib/form';
+import TextArea from 'antd/lib/input/TextArea';
+import { Select } from 'antd';
+import RequestStore from '../../../../stores/requestStore';
+//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
+const { Option } = Select;
+
 
 interface RequestsProps {
-  requestData: any;
   requestStore: RequestStore;
+  visible: boolean;
+  onCancel: () => void;
+  modalType: string;
+  onSave: (user: GetRequestOutput | null, errors: any) => void;
 }
 
 interface RequestStates {
   loading: boolean;
-  visible: boolean;
-  _requestData: any;
-  formRef: any;
+  handleModalOpen: boolean;
 }
 
 @inject(Stores.RequestStore)
 @observer
-export default class CreateOrEditRequestModal extends Component<RequestsProps, RequestStates> {
+export default class HandleModal extends Component<RequestsProps, RequestStates> {
+  formRef = React.createRef<FormInstance>();
   constructor(props: any) {
     super(props);
   }
   //modal
   state = {
-    _requestData: this.props.requestData,
     loading: false,
-    visible: false,
-    formRef : React.createRef<any>(),
+    handleModalOpen: false,
   };
 
   componentDidMount() {
+    this.getServer();
     this.setState({});
   }
 
-  showModal = () => {
-    this.setState({
-      visible: true,
+  async getServer() {
+    await this.props.requestStore.getServerList();
+  }
+
+  public setFieldsValues = (request: GetRequestOutput) => {
+    this.setState({}, () => {
+      this.formRef.current?.setFieldsValue({
+        UpdatedAt: request?.updatedDate,
+        Title: request?.title,
+        // startDate: request?.startDate,
+        // endDate: request?.endDate,
+        Status: request?.status,
+      });
     });
   };
 
   handleOk = () => {
-    //console.log(values);
+    this.formRef.current
+      ?.validateFields()
+      .then((values: any) => {
+        console.log(values);
+        let valuesUpdate: any = {
+          ...values,
+          StartDate: values.StartDate.format('YYYY-MM-DD HH:mm:ss'),
+          EndDate: values.EndDate.format('YYYY-MM-DD HH:mm:ss'),
+          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',  
+        };
+        console.log(valuesUpdate);
+        this.props.onSave(valuesUpdate, null);
+      })
+      .catch((errors) => {
+        this.props.onSave(null, errors);
+      });
     this.setState({ loading: true });
     setTimeout(() => {
-      this.setState({ loading: false, visible: false});
+      this.setState({ loading: false });
     }, 500);
   };
 
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
+  
   //form
 
   FormItem = Form.Item;
@@ -75,26 +105,24 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
     },
   };
 
-    render() {
-    const { visible, loading } = this.state;
-    // const config: any = {
-    //   rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-    // };
+  render() {
+    const { loading } = this.state;
+    const { visible, onCancel} = this.props;
+
+    
+
     return (
-        <><Button type="primary" onClick={this.showModal}>
-          Create a new requests
-        </Button>
-          
+      <>
         <Modal
           visible={visible}
-          title={'Create a new requests'}
+          title={'Create a new Request'}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          onCancel={onCancel}
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
             </Button>,
-            <Button key="back" onClick={this.handleCancel}>
+            <Button key="back" onClick={onCancel}>
               Cancel
             </Button>,
           ]}
@@ -132,7 +160,23 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
               </Form.Item>
             </Form.Item>
             <Form.Item name={'server'} label="Server" rules={[{ required: true }]} >
-              <Input />
+            <Select
+                showSearch
+                style={{ width: 200 }}
+                placeholder="Select a server"
+                optionFilterProp="children"
+                
+                // filterOption={(input, option) =>
+                // (option!=undefined) ?  option.indexOf(input.toLowerCase()) >= 0 : true
+                // }
+                filterOption = {true}
+              >
+              {
+              (this.props.requestStore.serversList != undefined)?
+              this.props.requestStore.serversList.map((server: any, i: any) =>
+                <Option value={server.id}>{server.name} - {server.ipAddress}</Option>
+              ): null}
+            </Select>
             </Form.Item>
             <Form.Item name={'description'} label="Description" >
               <TextArea/>
