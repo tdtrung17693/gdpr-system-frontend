@@ -21,7 +21,7 @@ class CommentStore {
 
   @action
   public async addCommentToStore(comment: Comment) {
-    this.comments.push(comment);
+    this.comments = [comment, ...this.comments];
   }
 
 }

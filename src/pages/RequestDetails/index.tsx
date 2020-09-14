@@ -1,4 +1,5 @@
 ﻿import * as React from 'react';
+import './index.less';
 
 import { Row, Col } from 'antd';
 import CommentBox from './components/CommentBox';
