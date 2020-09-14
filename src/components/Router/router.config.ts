@@ -17,6 +17,12 @@ export const userRouter: any = [
     component: LoadableComponent(() => import('../../pages/Login')),
     showInMenu: false,
   },
+  {
+    path: '/user/test/:id',
+    name: 'test',
+    title: 'Test',
+    component: LoadableComponent(() => import('../../pages/RequestDetails'))
+  }
 ];
 
 export const appRouters: any = [

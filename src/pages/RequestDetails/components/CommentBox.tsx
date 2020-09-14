@@ -8,6 +8,7 @@ import Stores from '../../../stores/storeIdentifier';
 import AuthenticationStore from '../../../stores/authenticationStore';
 import CommentStore from '../../../stores/commentStore';
 import { FormInstance } from 'antd/lib/form';
+import TypingIndicator from './TypingIndicator';
 
 interface IConversationBoxProps {
   requestId: string;
@@ -84,6 +85,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   componentDidMount() {
     const { requestId } = this.props;
 
+    console.log(requestId)
     this.props.commentStore?.getCommentsOfRequest(requestId).then(() => {
       signalRService.on('commentCreated', (comment) => {
         console.log(comment);
@@ -279,7 +281,9 @@ class CommentBox extends React.Component<IConversationBoxProps> {
                 return <li key={comment.id}>{this.renderComment(comment, reply)}</li>;
               }}
             />
-            ,
+            <Comment
+              content={<TypingIndicator />}
+              />
           </Col>
         </Row>
       </Card>

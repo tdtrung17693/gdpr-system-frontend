@@ -8,4 +8,5 @@ export default class Stores {
   static ServerStore: string = 'serverStore';
   static CustomerStore: string = 'customerStore';
   static CommentStore: string = 'commentStore';
+  static NotificationStore: string = 'notificationStore';
 }

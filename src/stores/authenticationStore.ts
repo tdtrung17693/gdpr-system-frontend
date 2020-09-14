@@ -5,9 +5,11 @@ import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
 import { AuthConfig } from '../config/auth';
 import userService, { User } from '../services/user/userService';
+import {stores as rootStore} from '../stores/storeInitializer';
 
 interface AppUser extends User {
   permissions: string[];
+  notifications: any;
 }
 
 class AuthenticationStore {
@@ -17,8 +19,9 @@ class AuthenticationStore {
   constructor() {
     if (ls.get(AuthConfig.TOKEN_NAME)) {
       userService.getCurrentUser()
-        .then(user => {
+        .then((user: AppUser) => {
           this.setCurrentUser(user)
+          rootStore.notificationStore?.setNotifications(user.notifications);
         })
         .catch(() => {
           this.logout();
