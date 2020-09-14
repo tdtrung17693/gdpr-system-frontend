@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, observable, computed } from 'mobx';
 
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { PagedUserResultRequestDto } from '../services/user/dto/PagedUserResultRequestDto';
@@ -12,6 +12,11 @@ class UserStore {
 
   async create(createUserInput: User) {
     await userService.create(createUserInput);
+  }
+
+  @computed
+  get ids() {
+    return this.users.items.map(user => user.id);
   }
 
   @action

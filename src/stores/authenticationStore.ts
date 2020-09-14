@@ -3,7 +3,7 @@ import { action, observable } from 'mobx';
 import LoginModel from '../models/Login/loginModel';
 import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
-import { Auth } from '../config/auth';
+import { AuthConfig } from '../config/auth';
 import userService, { User } from '../services/user/userService';
 
 interface AppUser extends User {
@@ -15,7 +15,7 @@ class AuthenticationStore {
   @observable loggedIn: boolean = false;
   @observable user: AppUser | null = null;
   constructor() {
-    if (ls.get(Auth.TOKEN_NAME)) {
+    if (ls.get(AuthConfig.TOKEN_NAME)) {
       userService.getCurrentUser()
         .then(user => {
           this.setCurrentUser(user)
@@ -47,14 +47,14 @@ class AuthenticationStore {
 
     // TODO: Implement refresh token
     // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
-    ls.set(Auth.TOKEN_NAME, result.authToken);
+    ls.set(AuthConfig.TOKEN_NAME, result.authToken);
     let currentUser = await userService.getCurrentUser();
     this.setCurrentUser(currentUser);
   }
 
   @action
   logout() {
-    ls.remove(Auth.TOKEN_NAME);
+    ls.remove(AuthConfig.TOKEN_NAME);
     this.user = null;
     this.loggedIn = false;
   }

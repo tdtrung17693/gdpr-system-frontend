@@ -68,6 +68,15 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/EditRequest')),
   },
   {
+    path: '/requests/:id',
+    name: 'request-details',
+    permission: '',
+    title: 'Request Details',
+    icon: 'mail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/RequestDetails')),
+  },
+  {
     path: '/users',
     permission: Permissions.VIEW_USER,
     title: 'Users',

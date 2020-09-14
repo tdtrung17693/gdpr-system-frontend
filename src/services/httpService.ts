@@ -1,15 +1,15 @@
-import AppConsts from './../lib/appconst';
 import { L } from '../lib/abpUtility';
 import { Modal } from 'antd';
 import axios from 'axios';
 import { ls } from './localStorage';
-import { Auth } from '../config/auth';
+import { AuthConfig } from '../config/auth';
+import { AppConfig } from '../config/app';
 
 const qs = require('qs');
 
 
 const http = axios.create({
-  baseURL: AppConsts.remoteServiceBaseUrl,
+  baseURL: AppConfig.remoteServiceBaseUrl,
   timeout: 30000,
   paramsSerializer: function(params) {
     return qs.stringify(params, {
@@ -20,9 +20,9 @@ const http = axios.create({
 
 http.interceptors.request.use(
   function(config) {
-    if (!!ls.get(Auth.TOKEN_NAME)) {
+    if (!!ls.get(AuthConfig.TOKEN_NAME)) {
 
-      config.headers.common['Authorization'] = `Bearer ${ ls.get(Auth.TOKEN_NAME) }`;
+      config.headers.common['Authorization'] = `Bearer ${ ls.get(AuthConfig.TOKEN_NAME) }`;
     }
 
     return config;
