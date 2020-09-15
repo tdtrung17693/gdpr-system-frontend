@@ -15,7 +15,7 @@ class Logout extends React.Component<ILogoutProps> {
     this.props.authenticationStore!.logout();
   }
   render() {
-    return <Redirect to="/"></Redirect>
+    return <Redirect to="/user/login"></Redirect>
   }
 }
 

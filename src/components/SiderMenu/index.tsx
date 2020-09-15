@@ -4,7 +4,6 @@ import * as React from 'react';
 
 import { Avatar, Col, Layout, Menu } from 'antd';
 import { Icon } from '@ant-design/compatible';
-import { L } from '../../lib/abpUtility';
 
 import GdprLogo from '../../images/gdpr.svg';
 import { appRouters } from '../../components/Router/router.config';
@@ -55,7 +54,7 @@ const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenu
             return (
               <Menu.Item key={route.path} onClick={() => history.push(route.path)}>
                 <Icon type={route.icon} />
-                <span>{L(route.title)}</span>
+                <span>{route.title}</span>
               </Menu.Item>
             );
           })}

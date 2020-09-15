@@ -5,6 +5,9 @@ import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
 import { Auth } from '../config/auth';
 import userService, { User } from '../services/user/userService';
+import { UpdateProfileInfoInput } from '../services/account/dto/updateProfileInfoInput';
+import accountService from '../services/account/accountService';
+import { ChangePasswordInput } from '../services/account/dto/changePasswordInput';
 
 interface AppUser extends User {
   permissions: string[];
@@ -16,13 +19,7 @@ class AuthenticationStore {
   @observable user: AppUser | null = null;
   constructor() {
     if (ls.get(Auth.TOKEN_NAME)) {
-      userService.getCurrentUser()
-        .then(user => {
-          this.setCurrentUser(user)
-        })
-        .catch(() => {
-          this.logout();
-        })
+      this.checkTokenValidity();
     }
   }
 
@@ -33,9 +30,38 @@ class AuthenticationStore {
   }
 
   @action
+  public async updateCurrentUserInfo(updateInfo: UpdateProfileInfoInput) {
+    await accountService.updateInfo(updateInfo);
+    this.user!.firstName = updateInfo.firstName;
+    this.user!.lastName = updateInfo.lastName;
+  }
+
+  public async changeUserPassword(values: ChangePasswordInput) {
+    await accountService.changePassword(values);
+  }
+
+  @action
   public setCurrentUser(user: AppUser) {
     this.loggedIn = true;
     this.user = user;
+  }
+
+  protected async checkTokenValidity() {
+    // Try getting current user using current JWT Token
+    this.getCurrentUser()
+      .catch(() => {
+        // Log out if failed
+        this.logout();
+      })
+  }
+
+  public async refreshCurrentUser() {
+    await this.getCurrentUser();
+  }
+
+  public async getCurrentUser() {
+    let user = await userService.getCurrentUser();
+    this.setCurrentUser(user);
   }
 
   public async login(model: LoginModel) {
@@ -48,8 +74,7 @@ class AuthenticationStore {
     // TODO: Implement refresh token
     // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
     ls.set(Auth.TOKEN_NAME, result.authToken);
-    let currentUser = await userService.getCurrentUser();
-    this.setCurrentUser(currentUser);
+    await this.getCurrentUser();
   }
 
   @action

@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 
-import { Button, Card, Form, Col, Input, Row, Avatar, Spin } from 'antd';
-import { LoadingOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Card, Form, Col, Input, Row, Avatar } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { inject, observer } from 'mobx-react';
 
 import AccountStore from '../../stores/accountStore';
@@ -84,12 +84,8 @@ class Login extends React.Component<ILoginProps> {
                     </Col>
 
                     <Col style={{ textAlign: "right" }} span={8} offset={4}>
-                      <Button style={{}} htmlType={'submit'} type="primary">
-                        {
-                          this.state.isLoggingIn ?
-                            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} style={{color: "#fff"}}/>
-                            : "Log In"
-                        }
+                      <Button style={{}} htmlType={'submit'} type="primary" loading={this.state.isLoggingIn}>
+                        Log In
                       </Button>
                     </Col>
                   </Row>
