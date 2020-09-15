@@ -58,7 +58,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     }, 3000);
   };
 
-  triggerStatus = () => {
+  triggerStatus = (e: any) => {
     if (this.state.status){
       this.setState({
         status: false,
@@ -71,7 +71,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         statusText: 'Active',
       })
     };
-    console.log(this.state.customerName)
+    console.log(e.target.value)
   }
   
   layout = {
@@ -99,7 +99,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         contractEndDate: this.formRef.current?.getFieldValue('contractEndDate'),
         contactPoint: this.formRef.current?.getFieldValue('contactPoint'),
         description: this.formRef.current?.getFieldValue('description'),
-        status: this.formRef.current?.getFieldValue('status'),
+        status: this.state.status,
         customerName: this.formRef.current?.getFieldValue('name'),
       })
         .then((response) =>{
@@ -116,7 +116,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         contractEndDate: this.formRef.current?.getFieldValue('contractEndDate'),
         contactPoint: this.formRef.current?.getFieldValue('contactPoint'),
         description: this.formRef.current?.getFieldValue('description'),
-        status: this.formRef.current?.getFieldValue('status'),
+        status: this.state.status,
         customerName: this.formRef.current?.getFieldValue('name'),
         id: this.props.modalKey.key
       })
@@ -135,7 +135,6 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   handleCancel = () => {
     this.props.onCancel();
     this.formRef.current?.resetFields();
-    this.triggerStatus();
   }
 
   render() {
@@ -184,7 +183,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
               <Input defaultValue={modalKey.description} onChange={e => {console.log(e.target.value); this.setState({description: e.target.value})}}  />
             </Form.Item>
             <Form.Item initialValue={modalKey.status} name='status' label="Status">
-              <Button onClick={this.triggerStatus}>{this.state.status ? 'Active' : 'Inactive'}</Button>
+              <Button onClick={(e: any) => this.triggerStatus(e)}>{this.state.status ? 'Active' : 'Inactive'}</Button>
             </Form.Item>
           </Form>
         </Modal>

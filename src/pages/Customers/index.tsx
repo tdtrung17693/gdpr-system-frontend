@@ -88,7 +88,7 @@ export default class Customers extends React.Component {
       sortDirection: ['descend', 'ascend'],
       sorter: (a: any, b: any) => a.serverOwned - b.serverOwned,
       render: (serverOwned: any, key: any) => (
-          <Button onClick={() => {this.setState({modalVisible: true, modalKey: key});}} type="primary"> Manage &nbsp;&nbsp;
+          <Button type="primary" onClick={() => {this.setState({modalVisible: true, modalKey: key});}}> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
@@ -96,7 +96,7 @@ export default class Customers extends React.Component {
     {
       title: '',
       render: (key: any) => (
-        <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: key}); console.log(key.key)}} danger > Edit </Button>
+        <Button onClick={() => {this.setState({createModalVisible: true, createModalKey: key}); console.log(key.key)}} danger > Edit </Button>
       ),
     },
   ];
