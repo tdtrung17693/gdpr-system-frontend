@@ -27,6 +27,33 @@ class RequestService {
     return resultList;
   }
 
+  public async getSearch(keywordInput: string):Promise<PagedResultDto<GetRequestOutput>> {  // Promise<PagedResultDto<GetRequestOutput>>
+    let result = await axios.get(`${url}/api/request`, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      params: { keyword : keywordInput}
+    });
+
+    let resultList : PagedResultDto<GetRequestOutput> = {
+      items: result.data,
+      totalCount: result.data.length,
+    };
+    return resultList;
+  }
+  
+  public async getFilter(filterStatusInput: string):Promise<PagedResultDto<GetRequestOutput>> {  // Promise<PagedResultDto<GetRequestOutput>>
+    let result = await axios.get(`${url}/api/request`, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      params: { filterStatus: filterStatusInput}
+    });
+
+    let resultList : PagedResultDto<GetRequestOutput> = {
+      items: result.data,
+      totalCount: result.data.length,
+    };
+    return resultList;
+  }
+  
+
   public async get(requestId: string): Promise<any> {
     let result = await axios.get(`${url}/api/request/detail/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },

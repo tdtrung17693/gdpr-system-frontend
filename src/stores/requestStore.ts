@@ -22,6 +22,21 @@ class RequestStore {
   }
 
   @action
+  async getSearch(keywordInput: string) {
+    let result = await requestService.getSearch(keywordInput);
+    this.requests.items = [...result.items];
+    this.requests.totalCount = result.totalCount;
+    console.log(this.requests.items)
+  }
+
+  async getFilter(filterStatus: string) {
+    let result = await requestService.getFilter(filterStatus);
+    this.requests.items = [...result.items];
+    this.requests.totalCount = result.totalCount;
+    console.log(this.requests.items)
+  }
+
+  @action
   async getServerList() {
     let result = await requestService.getServerList();
     console.log(result)
@@ -43,6 +58,7 @@ class RequestStore {
       createdDate: '',
       createdBy: '',
       updatedDate: '',
+      updatedBy: '',
       serverName: '',
       title: '',
       startDate: '',
@@ -66,6 +82,7 @@ class RequestStore {
       createdDate: result.CreatedAt,
       createdBy: result.CreatedByName,
       updatedDate: result.UpdatedAt,
+      updatedBy: result.UpdatedBy,
       serverName: result.ServerName,
       title: result.Title,
       startDate: result.StartDate,
