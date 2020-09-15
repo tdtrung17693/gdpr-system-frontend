@@ -31,8 +31,8 @@ class CommentService {
     return result.data;
   }
 
-  public async deleteCommentofRequest (comment: Comment){
-    let result = await http.delete(`api/request/comments/${comment.id}`);
+  public async deleteCommentofRequest (comment: Comment,  requestId: string){
+    let result = await http.delete(`api/request/${requestId}/comments/${comment.id}`);
     return result;
   }
 }

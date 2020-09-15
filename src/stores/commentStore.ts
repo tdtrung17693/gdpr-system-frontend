@@ -29,16 +29,16 @@ class CommentStore {
 
   @action
   public async deletedComment(obj: CommentDeleted) {
-    this.comments.forEach((comment, index) => {
-      if ((comment.id = obj.id)) {
-        this.comments.splice(index, 1);
-      }
-    });
+    let newList: Comment[] = [];
+    newList = this.comments.filter((comment) => comment.id != obj.id);
+    console.log(this.comments);
+    console.log(newList);
+    this.comments = [...newList]
   }
 
   @action
-  public async deleteCommentofRequest(comment: Comment) {
-    let result = await commentService.deleteCommentofRequest(comment);
+  public async deleteCommentofRequest(comment: Comment, requestId: string) {
+    let result = await commentService.deleteCommentofRequest(comment, requestId);
     return result;
   }
 }

@@ -87,6 +87,9 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     const { requestId } = this.props;
 
     this.props.commentStore?.getCommentsOfRequest(requestId, this.state.order).then(() => {
+      signalRService.on('commentDeleted', (comment) => {
+        this.props.commentStore?.deletedComment({ id: comment.id });
+      });
       signalRService.on('commentCreated', (comment) => {
         //console.log(comment);
         if (!this.buttonRef.current.state.checked) {
@@ -120,15 +123,8 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     });
   }
   async componentDidUpdate(prevProps: IConversationBoxProps) {
-    const { requestId } = this.props;
-    this.props.commentStore?.getCommentsOfRequest(requestId, this.state.order).then(() => {
-      signalRService.on('commentDeleted', (comment) => {
-        this.props.commentStore?.deletedComment({ id: comment.id });
-      });
-      this.joinGroup(requestId);
-    });
-
-    //console.log("i am update");
+    //const { requestId } = this.props;
+    console.log('i am update');
     if (prevProps.requestId != this.props.requestId) {
       this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order).then(async () => {
         await this.leaveGroup(prevProps.requestId);
@@ -145,6 +141,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   }
 
   joinGroup = (id: string) => {
+    console.log(id);
     return new Promise((resolve, reject) => {
       signalRService
         .joinGroup(`conversation:${id}`)
@@ -187,10 +184,10 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   };
 
   handleDelete = (comment: IComment) => {
-    this.props.commentStore?.deleteCommentofRequest(comment).then((res) => {
+    this.props.commentStore?.deleteCommentofRequest(comment, this.props.requestId).then((res) => {
       console.log(res);
       if (res.status === 200) {
-        this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order);
+        //this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order);
       } else {
         alert('Can not delete this comment');
       }
@@ -273,7 +270,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
 
   render() {
     const comments = this.props.commentStore?.comments || [];
-    //console.log(comments);
     return (
       <Card>
         <Row>
@@ -284,7 +280,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               }}
               defaultValue="asc"
             >
-              <Radio.Button ref={this.buttonRef} value="desc">
+              <Radio.Button defaultChecked ref={this.buttonRef} value="desc">
                 Newest First
               </Radio.Button>
               <Radio.Button value="asc">Oldest First</Radio.Button>
@@ -310,7 +306,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    if ((values.content.length <= 0)) {
+                    if (values.content.length <= 0) {
                       alert('You have not enter message');
                     } else {
                       await this.props.commentStore?.createNewComment({
