@@ -57,6 +57,7 @@ class ServerStore {
     this.servers.items[index].IsActive = this.servers.items[index].status ? 'active' : 'inactive';
     this.servers.items[index].startDate = this.servers.items[index].startDate? moment(this.servers.items[index].startDate).format("YYYY-MM-DD"): '';
     this.servers.items[index].endDate = this.servers.items[index].endDate? moment(this.servers.items[index].endDate).format("YYYY-MM-DD") : '';
+    this.servers.items[index].cusName = this.servers.items[index].cusName? this.servers.items[index].cusName : '';
   }
 
   @action

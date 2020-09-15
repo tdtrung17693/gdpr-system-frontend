@@ -10,14 +10,18 @@ export type Comment = {
   createdAt: Date;
 };
 
+export type CommentDeleted = {
+  id: string;
+}
+
 export type CommentAuthor = {
   firstName: string;
   lastName: string;
 }
 
 class CommentService {
-  public async getAllCommentsOfRequest(requestId: string) : Promise<Comment[]> {
-    let result = await http.get(`api/request/${requestId}/comments`)
+  public async getAllCommentsOfRequest(requestId: string, order: string) : Promise<Comment[]> {
+    let result = await http.get(`api/request/${requestId}/comments/${order}`)
     return result.data;
   }
 
@@ -25,6 +29,11 @@ class CommentService {
     let result = await http.post(`api/request/${createCommentInput.requestId}/comments`, createCommentInput)
 
     return result.data;
+  }
+
+  public async deleteCommentofRequest (comment: Comment){
+    let result = await http.delete(`api/request/comments/${comment.id}`);
+    return result;
   }
 }
 

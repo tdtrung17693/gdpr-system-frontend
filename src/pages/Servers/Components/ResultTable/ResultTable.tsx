@@ -16,6 +16,7 @@ interface ServersProps {
 interface ServerStates {
   selectedRowKeys: any;
   loading: boolean;
+  filteredInfo:any;
 }
 
 @inject(Stores.ServerStore)
@@ -26,6 +27,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state = {
       selectedRowKeys: [],
       loading: false,
+      filteredInfo: null,
     };
   }
 
@@ -42,7 +44,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     let listId: any = [];
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[Number(e)].id);
-    }); 
+    });
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -64,14 +66,20 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
+    let { filteredInfo } = this.state;
+    filteredInfo = filteredInfo || {};
     let columns = [
       {
         title: '#',
         dataIndex: 'Index',
+        key: 'index',
       },
       {
         title: 'Server',
         dataIndex: 'name',
+        key: 'name',
+        sorter: (a: any, b: any) => a.name.length - b.name.length,
+        ellipsis: true,
       },
       {
         title: 'Ip Address',
@@ -88,23 +96,31 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: 'Owner',
         dataIndex: 'cusName',
+        sorter: (a: any, b: any) => a?.cusName.length - b?.cusName.length,
+        ellipsis: true,
       },
       {
         title: 'Status',
         key: 'IsActive',
         dataIndex: 'IsActive',
         render: (IsActive: string) => {
-          return (
-            IsActive === 'active' ?
-            <Tag icon={<CheckCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'green' key={IsActive}>
+          return IsActive === 'active' ? (
+            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
-            : 
-            <Tag icon={<CloseCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'geekblue' key={IsActive}>
+          ) : (
+            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           );
         },
+        filters: [
+          { text: 'active', value: 'active' },
+          { text: 'inactive', value: 'inactive' },
+        ],
+        filteredValue: filteredInfo.IsActive || null,
+        onFilter: (value:any, record:any) => record.IsActive.includes(value),
+
       },
       {
         title: 'Button',

@@ -119,12 +119,9 @@ export default class Servers extends Component<IServerProps> {
         guids: [],
       })
       .then((response) => {
-        //console.log(response.data.responsedRequest);
         exportToCSV(response.data.responsedRequest, 'xfilename');
       })
-      // .catch(function (error) {
-      //   console.log(error);
-      // });
+
   }
 
   render() {
@@ -188,69 +185,3 @@ export default class Servers extends Component<IServerProps> {
     );
   }
 }
-
-//data={this.state.servers}
-
-// useEffect(() => {
-//   async function getAllServers() {
-//     let modifiedData: IServers[] = [];
-//     await axios
-//       .get(`${url}api/server`, {
-//         headers: { 'Access-Control-Allow-Origin': '*' },
-//       })
-//       .then((res) => {
-//         let { data }: any = res;
-//         //console.log(data);
-//         data.map((server: any, index: number) => {
-//           let modifiedServer: IServers = {
-//             key: '' + index,
-//             id: server.id,
-//             name: server.name,
-//             ipAddress: server.ipAddress,
-//             createBy: server.createdBy,
-//             startDate: server.startDate,
-//             endDate: server.endDate,
-//             status: server.status ? <Switch style = {{width : '65%'}} disabled = {true} checkedChildren="active" defaultChecked /> : <Switch style = {{width : '65%'}} disabled = {true} unCheckedChildren="inactive" />,
-//             editButton: <CreateOrEditServerModal key={server.name} serverData={server} isCreate={false} isEdit/>,
-//             index: index + 1,
-//           };
-//           modifiedData.push(modifiedServer);
-//         });
-//       });
-//     setServers((servers) => [...servers, ...modifiedData]);
-//   }
-//   getAllServers();
-// }, []);
-
-{/* <Col span={6}>
-                  <Card hoverable={true} title="Requester:" bordered={false}>
-                    <Input.Group compact>
-                      <UserOutlined />
-                      <Select style={{ width: '100%' }}>
-                        {mockusers.map((email, index) => {
-                          return (
-                            <Option value={email} key={index}>
-                              {email}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </Input.Group>
-                  </Card>
-                </Col>
-                <Col span={6}>
-                  <Card hoverable={true} title="Approver:" bordered={false}>
-                    <Input.Group compact>
-                      <UserOutlined />
-                      <Select style={{ width: '100%' }}>
-                        {mockadmins.map((email, index) => {
-                          return (
-                            <Option value={email} key={index}>
-                              {email}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </Input.Group>
-                  </Card>
-                </Col> */}

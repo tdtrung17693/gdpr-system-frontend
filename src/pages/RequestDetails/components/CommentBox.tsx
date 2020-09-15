@@ -68,42 +68,69 @@ interface CommentBoxState {
   replyingId: string;
   loading: boolean;
   chronoOrder: ChronoOrder;
+  order: string;
 }
 
 @inject(Stores.AuthenticationStore, Stores.CommentStore)
 @observer
 class CommentBox extends React.Component<IConversationBoxProps> {
+  buttonRef = React.createRef<any>();
   state: CommentBoxState = {
     joinedGroup: false,
     replyingId: '',
     loading: true,
     chronoOrder: 'newest',
+    order: 'asc',
   };
 
   componentDidMount() {
     const { requestId } = this.props;
 
-    this.props.commentStore?.getCommentsOfRequest(requestId).then(() => {
+    this.props.commentStore?.getCommentsOfRequest(requestId, this.state.order).then(() => {
       signalRService.on('commentCreated', (comment) => {
-        console.log(comment);
-        this.props.commentStore?.addCommentToStore({
-          author: {
-            firstName: String(comment.author.firstName),
-            lastName: String(comment.author.lastName),
-          },
-          content: comment.content,
-          createdAt: comment.createdAt,
-          id: comment.id,
-          parentId: comment.parentId,
-          requestId: comment.requestId,
-        });
+        //console.log(comment);
+        if (!this.buttonRef.current.state.checked) {
+          this.props.commentStore?.addCommentToStoreAfter({
+            author: {
+              firstName: String(comment.author.firstName),
+              lastName: String(comment.author.lastName),
+            },
+            content: comment.content,
+            createdAt: comment.createdAt,
+            id: comment.id,
+            parentId: comment.parentId,
+            requestId: comment.requestId,
+          });
+        } else {
+          this.props.commentStore?.addCommentToStoreBefore({
+            author: {
+              firstName: String(comment.author.firstName),
+              lastName: String(comment.author.lastName),
+            },
+            content: comment.content,
+            createdAt: comment.createdAt,
+            id: comment.id,
+            parentId: comment.parentId,
+            requestId: comment.requestId,
+          });
+        }
       });
+
       this.joinGroup(requestId);
     });
   }
   async componentDidUpdate(prevProps: IConversationBoxProps) {
+    const { requestId } = this.props;
+    this.props.commentStore?.getCommentsOfRequest(requestId, this.state.order).then(() => {
+      signalRService.on('commentDeleted', (comment) => {
+        this.props.commentStore?.deletedComment({ id: comment.id });
+      });
+      this.joinGroup(requestId);
+    });
+
+    //console.log("i am update");
     if (prevProps.requestId != this.props.requestId) {
-      this.props.commentStore?.getCommentsOfRequest(this.props.requestId).then(async () => {
+      this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order).then(async () => {
         await this.leaveGroup(prevProps.requestId);
         this.joinGroup(this.props.requestId);
       });
@@ -114,6 +141,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     console.log('Unmount');
     this.leaveGroup(this.props.requestId);
     signalRService.off('commentCreated');
+    signalRService.off('commentDeleted');
   }
 
   joinGroup = (id: string) => {
@@ -158,7 +186,17 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     });
   };
 
-  //handleDelete = (comment: IComment) => {};
+  handleDelete = (comment: IComment) => {
+    this.props.commentStore?.deleteCommentofRequest(comment).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order);
+      } else {
+        alert('Can not delete this comment');
+      }
+    });
+    //console.log(result);
+  };
 
   renderComment = (comment: IComment, reply: IComment[] = []) => {
     return (
@@ -169,7 +207,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
                 <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
                   Reply
                 </span>,
-                <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
+                <span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
                   Delete
                 </span>,
               ]
@@ -211,11 +249,15 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    this.props.commentStore?.createNewComment({
-                      content: values.content,
-                      parentId: comment.id,
-                      requestId: this.props.requestId,
-                    });
+                    if (values.content.length <= 0) {
+                      alert('You have not enter message');
+                    } else {
+                      this.props.commentStore?.createNewComment({
+                        content: values.content,
+                        parentId: comment.id,
+                        requestId: this.props.requestId,
+                      });
+                    }
                   }}
                   buttonText="Reply"
                 />
@@ -231,14 +273,21 @@ class CommentBox extends React.Component<IConversationBoxProps> {
 
   render() {
     const comments = this.props.commentStore?.comments || [];
-    console.log(comments);
+    //console.log(comments);
     return (
       <Card>
         <Row>
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Radio.Group onChange={(values: any) => console.log(values)} defaultValue="a">
-              <Radio.Button value="newest">Newest First</Radio.Button>
-              <Radio.Button value="oldest">Oldest First</Radio.Button>
+            <Radio.Group
+              onChange={(e: any) => {
+                this.props.commentStore?.getCommentsOfRequest(this.props.requestId, e.target.value);
+              }}
+              defaultValue="asc"
+            >
+              <Radio.Button ref={this.buttonRef} value="desc">
+                Newest First
+              </Radio.Button>
+              <Radio.Button value="asc">Oldest First</Radio.Button>
             </Radio.Group>
           </Col>
         </Row>
@@ -261,10 +310,14 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    await this.props.commentStore?.createNewComment({
-                      content: values.content,
-                      requestId: this.props.requestId,
-                    });
+                    if ((values.content.length <= 0)) {
+                      alert('You have not enter message');
+                    } else {
+                      await this.props.commentStore?.createNewComment({
+                        content: values.content,
+                        requestId: this.props.requestId,
+                      });
+                    }
                   }}
                 />
               }
