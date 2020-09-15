@@ -13,8 +13,9 @@ import {  EditOutlined } from '@ant-design/icons';
 import Stores from '../../stores/storeIdentifier';
 import RequestStore from '../../stores/requestStore';
 import HandleModal from './Components/CreateModal/HandleModal';
-import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
+//import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
 import { Store } from 'antd/lib/form/interface';
+import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
@@ -61,8 +62,9 @@ export default class Requests extends Component<IRequestProps> {
     });
   };
 
-  handleSave = async (request: GetRequestOutput | null, validatingErrors: Store) => {
+  handleSave = async (request: CreateRequestInput | null, validatingErrors: Store) => {
     if (request) {
+      console.log(request)
       // if (this.state.editingRequestId) {
       //   request = {
       //     ...request,

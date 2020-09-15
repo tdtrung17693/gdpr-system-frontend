@@ -1,7 +1,9 @@
 export interface CreateRequestInput {
+    createdBy: string;
     title: string;
-    fromDate: string;
-    toDate: string;
-    server: string;
+    startDate: string;
+    endDate: string;
+    serverId: string;
     description: string;
+    
 }

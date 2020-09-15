@@ -5,6 +5,7 @@ import requestService from '../services/request/requestServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 //import { UpdateRequestInput } from '../services/request/dto/UpdateRequestInput';
 import {ServerModel} from '../services/request/dto/serverModel'
+import { CreateRequestInput } from '../services/request/dto/createRequestInput';
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalCount: 0,
@@ -18,7 +19,7 @@ class RequestStore {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalCount = result.totalCount;
-    console.log(this.requests.items)
+    
   }
 
   @action
@@ -26,7 +27,6 @@ class RequestStore {
     let result = await requestService.getSearch(keywordInput);
     this.requests.items = [...result.items];
     this.requests.totalCount = result.totalCount;
-    console.log(this.requests.items)
   }
 
   async getFilter(filterStatus: string) {
@@ -39,14 +39,12 @@ class RequestStore {
   @action
   async getServerList() {
     let result = await requestService.getServerList();
-    console.log(result)
     this.serversList = result
-    console.log(this.serversList)
   }
 
 
   @action
-  async create(request: GetRequestOutput) {
+  async create(request: CreateRequestInput) {
     await requestService.create(request);
   }
 
@@ -59,7 +57,7 @@ class RequestStore {
       createdBy: '',
       updatedDate: '',
       updatedBy: '',
-      serverName: '',
+      serverId: '',
       title: '',
       startDate: '',
       endDate: '',
@@ -83,7 +81,7 @@ class RequestStore {
       createdBy: result.CreatedByName,
       updatedDate: result.UpdatedAt,
       updatedBy: result.UpdatedBy,
-      serverName: result.ServerName,
+      serverId: result.ServerId,
       title: result.Title,
       startDate: result.StartDate,
       endDate: result.EndDate,
