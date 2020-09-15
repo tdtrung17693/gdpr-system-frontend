@@ -5,6 +5,7 @@ import requestService from '../services/request/requestServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 //import { UpdateRequestInput } from '../services/request/dto/UpdateRequestInput';
 import {ServerModel} from '../services/request/dto/serverModel'
+import { CreateRequestInput } from '../services/request/dto/createRequestInput';
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalItems: 0,
@@ -17,21 +18,37 @@ class RequestStore {
   async getAll() {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
+<<<<<<< HEAD
     this.requests.totalItems = result.totalItems;
+=======
+    this.requests.totalCount = result.totalCount;
+    
+  }
+
+  @action
+  async getSearch(keywordInput: string) {
+    let result = await requestService.getSearch(keywordInput);
+    this.requests.items = [...result.items];
+    this.requests.totalCount = result.totalCount;
+  }
+
+  async getFilter(filterStatus: string) {
+    let result = await requestService.getFilter(filterStatus);
+    this.requests.items = [...result.items];
+    this.requests.totalCount = result.totalCount;
+>>>>>>> 1b9f03386036f2bf5e60bdbd4a6ceb8a1e36fd43
     console.log(this.requests.items)
   }
 
   @action
   async getServerList() {
     let result = await requestService.getServerList();
-    console.log(result)
     this.serversList = result
-    console.log(this.serversList)
   }
 
 
   @action
-  async create(request: GetRequestOutput) {
+  async create(request: CreateRequestInput) {
     await requestService.create(request);
   }
 
@@ -43,7 +60,8 @@ class RequestStore {
       createdDate: '',
       createdBy: '',
       updatedDate: '',
-      serverName: '',
+      updatedBy: '',
+      serverId: '',
       title: '',
       startDate: '',
       endDate: '',
@@ -66,7 +84,8 @@ class RequestStore {
       createdDate: result.CreatedAt,
       createdBy: result.CreatedByName,
       updatedDate: result.UpdatedAt,
-      serverName: result.ServerName,
+      updatedBy: result.UpdatedBy,
+      serverId: result.ServerId,
       title: result.Title,
       startDate: result.StartDate,
       endDate: result.EndDate,

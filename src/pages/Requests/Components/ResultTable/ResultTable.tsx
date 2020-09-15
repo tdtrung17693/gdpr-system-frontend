@@ -3,6 +3,9 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import RequestStore from '../../../../stores/requestStore';
 import Stores from '../../../../stores/storeIdentifier';
+import { ColumnProps } from 'antd/lib/table/Column';
+import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
+import moment from 'moment';
 
 interface IRequests {
   key: string;
@@ -66,7 +69,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   };
 
   render() {
-    const columns = [
+    //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
+    const columns:ColumnProps<GetRequestOutput>[] = [
       {
         title: 'ID',
         dataIndex: 'index',
@@ -76,6 +80,21 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Status',
         dataIndex: 'RequestStatus',
         key: 'RequestStatus',
+        filters: [
+          {
+            text: 'New',
+            value: 'New',
+          },
+          {
+            text: 'Open',
+            value: 'Open',
+          },
+          {
+            text: 'Closed',
+            value: 'Closed',
+          }
+        ],
+        onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
           <>            
                 <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
@@ -88,11 +107,15 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Create Date',
         dataIndex: 'CreatedByNameEmail',
         key: 'createdAt',
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Update Date',
         dataIndex: 'UpdatedByNameEmail',
         key: 'updatedAt',
+        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Server',
@@ -112,12 +135,15 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       {
         title: 'Request From',
         dataIndex: 'StartDate',
-        key: 'startDate',
+        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
+        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Action',

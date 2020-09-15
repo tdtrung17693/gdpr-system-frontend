@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, TimePicker } from 'antd';
+import { Modal, Button, Input, Form, DatePicker } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 //import RequestStore from '../../../../stores/RequestStore';
@@ -10,6 +10,7 @@ import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/lib/input/TextArea';
 import { Select } from 'antd';
 import RequestStore from '../../../../stores/requestStore';
+import { CreateRequestInput } from '../../../../services/request/dto/createRequestInput';
 //import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
 const { Option } = Select;
 
@@ -19,7 +20,7 @@ interface RequestsProps {
   visible: boolean;
   onCancel: () => void;
   modalType: string;
-  onSave: (user: GetRequestOutput | null, errors: any) => void;
+  onSave: (user: CreateRequestInput | null, errors: any) => void;
 }
 
 interface RequestStates {
@@ -54,8 +55,8 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
       this.formRef.current?.setFieldsValue({
         UpdatedAt: request?.updatedDate,
         Title: request?.title,
-        // startDate: request?.startDate,
-        // endDate: request?.endDate,
+        startDate: request?.startDate,
+        endDate: request?.endDate,
         Status: request?.status,
       });
     });
@@ -68,9 +69,13 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
         console.log(values);
         let valuesUpdate: any = {
           ...values,
-          StartDate: values.StartDate.format('YYYY-MM-DD HH:mm:ss'),
-          EndDate: values.EndDate.format('YYYY-MM-DD HH:mm:ss'),
-          UpdatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',  
+
+          createdBy: 'B2039BE6-AD14-4B07-A4B1-C605E293571A',  
+          title: values.title,
+          startDate: values.startDate.format('YYYY-MM-DD HH:mm:ss'),
+          endDate: values.endDate.format('YYYY-MM-DD HH:mm:ss'),
+          serverId: values.serverId,
+          description: (values.description) ? values.description : ''
         };
         console.log(valuesUpdate);
         this.props.onSave(valuesUpdate, null);
@@ -127,42 +132,20 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
             </Button>,
           ]}
         >
-          <Form {...this.layout} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
+          <Form {...this.layout} ref= {this.formRef} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
             <Form.Item name={'title'} label="Title" rules={[{ required: true }]} >
               <Input />
             </Form.Item>
-            <Form.Item name={'fromDate'} label="From Date" rules={[{ required: true }]} style={{ marginBottom: 0 }}>
-              <Form.Item
-                style={{ display: 'inline-block', width: 'calc(50% - 15px)' }}
-              >
-                <DatePicker />
-              </Form.Item>
-              <span
-                style={{ display: 'inline-block', width: '24px', lineHeight: '32px', textAlign: 'center' }}
-              >
-              </span>
-              <Form.Item name={'fromDateTime'}rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 15px)' }} >
-                <TimePicker />
-              </Form.Item>
+            <Form.Item name={'startDate'} label="From Date" rules={[{ required: true }]} >
+            <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
-            <Form.Item name={'toDate'} label="To Date" rules={[{ required: true }]} style={{ marginBottom: 0 }} >
-              <Form.Item
-                style={{ display: 'inline-block', width: 'calc(50% - 15px)' }}
-              >
-                <DatePicker />
-              </Form.Item>
-              <span
-                style={{ display: 'inline-block', width: '24px', lineHeight: '32px', textAlign: 'center' }}
-              >
-              </span>
-              <Form.Item name={'toDateTime'} rules={[{ required: true }]} style={{ display: 'inline-block', width: 'calc(50% - 15px)' }} >
-                <TimePicker />
-              </Form.Item>
+            <Form.Item name={'endDate'} label="To Date"  >
+            <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
-            <Form.Item name={'server'} label="Server" rules={[{ required: true }]} >
+            <Form.Item name={'serverId'} label="Server" rules={[{ required: true }]} >
             <Select
                 showSearch
-                style={{ width: 200 }}
+                style={{ width: 315 }}
                 placeholder="Select a server"
                 optionFilterProp="children"
                 

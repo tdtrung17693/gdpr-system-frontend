@@ -13,8 +13,9 @@ import {  EditOutlined } from '@ant-design/icons';
 import Stores from '../../stores/storeIdentifier';
 import RequestStore from '../../stores/requestStore';
 import HandleModal from './Components/CreateModal/HandleModal';
-import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
+//import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
 import { Store } from 'antd/lib/form/interface';
+import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
@@ -61,17 +62,18 @@ export default class Requests extends Component<IRequestProps> {
     });
   };
 
-  handleSave = async (request: GetRequestOutput | null, validatingErrors: Store) => {
+  handleSave = async (request: CreateRequestInput | null, validatingErrors: Store) => {
     if (request) {
-      if (this.state.editingRequestId) {
-        request = {
-          ...request,
-          id: this.state.editingRequestId
-        }
-        await this.props.requestStore.update(this.state.editingRequestId, request);
-      } else {
+      console.log(request)
+      // if (this.state.editingRequestId) {
+      //   request = {
+      //     ...request,
+      //     id: this.state.editingRequestId
+      //   }
+      //   await this.props.requestStore.update(this.state.editingRequestId, request);
+      // } else {
         await this.props.requestStore.create(request);
-      }
+      //}
       this.toggleModal(async () => {
         await this.props.requestStore.getAll();
       });
@@ -84,7 +86,7 @@ export default class Requests extends Component<IRequestProps> {
       <div style={{ overflow: 'scroll' }}>
         <h2>Requests Management</h2>
         <Collapse defaultActiveKey={['1']}>
-          <Panel header="Export Requests By Requests" key="0">
+          <Panel header="Export Requests" key="0">
             <div className="site-card-wrapper">
               <Row gutter={16}>
                 <Col span={12}>
@@ -123,10 +125,10 @@ export default class Requests extends Component<IRequestProps> {
           </div>
           <Search
             style={{ width: '400px' }}
-            placeholder="input search text"
+            placeholder="Search on GDPR Request"
             enterButton="Search"
             size="large"
-            onSearch={(value) => console.log(value)}
+            onSearch={(value) => this.props.requestStore.getSearch(value)}
           />
         </div>
         <ResultTable requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
