@@ -2,7 +2,6 @@ import RoleStore from './roleStore';
 import UserStore from './userStore';
 import SessionStore from './sessionStore';
 import AuthenticationStore from './authenticationStore';
-import AccountStore from './accountStore';
 import ServerStore from './serverStore';
 import customerStore from './customerStore';
 import CommentStore from './commentStore';
@@ -14,7 +13,6 @@ interface RootStore  {
   roleStore?: RoleStore;
   userStore?: UserStore;
   sessionStore?: SessionStore;
-  accountStore?: AccountStore;
   serverStore?: ServerStore;
   customerStore?: customerStore;
   commentStore?: CommentStore;
@@ -23,20 +21,22 @@ interface RootStore  {
 }
 export let stores:RootStore = {};
 
-export default function initializeStores() {
+export default async function  initializeStores() {
 
   stores = {
     authenticationStore: new AuthenticationStore(),
     roleStore: new RoleStore(),
     userStore: new UserStore(),
     sessionStore: new SessionStore(),
-    accountStore: new AccountStore(),
     serverStore: new ServerStore(),
     customerStore: new customerStore(),
     commentStore: new CommentStore(),
     notificationStore: new NotificationStore(),
     requestStore: new RequestStore()
   };
+
+  await stores.authenticationStore?.init();
+  await stores.roleStore?.init();
 
   return stores
 };

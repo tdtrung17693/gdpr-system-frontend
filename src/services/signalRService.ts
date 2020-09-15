@@ -3,7 +3,6 @@ import { ConversationConfig } from '../config/conversation';
 import { ls } from './localStorage';
 import { AuthConfig } from '../config/auth';
 
-console.log(ConversationConfig)
 let connection = new SignalR.HubConnectionBuilder()
     .withUrl(ConversationConfig.endpoint, { accessTokenFactory: () => String(ls.get(AuthConfig.TOKEN_NAME)) })
     .build();
@@ -27,7 +26,6 @@ let waitIfNotConnected =  () => {
 export default {
     joinGroup: async (groupName: string) => {
         await waitIfNotConnected()
-        console.log(groupName)
         return await connection.send("joinGroup", groupName)
     },
     leaveGroup: async (groupName: string) => {

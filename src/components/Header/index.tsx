@@ -2,9 +2,10 @@ import './index.less';
 
 import * as React from 'react';
 
-import { Avatar, Badge, Col, Dropdown, Empty, Menu, Row, Space } from 'antd';
+import moment from 'moment';
+import { Avatar, Badge, Col, Dropdown, Empty, Menu, Row, Space, Typography } from 'antd';
 import { Icon } from '@ant-design/compatible';
-import { BellTwoTone } from '@ant-design/icons'
+import { FileAddTwoTone, BellTwoTone } from '@ant-design/icons'
 
 import { L } from '../../lib/abpUtility';
 import { Link } from 'react-router-dom';
@@ -13,12 +14,15 @@ import profilePicture from '../../images/user.png';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier';
 import NotificationStore from '../../stores/notificationStore';
+import { INotification } from '../../services/notification/notificationService';
 
 export interface IHeaderProps {
   collapsed?: any;
   toggle?: any;
   notificationStore?: NotificationStore
 }
+
+const {Text} = Typography;
 
 const userDropdownMenu = (
   <Menu>
@@ -37,13 +41,34 @@ const userDropdownMenu = (
   </Menu>
 );
 
+const renderNotification = (notification: INotification) => {
+  let notificationData = JSON.parse(notification.data)
+  let {notificationType, createdAt, id} = notification;
+
+  if (notificationType === "new-request") {
+    return (
+      <Link to={`/requests/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <div className="notification-icon">
+          <FileAddTwoTone style={{fontSize: "2rem", marginRight: "1rem"}}/>        
+        </div>
+        <div className="notification-content">
+          <Space direction="vertical" size={1}>
+            <Text>User <strong>{notificationData.Username}</strong> has sent an access request to the server <strong>{notificationData.ServerName}</strong></Text>
+            <Text type="secondary" style={{fontSize: "0.725rem"}}>{moment.utc(createdAt).fromNow()}</Text>
+          </Space>
+        </div>
+      </Link>
+    )
+  }
+  return "";
+}
+
 const renderNotificationDropdownMenu = (notifications: any[] = []) => {
   return (<Menu className="notifications" style={{maxHeight: '400px', overflowY: 'auto'}}>
     {
       notifications.length > 0?
       notifications.map(n => {
-        let requestData = JSON.parse(n.data)
-        return <Menu.Item className="notifications__item"><Link to={`/requests/${requestData.RequestId.toLowerCase()}?_fromNotification=${n.id}`}>User {requestData.Username} has sent an access request to the server {requestData.ServerName}</Link> </Menu.Item>
+        return <Menu.Item className="notifications__item">{renderNotification(n)}</Menu.Item>
       }) : <Empty style={{padding: '1rem'}} image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any notifications"/>}
   </Menu>)
 }

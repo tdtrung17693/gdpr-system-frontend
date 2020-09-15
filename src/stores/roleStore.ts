@@ -11,8 +11,8 @@ class RoleStore {
   @observable roleEdit: RoleEditModel = new RoleEditModel();
   @observable allPermissions: GetAllPermissionsOutput[] = [];
 
-  constructor() {
-    this.getAll();
+  public async init() {
+    await this.getAll();
   }
 
   @action

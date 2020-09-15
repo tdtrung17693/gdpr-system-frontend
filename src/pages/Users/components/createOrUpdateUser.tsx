@@ -59,6 +59,9 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
         })
       })
       .catch(errors => {
+        this.setState({
+          processing: false
+        })
         this.props.onSave(null, errors)
       })
   }

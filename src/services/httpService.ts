@@ -1,4 +1,3 @@
-import { L } from '../lib/abpUtility';
 import { Modal } from 'antd';
 import axios from 'axios';
 import { ls } from './localStorage';
@@ -44,17 +43,11 @@ http.interceptors.response.use(
       });
     } else if (!!error.response && !!error.response.data.error && error.response.data.error.code == "login_failure") {
       Modal.error({
-        title: L('Login Failed'),
+        title: 'Login Failed',
         content: error.response.data.error.description,
       });
     } else if (error.response && error.response.status === 401) {
-      Modal.error({
-        title: 'Session timeout',
-        content: 'Your session has been timed out. Please log in again.',
-        onOk: () => {
-          window.location.pathname = "/logout"
-        }
-      })
+      window.location.pathname = "/logout"
     } else  {
       Modal.error({ content: "Unknown Error. Please try again later." });
     } 

@@ -5,7 +5,7 @@ import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
 import { AuthConfig } from '../config/auth';
 import userService, { User } from '../services/user/userService';
-import {stores as rootStore} from '../stores/storeInitializer';
+import {stores as rootStore, stores} from '../stores/storeInitializer';
 
 interface AppUser extends User {
   permissions: string[];
@@ -16,16 +16,16 @@ class AuthenticationStore {
   @observable loginModel: LoginModel = new LoginModel();
   @observable loggedIn: boolean = false;
   @observable user: AppUser | null = null;
-  constructor() {
+
+  public async init() {
     if (ls.get(AuthConfig.TOKEN_NAME)) {
-      userService.getCurrentUser()
-        .then((user: AppUser) => {
-          this.setCurrentUser(user)
-          rootStore.notificationStore?.setNotifications(user.notifications);
-        })
-        .catch(() => {
-          this.logout();
-        })
+      try {
+        const user = await userService.getCurrentUser()
+        this.setCurrentUser(user)
+        rootStore.notificationStore?.setNotifications(user.notifications);
+      } catch (e) {
+        this.logout();
+      }
     }
   }
 
@@ -39,6 +39,7 @@ class AuthenticationStore {
   public setCurrentUser(user: AppUser) {
     this.loggedIn = true;
     this.user = user;
+    stores.notificationStore?.listenNotifications();
   }
 
   public async login(model: LoginModel) {
@@ -58,6 +59,10 @@ class AuthenticationStore {
   @action
   logout() {
     ls.remove(AuthConfig.TOKEN_NAME);
+    if (this.user) {
+      stores.notificationStore?.stopListeningNotifications();
+    }
+    
     this.user = null;
     this.loggedIn = false;
   }

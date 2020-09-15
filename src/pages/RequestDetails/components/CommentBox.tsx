@@ -8,7 +8,6 @@ import Stores from '../../../stores/storeIdentifier';
 import AuthenticationStore from '../../../stores/authenticationStore';
 import CommentStore from '../../../stores/commentStore';
 import { FormInstance } from 'antd/lib/form';
-import TypingIndicator from './TypingIndicator';
 
 interface IConversationBoxProps {
   requestId: string;
@@ -85,21 +84,9 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   componentDidMount() {
     const { requestId } = this.props;
 
-    console.log(requestId)
     this.props.commentStore?.getCommentsOfRequest(requestId).then(() => {
       signalRService.on('commentCreated', (comment) => {
-        console.log(comment);
-        this.props.commentStore?.addCommentToStore({
-          author: {
-            firstName: String(comment.author.firstName),
-            lastName: String(comment.author.lastName)
-          },
-          content: comment.content,
-          createdAt: comment.createdAt,
-          id: comment.id,
-          parentId: comment.parentId,
-          requestId: comment.requestId
-        })
+        this.props.commentStore?.addCommentToStore(comment)
       });
       this.joinGroup(requestId);
     });
@@ -108,7 +95,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     if (prevProps.requestId != this.props.requestId) {
       this.props.commentStore?.getCommentsOfRequest(this.props.requestId).then(async () => {
         await this.leaveGroup(prevProps.requestId);
-        this.joinGroup(this.props.requestId);
+        await this.joinGroup(this.props.requestId);
       });
     }
   }
@@ -138,21 +125,8 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   };
 
   leaveGroup = (id: string) => {
-    return new Promise((resolve, reject) => {
-      signalRService
+    return signalRService
         .leaveGroup(`conversation:${id}`)
-        .then(() => {
-          this.setState(
-            {
-              joinedGroup: true,
-            },
-            async () => {
-              resolve();
-            }
-          );
-        })
-        .catch(reject);
-    });
   };
 
   handleReply = (comment: IComment) => {
@@ -229,7 +203,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
 
   render() {
     const comments = this.props.commentStore?.comments || [];
-    console.log(comments);
     return (
       <Card>
         <Row>
@@ -281,9 +254,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
                 return <li key={comment.id}>{this.renderComment(comment, reply)}</li>;
               }}
             />
-            <Comment
-              content={<TypingIndicator />}
-              />
           </Col>
         </Row>
       </Card>

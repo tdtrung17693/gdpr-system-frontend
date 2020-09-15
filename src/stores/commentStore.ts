@@ -11,7 +11,6 @@ class CommentStore {
   @action
   public async getCommentsOfRequest(requestId: string) {
     const comments = await commentService.getAllCommentsOfRequest(requestId);
-    console.log(comments)
     this.comments = comments;
   }
 

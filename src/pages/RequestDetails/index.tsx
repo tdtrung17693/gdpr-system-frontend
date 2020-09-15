@@ -19,8 +19,8 @@ interface IRequestDetails {
 export class RequestDetails extends React.Component<IRequestDetails> {
   componentDidMount() {
     let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
-    console.log(notificationId, this.props.notificationStore)
-    if (notificationId != "") {
+    
+    if (notificationId && notificationId != "") {
       this.props.notificationStore?.markAsRead(String(notificationId));
     }
   }
@@ -30,7 +30,7 @@ export class RequestDetails extends React.Component<IRequestDetails> {
     if (id === prevProps.match.params.id) return;
 
     let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
-    if (notificationId != "") {
+    if (notificationId && notificationId != "") {
       this.props.notificationStore?.markAsRead(String(notificationId));
     }
   }
