@@ -22,7 +22,7 @@ class RequestService {
 
     let resultList : PagedResultDto<GetRequestOutput> = {
       items: result.data,
-      totalCount: result.data.length,
+      totalItems: result.data.length,
     };
     return resultList;
   }

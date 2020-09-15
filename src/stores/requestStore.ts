@@ -7,7 +7,7 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 import {ServerModel} from '../services/request/dto/serverModel'
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
-    totalCount: 0,
+    totalItems: 0,
     items: [],
   };
   @observable editRequest!: GetRequestOutput;
@@ -17,7 +17,7 @@ class RequestStore {
   async getAll() {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
+    this.requests.totalItems = result.totalItems;
     console.log(this.requests.items)
   }
 

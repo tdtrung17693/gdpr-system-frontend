@@ -1,12 +1,8 @@
-import axios from 'axios';
-// import Button from 'react-bootstrap/Button';
 import { Table, Button, Tag } from 'antd';
 import React from 'react';
-//mobx
 import { inject, observer } from 'mobx-react';
 import RequestStore from '../../../../stores/requestStore';
 import Stores from '../../../../stores/storeIdentifier';
-//import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
 interface IRequests {
   key: string;

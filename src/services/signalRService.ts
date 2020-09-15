@@ -1,8 +1,11 @@
 import * as SignalR from '@microsoft/signalr';
 import { ConversationConfig } from '../config/conversation';
+import { ls } from './localStorage';
+import { AuthConfig } from '../config/auth';
 
+console.log(ConversationConfig)
 let connection = new SignalR.HubConnectionBuilder()
-    .withUrl(ConversationConfig.endpoint)
+    .withUrl(ConversationConfig.endpoint, { accessTokenFactory: () => String(ls.get(AuthConfig.TOKEN_NAME)) })
     .build();
 
 let isConnected = false;

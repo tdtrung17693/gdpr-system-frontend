@@ -7,6 +7,7 @@ import ServerStore from './serverStore';
 import customerStore from './customerStore';
 import CommentStore from './commentStore';
 import NotificationStore from './notificationStore';
+import RequestStore from './requestStore';
 
 interface RootStore  {
   authenticationStore?: AuthenticationStore;
@@ -21,7 +22,6 @@ interface RootStore  {
   requestStore?: RequestStore;
 }
 export let stores:RootStore = {};
-import RequestStore from './requestStore';
 
 export default function initializeStores() {
 
