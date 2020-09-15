@@ -10,7 +10,7 @@ export interface GetServerOutput {
   EditButton?: any;
   Index?: number;
   IsActive?: string;
-  nameOwner? : string;
   firstName?: string;
   lastName?: string;
+  cusName? : string;
 }

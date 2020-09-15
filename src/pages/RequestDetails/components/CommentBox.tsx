@@ -20,7 +20,6 @@ interface ReplyEditorProps {
   onValidated: Function;
 }
 
-
 const { TextArea } = Input;
 const { Title } = Typography;
 
@@ -32,37 +31,37 @@ class ReplyEditor extends React.Component<ReplyEditorProps> {
 
     return (
       <>
-        <Form ref={this.formRef} onFinish={async (values: any) => {
-          try {
-            await this.props.onValidated(values)
-            this.formRef.current?.setFieldsValue({
-              content: ""
-            })
-          } catch (e) {
-            this.formRef.current?.setFieldsValue({
-              content: ""
-            })
-            throw e;
-          }
-
-        }}>
-          <Space size={16} direction={"vertical"} style={{ width: "100%" }}>
+        <Form
+          ref={this.formRef}
+          onFinish={async (values: any) => {
+            try {
+              await this.props.onValidated(values);
+              this.formRef.current?.setFieldsValue({
+                content: '',
+              });
+            } catch (e) {
+              this.formRef.current?.setFieldsValue({
+                content: '',
+              });
+              throw e;
+            }
+          }}
+        >
+          <Space size={16} direction={'vertical'} style={{ width: '100%' }}>
             <Form.Item name="content" style={{ margin: 0 }}>
-              <TextArea rows={3} style={{ width: "100%" }} />
+              <TextArea rows={3} style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item style={{ margin: 0 }}>
-              <Button htmlType="submit">
-                {buttonText}
-              </Button>
+              <Button htmlType="submit">{buttonText}</Button>
             </Form.Item>
           </Space>
         </Form>
       </>
     );
   }
-};
+}
 
-type ChronoOrder = "newest" | "oldest"
+type ChronoOrder = 'newest' | 'oldest';
 
 interface CommentBoxState {
   joinedGroup: boolean;
@@ -78,7 +77,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     joinedGroup: false,
     replyingId: '',
     loading: true,
-    chronoOrder: "newest"
+    chronoOrder: 'newest',
   };
 
   componentDidMount() {
@@ -90,14 +89,14 @@ class CommentBox extends React.Component<IConversationBoxProps> {
         this.props.commentStore?.addCommentToStore({
           author: {
             firstName: String(comment.author.firstName),
-            lastName: String(comment.author.lastName)
+            lastName: String(comment.author.lastName),
           },
           content: comment.content,
           createdAt: comment.createdAt,
           id: comment.id,
           parentId: comment.parentId,
-          requestId: comment.requestId
-        })
+          requestId: comment.requestId,
+        });
       });
       this.joinGroup(requestId);
     });
@@ -159,16 +158,21 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     });
   };
 
+  //handleDelete = (comment: IComment) => {};
+
   renderComment = (comment: IComment, reply: IComment[] = []) => {
     return (
       <Comment
         actions={
           !comment.parentId
             ? [
-              <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
-                Reply
-                  </span>,
-            ]
+                <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
+                  Reply
+                </span>,
+                <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
+                  Delete
+                </span>,
+              ]
             : []
         }
         content={
@@ -219,8 +223,8 @@ class CommentBox extends React.Component<IConversationBoxProps> {
             />
           </div>
         ) : (
-            ''
-          )}
+          ''
+        )}
       </Comment>
     );
   };
@@ -231,7 +235,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
     return (
       <Card>
         <Row>
-          <Col span={24} style={{textAlign: "right"}}>
+          <Col span={24} style={{ textAlign: 'right' }}>
             <Radio.Group onChange={(values: any) => console.log(values)} defaultValue="a">
               <Radio.Button value="newest">Newest First</Radio.Button>
               <Radio.Button value="oldest">Oldest First</Radio.Button>

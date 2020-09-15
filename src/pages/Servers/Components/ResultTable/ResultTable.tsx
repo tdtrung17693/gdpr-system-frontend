@@ -87,7 +87,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       },
       {
         title: 'Owner',
-        dataIndex: 'nameOwner',
+        dataIndex: 'cusName',
       },
       {
         title: 'Status',

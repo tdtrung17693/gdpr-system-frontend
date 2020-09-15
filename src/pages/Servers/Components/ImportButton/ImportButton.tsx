@@ -56,25 +56,20 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
         let ListNewServer: any = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
+          let oaDate: any = new Date(1899, 11, 30);
           rowObject.forEach((row: any) => {
+            let result = new Date();
             ListNewServer.push({
               Name: row.Name,
               IpAddress: row.IpAddress,
               StartDate: row.StartDate ? row.StartDate.toString() : null,
-              EndDate: row.EndDate? row.EndDate.toString() : null,
+              EndDate: result.setTime(row.EndDate * 24 * 60 * 60 * 1000 + Date.parse(oaDate)) ? row.EndDate : null,
               CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
             });
           });
         });
         console.log(ListNewServer);
-        await this.props.serverStore.importFileServer(ListNewServer);
-        //this.setState({ isImportinng: true, file: e.target.files[0]});
-        //let formData = new FormData();
-        //formData.append('body', i);
-        //let fileReader = new FileReader();
-        //let data= fileReader.readAsBinaryString(new Blob(e.target.result));
-        //console.log(data);
-        //console.log(this.state.file);
+        //await this.props.serverStore.importFileServer(ListNewServer);
       };
     }
     if (info.file.status === 'done') {

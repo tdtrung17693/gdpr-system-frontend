@@ -22,7 +22,7 @@ class ServerStore {
     let result = await serverService.getAll();
     this.servers.items = [...result.items];
     this.servers.totalCount = result.totalCount;
-    //console.log(this.servers);
+    console.log(this.servers);
   }
 
   @action
@@ -52,7 +52,6 @@ class ServerStore {
       this.servers.items[index].endDate = null;
     }
     //this.servers.items[index].StartDate = ((new Date(0)).getFullYear() < (new Date(this.servers.items[index].StartDate)).getFullYear()) ? this.servers.items[index]?.StartDate : '',
-    this.servers.items[index].nameOwner = this.servers.items[index].firstName + ' ' + this.servers.items[index].lastName;
     this.servers.items[index].key = '' + index;
     this.servers.items[index].Index = index + 1;
     this.servers.items[index].IsActive = this.servers.items[index].status ? 'active' : 'inactive';
