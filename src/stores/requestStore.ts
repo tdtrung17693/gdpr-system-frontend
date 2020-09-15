@@ -18,25 +18,20 @@ class RequestStore {
   async getAll() {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
-<<<<<<< HEAD
     this.requests.totalItems = result.totalItems;
-=======
-    this.requests.totalCount = result.totalCount;
-    
   }
 
   @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
+    this.requests.totalItems = result.totalItems;
   }
 
   async getFilter(filterStatus: string) {
     let result = await requestService.getFilter(filterStatus);
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
->>>>>>> 1b9f03386036f2bf5e60bdbd4a6ceb8a1e36fd43
+    this.requests.totalItems = result.totalItems;
     console.log(this.requests.items)
   }
 
