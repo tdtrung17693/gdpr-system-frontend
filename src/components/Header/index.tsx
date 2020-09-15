@@ -4,8 +4,8 @@ import * as React from 'react';
 
 import moment from 'moment';
 import { Avatar, Badge, Col, Dropdown, Empty, Menu, Row, Space, Typography } from 'antd';
-import { Icon } from '@ant-design/compatible';
 import { FileAddTwoTone, BellTwoTone } from '@ant-design/icons'
+import {MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons'
 
 import { L } from '../../lib/abpUtility';
 import { Link } from 'react-router-dom';
@@ -28,13 +28,13 @@ const userDropdownMenu = (
   <Menu>
     <Menu.Item key="2">
       <Link to="/logout">
-        <Icon type="logout" />
+        <LogoutOutlined />
         <span> {L('Logout')}</span>
       </Link>
     </Menu.Item>
     <Menu.Item key="3">
       <Link to="/accountsetting">
-        <Icon type="setting" />
+        <SettingOutlined />
         <span> {L('Setting')}</span>
       </Link>
     </Menu.Item>
@@ -78,10 +78,11 @@ const renderNotificationDropdownMenu = (notifications: any[] = []) => {
 export class Header extends React.Component<IHeaderProps> {
   render() {
     const notifs = this.props.notificationStore?.notifications;
+    const MenuIcon = this.props.collapsed  ? MenuUnfoldOutlined : MenuFoldOutlined;
     return (
       <Row className={'header-container'}>
         <Col style={{ textAlign: 'left' }} span={12}>
-          <Icon className="trigger" type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'} onClick={this.props.toggle} />
+          <MenuIcon className='trigger' onClick={this.props.toggle} />
         </Col>
         <Col style={{ padding: '0px 2rem 0px 2rem' }} span={12}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', minHeight: '100%' }}>

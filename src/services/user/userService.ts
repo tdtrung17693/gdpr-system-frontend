@@ -58,7 +58,6 @@ class UserService {
       return true
     } catch (e) {
       throw e;
-      return false;
     }
   }
 

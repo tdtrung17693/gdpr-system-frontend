@@ -21,7 +21,7 @@ class Logout extends React.Component<ILogoutProps> {
     signalRService.stop();
   }
   render() {
-    return <Redirect to="/"></Redirect>
+    return <Redirect to="/user/login"></Redirect>
   }
 }
 
