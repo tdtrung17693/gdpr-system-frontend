@@ -6,10 +6,6 @@ import axios from 'axios'
 const { Option } = Select;
 
 export default class CreateCustomerModal extends Component {
-  constructor(props: any) {
-    super(props);
-  }
-  //modal
   state = {
     data: [],
     loading: false,

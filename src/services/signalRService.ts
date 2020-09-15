@@ -5,14 +5,21 @@ import { AuthConfig } from '../config/auth';
 
 let connection = new SignalR.HubConnectionBuilder()
     .withUrl(ConversationConfig.endpoint, { accessTokenFactory: () => String(ls.get(AuthConfig.TOKEN_NAME)) })
+    .withAutomaticReconnect()
     .build();
 
 let isConnected = false;
 
-connection.start()
-    .then(() => {
+async function start() {
+    try {
+        await connection.start()
         isConnected = true;
-    })
+    } catch (err) {
+        setTimeout(() => start(), 5000);
+    }
+};
+
+start();
 
 let waitIfNotConnected =  () => {
     if (!isConnected) {
@@ -33,5 +40,9 @@ export default {
         return connection.send("leaveGroup", groupName)
     },
     on: connection.on.bind(connection),
-    off: connection.off.bind(connection)
+    off: connection.off.bind(connection),
+    start,
+    stop: () => {
+        if (isConnected) connection.stop()
+    }
 }

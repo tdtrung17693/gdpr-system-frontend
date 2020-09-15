@@ -6,6 +6,7 @@ import { ls } from '../services/localStorage';
 import { AuthConfig } from '../config/auth';
 import userService, { User } from '../services/user/userService';
 import {stores as rootStore, stores} from '../stores/storeInitializer';
+import signalRService from '../services/signalRService';
 
 interface AppUser extends User {
   permissions: string[];
@@ -39,7 +40,7 @@ class AuthenticationStore {
   public setCurrentUser(user: AppUser) {
     this.loggedIn = true;
     this.user = user;
-    stores.notificationStore?.listenNotifications();
+    stores.notificationStore?.listenNotifications(String(user.id));
   }
 
   public async login(model: LoginModel) {
@@ -53,16 +54,14 @@ class AuthenticationStore {
     // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
     ls.set(AuthConfig.TOKEN_NAME, result.authToken);
     let currentUser = await userService.getCurrentUser();
+    await signalRService.start()
     this.setCurrentUser(currentUser);
+    rootStore.notificationStore?.setNotifications(currentUser.notifications);
   }
 
   @action
   logout() {
     ls.remove(AuthConfig.TOKEN_NAME);
-    if (this.user) {
-      stores.notificationStore?.stopListeningNotifications();
-    }
-    
     this.user = null;
     this.loggedIn = false;
   }

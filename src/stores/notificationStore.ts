@@ -2,7 +2,6 @@ import { action, observable } from 'mobx';
 
 import notificationService from '../services/notification/notificationService';
 import signalRService from '../services/signalRService';
-import { stores } from './storeInitializer';
 
 interface Notification {
   id: string;
@@ -19,17 +18,17 @@ class NotificationStore {
     this.notifications = notifications;
   }
 
-  public async listenNotifications() {
+  public async listenNotifications(userId: string) {
     // init notification store after logged in
-    await signalRService.joinGroup(`notification:${stores.authenticationStore?.user?.id}`)
+    await signalRService.joinGroup(`notification:${userId}`)
     signalRService.on('newNotification', (notification: Notification) => {
       this.storeIncomingNotification(notification);
     })
   }
 
-  public async stopListeningNotifications() {
+  public async stopListeningNotifications(userId: string) {
     // init notification store after logged in
-    await signalRService.leaveGroup(`notification:${stores.authenticationStore?.user?.id}`)
+    await signalRService.leaveGroup(`notification:${userId}`)
     signalRService.off('newNotification')
   }
 
