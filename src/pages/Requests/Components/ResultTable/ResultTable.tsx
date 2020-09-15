@@ -6,6 +6,7 @@ import RequestStore from '../../../../stores/requestStore';
 import Stores from '../../../../stores/storeIdentifier';
 import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
+import moment from 'moment';
 //import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
 interface IRequests {
@@ -108,14 +109,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Create Date',
         dataIndex: 'CreatedByNameEmail',
         key: 'createdAt',
-        sorter: (a, b) => a.createdDate.localeCompare(b.createdDate),
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Update Date',
         dataIndex: 'UpdatedByNameEmail',
         key: 'updatedAt',
-        sorter: (a, b) => a.updatedDate.localeCompare(b.updatedDate),
+        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -136,14 +137,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       {
         title: 'Request From',
         dataIndex: 'StartDate',
-        sorter: (a, b) => a.startDate.localeCompare(b.startDate),
+        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
-        sorter: (a, b) => a.endDate.localeCompare(b.endDate),
+        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
