@@ -52,6 +52,16 @@ class ServerService {
     let result = await http.get(`${url}api/server/filter/${filter.filterKey}`);
     return result.data;
   }
+
+  public async getCountServer(){
+    let result = await http.get(`${url}api/server/count`);
+    console.log(result)
+  }
+
+  public async getPagingServerList(obj:any){
+    let result = await http.post(`${url}api/server/paging`, obj);
+    console.log(result);
+  }
 }
 
 export default new ServerService();

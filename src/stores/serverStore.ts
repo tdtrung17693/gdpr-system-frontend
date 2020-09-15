@@ -106,5 +106,24 @@ class ServerStore {
       this.getAll();
     }
   }
+
+  @action 
+  public async getCountServer(){
+    await serverService.getCountServer();
+  }
+
+  @action
+  
+  public async getPagingServerList(obj:any){
+    await serverService.getPagingServerList(obj);
+  }
+
+  // {
+  //   Page : 1,
+  //   PageSize : 20,
+  //   FilterBy : "",
+  //   SortedBy : "ServerName",
+  //   SortOrder : true,
+  // }
 }
 export default ServerStore;

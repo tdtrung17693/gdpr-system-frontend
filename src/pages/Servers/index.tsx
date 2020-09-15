@@ -35,7 +35,6 @@ const exportToCSV = (csvData: any, fileName: any) => {
   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   const data = new Blob([excelBuffer], { type: fileType });
   FileSaver.saveAs(data, fileName + fileExtension);
-
 };
 
 const { Panel } = Collapse;
@@ -57,6 +56,7 @@ export default class Servers extends Component<IServerProps> {
     this.createOrUpdateModalOpen = this.createOrUpdateModalOpen.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleExport = this.handleExport.bind(this);
+    this.callPaging = this.callPaging.bind(this); 
   }
   state = {
     modalVisible: false,
@@ -120,8 +120,18 @@ export default class Servers extends Component<IServerProps> {
       })
       .then((response) => {
         exportToCSV(response.data.responsedRequest, 'xfilename');
-      })
+      });
+  }
 
+  async callPaging() {
+    await this.props.serverStore.getCountServer();
+    await this.props.serverStore.getPagingServerList({
+      Page: 1,
+      PageSize: 20,
+      FilterBy: '',
+      SortedBy: 'ServerName',
+      SortOrder: true,
+    });
   }
 
   render() {
@@ -136,7 +146,7 @@ export default class Servers extends Component<IServerProps> {
                   <Card hoverable={true} title="FromDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker onChange={value => this.setState({fromDate: value})} style={{ width: '100%' }} />
+                      <DatePicker onChange={(value) => this.setState({ fromDate: value })} style={{ width: '100%' }} />
                     </Input.Group>
                   </Card>
                 </Col>
@@ -144,7 +154,7 @@ export default class Servers extends Component<IServerProps> {
                   <Card hoverable={true} title="ToDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker  onChange={value => this.setState({toDate: value})} style={{ width: '100%' }} />
+                      <DatePicker onChange={(value) => this.setState({ toDate: value })} style={{ width: '100%' }} />
                     </Input.Group>
                   </Card>
                 </Col>
@@ -157,13 +167,10 @@ export default class Servers extends Component<IServerProps> {
         </Collapse>
         <div className="create-filter">
           <div>
-            <Button
-              type="primary"
-              onClick={() => this.createOrUpdateModalOpen({ id: '' })}
-            >
+            <Button type="primary" onClick={() => this.createOrUpdateModalOpen({ id: '' })}>
               Create new server
             </Button>
-            <ImportButton serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} />
+            <ImportButton serverStore={this.props.serverStore} authenticationStore={this.props.authenticationStore} />
           </div>
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
@@ -181,6 +188,7 @@ export default class Servers extends Component<IServerProps> {
           onSave={this.handleSave}
           {...this.props}
         />
+        <Button onClick={this.callPaging}>Click here</Button>
       </div>
     );
   }
