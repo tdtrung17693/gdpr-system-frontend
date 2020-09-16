@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { UpdateCustomerInput } from './dto/updateCustomerInput';
 import { CreateOrUpdateCustomerInput } from './dto/createOrUpdateCustomerInput';
+import http from '../httpService';
 // import { CreateOrUpdateUserInput } from './dto/createOrUpdateUserInput';
 // import { EntityDto } from '../../services/dto/entityDto';
 // import { GetAllUserOutput } from './dto/getAllUserOutput';
@@ -10,8 +11,8 @@ import { CreateOrUpdateCustomerInput } from './dto/createOrUpdateCustomerInput';
 //import http from '../httpService';
 
 class CustomerService{
-    public async getAll(): Promise<any> {
-        axios.get('http://localhost:5000/api/Customer', /*{headers : header}*/)
+    public async getCustomerList(): Promise<any> {
+        axios.get('http://localhost:5000/api/Customer')
         .then( (response) =>{
           return response;
         })
@@ -31,13 +32,18 @@ class CustomerService{
     }
     
     public async create(createCustomerInput: CreateOrUpdateCustomerInput) {
-        let result = await axios.post('http://localhost:5000/api/Customer',{createCustomerInput})
+        let result = await http.post('api/Customer',{createCustomerInput})
         return result.data.result;
       }
     
     public async update(updateCustomerInput: UpdateCustomerInput) {
-        let result = await axios.put('http://localhost:5000/api/Customer', updateCustomerInput);
-        return result.data.result;
+      let result = await http.put('api/Customer', updateCustomerInput);
+      return result.data.result;
+    }
+
+    public async getAllServer(): Promise<any>{
+      let result = await http.get('api/customer/server');
+      return result.data
     }
 }
 
