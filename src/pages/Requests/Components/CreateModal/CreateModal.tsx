@@ -1,16 +1,41 @@
 import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, TimePicker } from 'antd';
+import { inject, observer } from 'mobx-react';
+import Stores from '../../../../stores/storeIdentifier';
+import RequestStore from '../../../../stores/requestStore';
 import TextArea from 'antd/lib/input/TextArea';
+//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
+//import { UpdateRequestInput } from '../../../../services/request/dto/UpdateRequestInput';
 
-export default class CreateModal extends Component {
+interface RequestsProps {
+  requestData: any;
+  requestStore: RequestStore;
+}
+
+interface RequestStates {
+  loading: boolean;
+  visible: boolean;
+  _requestData: any;
+  formRef: any;
+}
+
+@inject(Stores.RequestStore)
+@observer
+export default class CreateOrEditRequestModal extends Component<RequestsProps, RequestStates> {
   constructor(props: any) {
     super(props);
   }
   //modal
   state = {
+    _requestData: this.props.requestData,
     loading: false,
     visible: false,
+    formRef : React.createRef<any>(),
   };
+
+  componentDidMount() {
+    this.setState({});
+  }
 
   showModal = () => {
     this.setState({
@@ -19,17 +44,16 @@ export default class CreateModal extends Component {
   };
 
   handleOk = () => {
+    //console.log(values);
     this.setState({ loading: true });
     setTimeout(() => {
-      this.setState({ loading: false, visible: false });
-    }, 3000);
+      this.setState({ loading: false, visible: false});
+    }, 500);
   };
 
   handleCancel = () => {
     this.setState({ visible: false });
   };
-
-
 
   //form
 
@@ -51,33 +75,31 @@ export default class CreateModal extends Component {
     },
   };
 
-  onFinish = (values: any) => {
-    console.log(values);
-  };
-  render() {
+    render() {
     const { visible, loading } = this.state;
-
+    // const config: any = {
+    //   rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+    // };
     return (
-      <>
-        <Button type="primary" onClick={this.showModal}>
-          Create a new request
+        <><Button type="primary" onClick={this.showModal}>
+          Create a new requests
         </Button>
+          
         <Modal
           visible={visible}
-          title="Create new request"
+          title={'Create a new requests'}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
-              Submit
+            <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
+              Save
             </Button>,
             <Button key="back" onClick={this.handleCancel}>
               Cancel
             </Button>,
           ]}
         >
-          
-          <Form {...this.layout} name="nest-messages" onFinish={this.onFinish} validateMessages={this.validateMessages}>
+          <Form {...this.layout} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
             <Form.Item name={'title'} label="Title" rules={[{ required: true }]} >
               <Input />
             </Form.Item>

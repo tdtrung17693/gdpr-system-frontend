@@ -16,6 +16,8 @@ interface ServersProps {
 interface ServerStates {
   selectedRowKeys: any;
   loading: boolean;
+  filteredInfo:any;
+  processing: boolean;
 }
 
 @inject(Stores.ServerStore)
@@ -26,6 +28,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state = {
       selectedRowKeys: [],
       loading: false,
+      filteredInfo: null,
+      processing: false
     };
   }
 
@@ -34,16 +38,22 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   }
 
   async getAllServers() {
-    await this.props.serverStore.getAll();
+    this.setState({
+      loading: true
+    }, async () => {
+      await this.props.serverStore.getAll();
+      this.setState({
+        loading: false
+      })
+    })
   }
 
   start = async () => {
-    this.setState({ loading: true });
-    const listId: any = [];
+    this.setState({ processing: true });
+    let listId: string[] = [];
     this.state.selectedRowKeys.map((e: string, index: number) => {
-      listId.push(this.props.serverStore.servers.items[index].id);
+      listId.push(this.props.serverStore.servers.items[Number(e)].id);
     });
-    console.log(listId);
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -54,25 +64,31 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
-        loading: false,
+        processing: false,
       });
     }, 1000);
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    //console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
   render() {
+    let { filteredInfo, loading, processing, selectedRowKeys } = this.state;
+    filteredInfo = filteredInfo || {};
     let columns = [
       {
         title: '#',
         dataIndex: 'Index',
+        key: 'index',
       },
       {
         title: 'Server',
         dataIndex: 'name',
+        key: 'name',
+        sorter: (a: any, b: any) => a.name.length - b.name.length,
+        ellipsis: true,
       },
       {
         title: 'Ip Address',
@@ -88,24 +104,32 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       },
       {
         title: 'Owner',
-        dataIndex: 'createdBy',
+        dataIndex: 'cusName',
+        sorter: (a: any, b: any) => a?.cusName.length - b?.cusName.length,
+        ellipsis: true,
       },
       {
         title: 'Status',
         key: 'IsActive',
         dataIndex: 'IsActive',
         render: (IsActive: string) => {
-          return (
-            IsActive === 'active' ?
-            <Tag icon={<CheckCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'green' key={IsActive}>
+          return IsActive === 'active' ? (
+            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
-            : 
-            <Tag icon={<CloseCircleOutlined />} style = {{width: '100%', textAlign: 'center'}} color= 'geekblue' key={IsActive}>
+          ) : (
+            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           );
         },
+        filters: [
+          { text: 'active', value: 'active' },
+          { text: 'inactive', value: 'inactive' },
+        ],
+        filteredValue: filteredInfo.IsActive || null,
+        onFilter: (value:any, record:any) => record.IsActive.includes(value),
+
       },
       {
         title: 'Button',
@@ -122,7 +146,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         this.props.serverStore.handleServerMember(serverObject.status, index);
       });
     }
-    const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -131,12 +154,13 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
+          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={processing}>
             Toggle and reload
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <Table
+          loading={loading}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}

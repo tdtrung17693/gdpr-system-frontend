@@ -1,49 +1,82 @@
-import { Table,  Tag, Button } from 'antd';
-import React, { Component } from 'react';
-import axios from 'axios';
-// import Button from 'react-bootstrap/Button';
+import { Table, Button, Tag } from 'antd';
+import React from 'react';
+import { inject, observer } from 'mobx-react';
+import RequestStore from '../../../../stores/requestStore';
+import Stores from '../../../../stores/storeIdentifier';
+import { ColumnProps } from 'antd/lib/table/Column';
+import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
+//import { IdcardFilled } from '@ant-design/icons';
+//import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
+interface IRequests {
+  key: string;
+  id: string;
+  status: string;
+  createdDate: string;
+  createdBy: string;
+  updatedDate: string;
+  serverName: string;
+  serverIP: string,
+  title: string;
+  startDate: string;
+  endDate: string;
+  index: number;
+}
 
-export default class ResultTable extends Component<any, any> {
-  constructor(props: any){
+interface RequestsProps {
+  requestStore: RequestStore;
+  handleModalOpen: any;
+}
+
+interface RequestStates {
+  requests: IRequests[];
+  selectedRowKeys: any;
+  loading: boolean;
+}
+
+@inject(Stores.RequestStore)
+@observer
+export default class ResultTable extends React.Component<RequestsProps, RequestStates> {
+  constructor(props: any) {
     super(props);
     this.state = {
-      index: '',
-      datas: [],
-      //for checkbox
-      selectedRowKeys: [], 
+      requests: [],
+      selectedRowKeys: [],
       loading: false,
-    }
-  } 
-
-  getRequestsData() {
-    const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
-    axios
-        .get(`${url}api/Request`)
-        .then( requests => {
-          this.setState({
-            datas: requests.data,
-          });
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-
+    };
   }
 
-  componentDidMount(){
-    this.getRequestsData();
-    
+  componentDidMount() {
+    this.getAllRequests();
   }
-  
-  //for checkbox
+
+  async getAllRequests() {
+    await this.props.requestStore.getAll();
+  }
+
+  start = () => {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({
+        selectedRowKeys: [],
+        loading: false,
+      });
+    }, 1000);
+  };
+
   onSelectChange = (selectedRowKeys: any) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 
+  
   render() {
-
-    const columns = [
+    //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
+    
+    const columns:ColumnProps<GetRequestOutput>[] = [
       {
         title: 'ID',
         dataIndex: 'index',
@@ -51,8 +84,23 @@ export default class ResultTable extends Component<any, any> {
       },
       {
         title: 'Status',
-        dataIndex: 'requestStatus',
-        key: 'requestStatus',
+        dataIndex: 'RequestStatus',
+        key: 'RequestStatus',
+        filters: [
+          {
+            text: 'New',
+            value: 'New',
+          },
+          {
+            text: 'Open',
+            value: 'Open',
+          },
+          {
+            text: 'Closed',
+            value: 'Closed',
+          }
+        ],
+        onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
           <>            
                 <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
@@ -63,71 +111,81 @@ export default class ResultTable extends Component<any, any> {
       },
       {
         title: 'Create Date',
-        dataIndex: 'createdDate',
-        key: 'createdDate',
+        dataIndex: 'CreatedByNameEmail',
+        key: 'createdAt',
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Update Date',
-        dataIndex: 'updatedDate',
-        key: 'updatedDate',
+        dataIndex: 'UpdatedByNameEmail',
+        key: 'updatedAt',
+        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Server',
-        dataIndex: 'serverId',
+        dataIndex: 'ServerName',
         key: 'serverId',
       },
       {
+        title: 'ServerIP',
+        dataIndex: 'ServerIP',
+        key: 'serverIP',
+      },
+      {
         title: 'Title',
-        dataIndex: 'title',
+        dataIndex: 'Title',
         key: 'title',
       },
       {
         title: 'Request From',
-        dataIndex: 'startDate',
-        key: 'startDate',
+        dataIndex: 'StartDate',
+        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Request To',
-        dataIndex: 'endDate',
+        dataIndex: 'EndDate',
         key: 'endDate',
+        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Action',
-        dataIndex: 'button',
-        key: 'button',
-        render: () => <Button type="primary" size="small">Edit</Button>
+        dataIndex: 'Id',
+        render: (key: any) => (
+        <Link to={`/requests/editrequest/${key}`}>
+        <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key}}>Edit</Button>
+        </Link>)
       },
     ];
 
-    const dataSrc = this.state.datas.map((data: { requestStatus: any; createdAt: any; updatedAt: any; serverId: any; title: any; startDate: any; endDate: any; },i: any) =>
-      ({
-        key: i,
-        requestStatus: data.requestStatus,
-        createdDate: data.createdAt,
-        updatedDate: data.updatedAt,
-        serverId: data.serverId,
-        title: data.title,
-        startDate: data.startDate,
-        endDate: data.endDate
-      })
-    )
-
-    const { selectedRowKeys } = this.state;
+    if (this.props.requestStore.requests.items.length !== 0) {
+      this.props.requestStore.requests.items.forEach((requestObject: any, index: number) => {
+        this.props.requestStore.handleRequestMember(requestObject.status, index);
+      });
+    }
+    const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
-
+    const hasSelected = selectedRowKeys.length > 0;
     return (
-      
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" size="small" >
-            Accept/Decline
+          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
+            Export
           </Button>
-          <span style={{ marginLeft: 8 }}></span>
+          <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table rowSelection={rowSelection} dataSource={dataSrc} columns={columns} />
+        <Table
+          rowKey={record => record.id}
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
+        />
       </div>
     );
   }

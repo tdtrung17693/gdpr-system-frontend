@@ -1,24 +1,21 @@
-//import { PagedResultDto } from '../dto/pagedResultDto';
 import { GetServerOutput } from './dto/GetServerOutput';
-//import { CreateServerInput } from './dto/CreateServerInput';
-
-import axios from 'axios';
 import { GetServerInput } from './dto/GetServerInput';
 import { BulkServerStatus } from './dto/BulkServerStatus';
 import { PagedResultDtoServer } from './dto/pagedResultDto';
-//import { UpdateServerInput } from './dto/UpdateServerInput';
 
-const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
+import http from '../httpService';
+import { GetListServerFilter } from './dto/GetListServerFilter';
+
+
 
 class ServerService {
   public async create(createServerInput: GetServerInput) {
-    let result = await axios.post(`${url}api/server/create`, createServerInput);
+    let result = await http.post(`api/server/create`, createServerInput);
     return result.data;
   }
 
   public async getAll(): Promise<PagedResultDtoServer<GetServerOutput>> {
-    // Promise<PagedResultDto<GetServerOutput>>
-    let result = await axios.get(`${url}api/server`, {
+    let result = await http.get(`api/server/listServer`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
 
@@ -30,19 +27,29 @@ class ServerService {
   }
 
   public async get(serverId: string): Promise<any> {
-    let result = await axios.get(`${url}api/server/detail/${serverId}`, {
+    let result = await http.get(`api/server/detail/${serverId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log( result.data);
     return result.data;
   }
 
   public async update(serverId: string, server: GetServerInput) {
-    await axios.put(`${url}api/server`, server);
+    await http.put(`api/server`, server);
   }
 
-  public async updateBulkServerStatus(bulkReq: BulkServerStatus){
-    let result = await axios.put(`${url}api/server/bulkStatus`, bulkReq);
+  public async updateBulkServerStatus(bulkReq: BulkServerStatus) {
+    await http.put(`api/server/bulkStatus`, bulkReq);
+  }
+
+  public async importFileServer(listServer: any) {
+    let result = await http.post(`api/server/importExcel`, listServer);
     console.log(result);
+  }
+
+  public async getListServerByFilter(filter: GetListServerFilter) {
+    let result = await http.get(`api/server/filter/${filter.filterKey}`);
+    return result.data;
   }
 }
 

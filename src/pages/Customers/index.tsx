@@ -12,6 +12,7 @@ import ManageServerModal from './Components/ManageServerModal';
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
@@ -34,6 +35,8 @@ const exportToCSV = (csvData: any, fileName: any) => {
 
 export default class Customers extends React.Component {
   modalRef = React.createRef<ManageServerModal>();
+  createModalRef = React.createRef<CreateCustomerModal>();
+
   state = {
     fromDate: Date(),
     toDate: Date(),
@@ -44,6 +47,9 @@ export default class Customers extends React.Component {
     data: [],
     //server manage modal
     modalVisible: false,
+    modalKey: [],
+    createModalVisible: false,
+    createModalKey: {},
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -51,18 +57,26 @@ export default class Customers extends React.Component {
     {
       title: 'Customer Name',
       dataIndex: 'name',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => a.name.localeCompare(b.name),
     },
     {
       title: 'Contact Point',
       dataIndex: 'contactPoint',
+      // sortDirection: ['descend', 'ascend'],
+      // sorter: (a: any, b: any) => a.contactPoint.localeCompare(b.contactPoint),
     },
     {
       title: 'Contract Begin Date',
       dataIndex: 'contractBeginDate',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => moment(a.contractBeginDate).unix() - moment(b.contractBeginDate).unix(),
     },
     {
       title: 'Contract End Date',
       dataIndex: 'contractEndDate',
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => moment(a.contractEndDate).unix() - moment(b.contractEndDate).unix(),
     },
     {
       title: 'Description',
@@ -71,17 +85,19 @@ export default class Customers extends React.Component {
     {
       title: 'Machine Owner',
       dataIndex: 'serverOwned',
-      render: (serverOwned: any) => (
-          <Button onClick={() => this.setState({modalVisible: true})} type="primary"> Manage &nbsp;&nbsp;
+      sortDirection: ['descend', 'ascend'],
+      sorter: (a: any, b: any) => a.serverOwned - b.serverOwned,
+      render: (serverOwned: any, key: any) => (
+          <Button type="primary" onClick={() => {this.setState({modalVisible: true, modalKey: key});}}> Manage &nbsp;&nbsp;
             <Badge showZero={true} count={serverOwned ? serverOwned : 0} style={{ backgroundColor: '#52c41a' }} />
           </Button>
       ),
     },
     {
       title: '',
-      render: (serverOwned: any) => (
-        <Button type="primary"  danger > Edit </Button>
-    ),
+      render: (key: any) => (
+        <Button onClick={() => {this.setState({createModalVisible: true, createModalKey: key}); console.log(key.key)}} danger > Edit </Button>
+      ),
     },
   ];
 
@@ -129,19 +145,16 @@ export default class Customers extends React.Component {
   componentWillMount() {
     this.fetchData();
   }
-  // handleSearch = (keyword: any) => {
-  //   this.resultTable.fetchData(keyword)
-  // }
 
   handleExport = (e: any) => {
     axios.post('http://localhost:5000/api/Customer/export-csv', {
     fromDate: this.state.fromDate,
     toDate: this.state.toDate,
-    guids: this.state.guids,
+    guids: this.state.selectedRowKeys,
   })
     .then((response) =>{
       console.log(response.data.responsedRequest);
-      exportToCSV(response.data.responsedRequest, 'xfilename');
+      exportToCSV(response.data.responsedRequest, 'RequestList');
     })
     .catch(function (error) {
       console.log(error);
@@ -167,7 +180,7 @@ export default class Customers extends React.Component {
                 <Card hoverable={true} title="FromDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker onChange={value => this.setState({fromDate: value})} style={{ width: '100%' }} />
+                    <DatePicker onChange={(value: any) => this.setState({fromDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
@@ -175,7 +188,7 @@ export default class Customers extends React.Component {
                 <Card hoverable={true} title="ToDate:" bordered={false}>
                   <Input.Group compact>
                     <EditOutlined />
-                    <DatePicker onChange={value => this.setState({toDate: value})} style={{ width: '100%' }} />
+                    <DatePicker onChange={(value: any) => this.setState({toDate: value})} style={{ width: '100%' }} />
                   </Input.Group>
                 </Card>
               </Col>
@@ -187,14 +200,33 @@ export default class Customers extends React.Component {
       <div>
         <div className="create-filter">
           <div>
-            <CreateCustomerModal />
+            <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: {}}); console.log(this.state.createModalKey)}}>
+              Create new Customer
+            </Button>
+            <CreateCustomerModal
+              ref={this.createModalRef}
+              visible={this.state.createModalVisible}
+              modalKey={this.state.createModalKey}
+              onCancel={async () =>{
+                {this.setState({
+                  createModalVisible: false,
+                  createModalKey: {},
+                });
+                await this.fetchData();
+              }
+                }
+              }
+              {...this.props}
+             />
             <ManageServerModal
               ref={this.modalRef}
               visible={this.state.modalVisible}
+              modalKey={this.state.modalKey}
               onCancel={() =>
-                this.setState({
+                {this.setState({
                   modalVisible: false,
-                })
+                  modalKey: {},
+                }, async () => await this.fetchData())}
               }
               {...this.props}
             />

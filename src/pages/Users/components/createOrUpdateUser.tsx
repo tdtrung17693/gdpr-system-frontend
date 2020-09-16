@@ -59,6 +59,9 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
         })
       })
       .catch(errors => {
+        this.setState({
+          processing: false
+        })
         this.props.onSave(null, errors)
       })
   }
@@ -115,9 +118,9 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
         onCancel={onCancel}
         onOk={this.handleOkClicked}
         okButtonProps={{disabled: this.state.processing}}
-        title={modalType == 'edit' ? 'Edit User' : 'Create User'}>
+        title={modalType === 'edit' ? 'Edit User' : 'Create User'}>
         <Form ref={this.formRef}>
-          {this.props.modalType == 'create' ? (
+          {this.props.modalType === 'create' ? (
             <>
               <FormItem label={L('First Name')} name="firstName" rules={rules.firstname} {...formItemLayout}>
                 <Input />
@@ -132,7 +135,7 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
                 <Input />
               </FormItem>
             </>) : ''}
-          {this.props.modalType == 'edit' ? (
+          {this.props.modalType === 'edit' ? (
             <Form.Item name="status" label="Status" valuePropName="checked" {...formItemLayout}>
               <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
             </Form.Item>
