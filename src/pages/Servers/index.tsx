@@ -99,7 +99,7 @@ export default class Servers extends Component<IServerProps> {
         await this.props.serverStore.create(server);
       }
       this.toggleModal(async () => {
-        await this.props.serverStore.getAll();
+        await this.props.serverStore.getServerListByPaging(this.props.serverStore.pagingObj);
       });
     }
   };
@@ -167,7 +167,8 @@ export default class Servers extends Component<IServerProps> {
           </div>
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
-        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
+
+        <ResultTable serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
 
         <CreateOrUpdateModal
           ref={this.modalRef}
