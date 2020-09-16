@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, Select, message } from 'antd';
 
-import axios from 'axios'
+//import axios from 'axios'
 import http from '../../../services/httpService';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../lib/abpUtility';
@@ -41,7 +41,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   }
 
   fetchData = async () => {
-    await axios.get('http://localhost:5000/api/customer/contact-point', /*{headers : header}*/)
+    await http.get('http://localhost:5000/api/customer/contact-point', /*{headers : header}*/)
     .then( (response) =>{
       //console.log(response.data);
       this.setState({data: response.data});
@@ -103,10 +103,12 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         customerName: this.formRef.current?.getFieldValue('name'),
       })
         .then((response) =>{
-          console.log(response);
+          //console.log(response);
+          message.success(`Created successfully`);
         })
         .catch(function (error) {
-          console.log(error);
+          //console.log(error);
+          message.error(`Created failed`);
         });
       this.handleCancel();
     }
@@ -121,10 +123,12 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         id: this.props.modalKey.key
       })
         .then((response) =>{
-          console.log(response);
+          //console.log(response);
+          message.success(`Edited successfully`);
         })
         .catch(function (error) {
-          console.log(error);
+          //console.log(error);
+          message.error(`Edited failed`);
         });
       
       this.handleCancel();
