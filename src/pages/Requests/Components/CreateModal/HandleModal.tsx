@@ -117,9 +117,6 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
   render() {
     const { loading } = this.state;
     const { visible, onCancel} = this.props;
-
-    
-
     return (
       <>
         <Modal

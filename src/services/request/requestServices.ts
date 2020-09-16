@@ -57,10 +57,12 @@ class RequestService {
   
 
   public async get(requestId: string): Promise<any> {
-    let result = await axios.get(`${url}/api/Request/request/${requestId}`, {
+    let result = await axios.get(`${url}/api/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log(result.data.RequestDetails)
     return result.data; 
+    
   }
 
   public async update(requestId: string, request: GetRequestOutput){
@@ -69,8 +71,8 @@ class RequestService {
   }
 
   //accept decline
-  public async manage(requestId: string, request: ManageAcceptDeclineInput){
-    let result = await axios.put(`${url}/api/Request/manage`, request);
+  public async manage(request: ManageAcceptDeclineInput){
+    let result = await axios.put(`${url}/api/request/manage`, request);
     console.log(result);
   }
 

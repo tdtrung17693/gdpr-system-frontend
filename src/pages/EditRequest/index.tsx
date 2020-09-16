@@ -7,6 +7,7 @@ import Stores from '../../stores/storeIdentifier';
 import RequestStore from '../../stores/requestStore';
 import { inject, observer } from 'mobx-react';
 import { FormInstance } from 'antd/lib/form';
+//import qs from 'qs';
 
 interface IRequests {
   key: string;
@@ -24,6 +25,8 @@ interface IRequests {
 }
 interface IRequestProps {
   requestStore: RequestStore;
+  match: {params: any};
+  location: any;
 }
 
 interface IRequestStates {
@@ -44,15 +47,18 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
   }
 
   componentDidMount() {
-    const curId = this.props.requestStore.currentId;
-    this.props.requestStore.get(curId);
-    console.log(this.props.requestStore.currentId)
+    const {id} = this.props.match.params;
+    console.log(id)
+    this.props.requestStore.get(id)
+    
   }
 
   render(){ 
+    let data = {...this.props.requestStore.editRequest}.status
+    console.log(data)
     return (
       <>
-        <h2>Request #2</h2>
+        <h2>Request Detail</h2>
         <Row gutter={[16, 16]}>
           <Col span={12}>
               <Card
@@ -63,9 +69,10 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 style = {{ marginBottom: 10}}
               >
                 <ApproveRequestForm
-                  // requestId = '123456'
-                  IsApproved = {false}
-                  IsClosed = {false}
+                  requestStore = {this.props.requestStore}
+                  requestId = {this.props.match.params.id}
+                  IsApproved = {({...this.props.requestStore.editRequest}.status == 'Open')?true:false}
+                  IsClosed = {({...this.props.requestStore.editRequest}.status == 'Closed')?true:false}
                 />
               </Card>
 
@@ -76,36 +83,44 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
               bodyStyle={{ border: "1px solid #3f6600" }}
             >
               <Row>
-                <p>
+                <Col span={6} >
                   <strong>Status: </strong>
-                  {"Open"}
-                </p>
+                </Col>
+                <Col>
+                {{...this.props.requestStore.editRequest}.status}
+                </Col>
               </Row>
               <Row>
-                <p>
+              <Col span={6} >
                   <strong>Created Date: </strong>
-                  {new Date().toString()}
-                </p>
+                </Col>
+                <Col>
+                {{...this.props.requestStore.editRequest}.createdDate}
+                </Col>
               </Row>
               <Row>
-                <p>
+              <Col span={6} >
                   <strong>Created By: </strong>
-                  {"requestDetail.CreatedBy"}
-                </p>
+                </Col>
+                <Col>
+                {{...this.props.requestStore.editRequest}.createdBy}
+                </Col>
               </Row>
               <Row>
-                <p>
-                  <strong>Updated Date: </strong>
-                  {"requestDetail.UpdatedDate"}
-                    {/* //? new Date(requestDetail.UpdatedDate).toString()
-                    //: """} */}
-                </p>
+              <Col span={6} >
+                  <strong>Update By </strong>
+                </Col>
+                <Col>
+                {{...this.props.requestStore.editRequest}.updatedBy}
+                </Col>
               </Row>
               <Row>
-                <p>
-                  <strong>Update By: </strong>
-                  {"requestDetail.UpdatedBy"}
-                </p>
+              <Col span={6} >
+                  <strong>Update Date </strong>
+                </Col>
+                <Col>
+                {{...this.props.requestStore.editRequest}.updatedDate}
+                </Col>
               </Row>
               {/* <RequestForm
                 request={requestDetail}

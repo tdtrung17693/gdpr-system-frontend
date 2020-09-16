@@ -25,13 +25,6 @@ class RequestStore {
   }
 
   @action
-  async manageAccDecl(requestId: string, request: ManageAcceptDeclineInput) {
-    let result = await requestService.manage(requestId,request);
-    console.log(result)
-  }
-
-  
-  @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
     this.requests.items = [...result.items];
@@ -49,6 +42,12 @@ class RequestStore {
   async getServerList() {
     let result = await requestService.getServerList();
     this.serversList = result
+  }
+
+  @action
+  async manage(request: ManageAcceptDeclineInput) {
+    let result = await requestService.manage(request);
+    console.log(result)
   }
 
 
@@ -83,18 +82,20 @@ class RequestStore {
   @action
   async get(requestId: string) {
     let result = await requestService.get(requestId);
+    //console.log(result);
     this.editRequest = {
-      id: result.Id,
-      status: result.RequestStatus,
-      createdDate: result.CreatedAt,
-      createdBy: result.CreatedByName,
-      updatedDate: result.UpdatedAt,
-      updatedBy: result.UpdatedByName,
-      serverId: result.ServerId,
-      title: result.Title,
-      startDate: result.StartDate,
-      endDate: result.EndDate,
+      id: result.RequestDetails.Id,
+      status: result.RequestDetails.RequestStatus,
+      createdDate: result.RequestDetails.CreatedAt,
+      createdBy: result.RequestDetails.CreatedByNameEmail,
+      updatedDate: result.RequestDetails.UpdatedAt,
+      updatedBy: result.RequestDetails.UpdatedByNameEmail,
+      serverId: result.RequestDetails.ServerId,
+      title: result.RequestDetails.Title,
+      startDate: result.RequestDetails.StartDate,
+      endDate: result.RequestDetails.EndDate,
     };
+    console.log(this.editRequest)
   }
 
   
