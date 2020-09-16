@@ -7,6 +7,7 @@ import Stores from '../../../../stores/storeIdentifier';
 import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 //import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
 interface IRequests {
@@ -151,7 +152,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Action',
         dataIndex: 'button',
         key: 'button',
-        render: () => <Button type="primary" size="small">Edit</Button>
+        render: () => (
+        <Link to={"/requests/editrequest"}>
+        <Button type='primary' size ='small'>Edit</Button>
+        </Link>)
       },
     ];
 

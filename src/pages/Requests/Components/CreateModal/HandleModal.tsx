@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 //import RequestStore from '../../../../stores/RequestStore';
@@ -79,6 +79,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
         };
         console.log(valuesUpdate);
         this.props.onSave(valuesUpdate, null);
+        message.info("Create successfully")
       })
       .catch((errors) => {
         this.props.onSave(null, errors);
