@@ -4,7 +4,7 @@ import Stores from '../stores/storeIdentifier';
 import AuthenticationStore from '../stores/authenticationStore';
 
 interface IProtectedComponentProps {
-    authenticationStore: AuthenticationStore;
+    authenticationStore?: AuthenticationStore;
     requiredPermission: string;
     children?: any;
     style?: React.CSSProperties
@@ -12,7 +12,7 @@ interface IProtectedComponentProps {
 
 const ProtectedComponent = inject(Stores.AuthenticationStore)(observer((props: IProtectedComponentProps) => {
     const {authenticationStore: auth, requiredPermission} = props;
-    return auth.isGranted(requiredPermission) ? props.children : '';
+    return auth?.isGranted(requiredPermission) ? props.children : '';
 }));
 
 export default ProtectedComponent;

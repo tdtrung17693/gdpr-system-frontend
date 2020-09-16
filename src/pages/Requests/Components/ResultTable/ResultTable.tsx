@@ -6,11 +6,8 @@ import Stores from '../../../../stores/storeIdentifier';
 import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
-<<<<<<< HEAD
-=======
 import { Link } from 'react-router-dom';
 //import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
->>>>>>> 291f0c22bc5883e1f6f1e09e4fb573013955a3e4
 
 interface IRequests {
   key: string;

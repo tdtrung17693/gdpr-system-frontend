@@ -17,6 +17,7 @@ import HandleModal from './Components/CreateModal/HandleModal';
 import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
+import ProtectedComponent from '../../components/ProtectedComponent';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
@@ -83,32 +84,9 @@ export default class Requests extends Component<IRequestProps> {
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Requests Management</h2>
-        {/* <Collapse defaultActiveKey={['1']}>
-          <Panel header="Export Requests" key="0">
-            <div className="site-card-wrapper">
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Card hoverable={true} title="FromDate:" bordered={false}>
-                    <Input.Group compact>
-                      <EditOutlined />
-                      <DatePicker style={{ width: '100%' }} />
-                    </Input.Group>
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card hoverable={true} title="ToDate:" bordered={false}>
-                    <Input.Group compact>
-                      <EditOutlined />
-                      <DatePicker style={{ width: '100%' }} />
-                    </Input.Group>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-            <Button type="primary"> Export </Button>
-          </Panel>
-        </Collapse> */}
-        <ExportCollapse/>
+        <ProtectedComponent requiredPermission="data:export">
+          <ExportCollapse/>
+        </ProtectedComponent>
         <div className="create-filter">
           <div>
             <Button
