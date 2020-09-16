@@ -65,8 +65,8 @@ class RequestService {
     
   }
 
-  public async update(requestId: string, request: GetRequestOutput){
-    let result = await axios.put(`${url}/api/request`, request);
+  public async update(requestId: string, request: CreateRequestInput){
+    let result = await axios.put(`${url}/api/request/update/${requestId}`, request);
     console.log(result);
   }
 

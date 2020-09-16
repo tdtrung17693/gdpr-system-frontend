@@ -101,14 +101,14 @@ class RequestStore {
   
 
   @action
-  async update(requestId: string, request: GetRequestOutput) {
+  async update(requestId: string, request: CreateRequestInput) {
     await requestService.update(requestId, request);
-    this.requests.items = this.requests.items.map((oldRequest:GetRequestOutput)=>{
-      if(oldRequest?.id === requestId){
-        oldRequest = {...oldRequest,...request};
-      }
-      return oldRequest;
-    });
+    // this.requests.items = this.requests.items.map((oldRequest:CreateRequestInput)=>{
+    //   if(oldRequest?.id === requestId){
+    //     oldRequest = {...oldRequest,...request};
+    //   }
+    //   return oldRequest;
+    // });
   }
 }
 export default RequestStore;

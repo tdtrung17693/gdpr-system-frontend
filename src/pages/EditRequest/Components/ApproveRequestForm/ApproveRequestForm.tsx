@@ -5,6 +5,7 @@ import { inject, observer } from 'mobx-react';
 import { FormInstance } from 'antd/lib/form';
 import Stores from '../../../../stores/storeIdentifier';
 import RequestStore from '../../../../stores/requestStore';
+
 //import { ApproveRequestInput } from '../../../../services/request/dto/ApproveRequestInput';
 
 
@@ -17,9 +18,8 @@ interface RequestsProps {
 
 interface RequestStates {
   loading: boolean;
-  visible: boolean;
-  _requestData: any;
-  formRef: any;
+  //_requestData: any;
+  //formRef: any;
 }
 
 @inject(Stores.RequestStore)
@@ -28,10 +28,16 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
   formRef = React.createRef<FormInstance>();
   constructor(props: any){
     super(props);
+    this.state = {
+      loading: false,
+    };
     this.onApprove=this.onApprove.bind(this);
     this.onDecline=this.onDecline.bind(this);
     this.onCancel=this.onCancel.bind(this);
   }
+
+
+  
   onApprove = () => {
     this.formRef.current
       ?.validateFields()
@@ -46,14 +52,49 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         console.log(valuesUpdate);
         this.props.requestStore.manage(valuesUpdate)
-        message.info("Approved Request Successfully");
+        message.info("Approve Request Successfully");
       })
   }
 
 
 
-  onCancel() {}
-  onDecline() {}
+  onCancel() {
+    this.formRef.current
+      ?.validateFields()
+      .then((values: any) => {
+        console.log(values);
+        let valuesUpdate: any = {
+          ...values,
+
+          userId: "B2039BE6-AD14-4B07-A4B1-C605E293571A",
+          status: "Closed",
+          requestId: this.props.requestId
+        };
+        console.log(valuesUpdate);
+        this.props.requestStore.manage(valuesUpdate)
+        message.info("Cancel Request Successfully");
+      })
+  }
+  onDecline() {
+    this.formRef.current
+      ?.validateFields()
+      .then((values: any) => {
+        console.log(values);
+        let valuesUpdate: any = {
+          ...values,
+
+          userId: "B2039BE6-AD14-4B07-A4B1-C605E293571A",
+          status: "Closed",
+          requestId: this.props.requestId
+        };
+        console.log(valuesUpdate);
+        this.props.requestStore.manage(valuesUpdate)
+        message.info("Decline Request Successfully");
+      })
+  }
+
+  
+
   render() {
     return (
       <>
@@ -95,7 +136,10 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
               </Col>
             )}
           </Row>
+          
         </Form>
+
+        
       </>
     );
   }

@@ -1,12 +1,16 @@
 ﻿import React, { Component } from "react";
-import { Col, Card, Row } from "antd";
+import { Col, Card, Row, Button } from "antd";
 import ApproveRequestForm from "./Components/ApproveRequestForm/ApproveRequestForm";
 import LogBox from "./Components/LogBox/LogBox";
 import ConversationBox from "./Components/ConversationBox/ConversationBox";
 import Stores from '../../stores/storeIdentifier';
 import RequestStore from '../../stores/requestStore';
 import { inject, observer } from 'mobx-react';
-import { FormInstance } from 'antd/lib/form';
+//import { FormInstance } from 'antd/lib/form';
+import HandleModal from '../Requests/Components/CreateModal/HandleModal';
+import { Store } from 'antd/lib/form/interface';
+//import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
+import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 //import qs from 'qs';
 
 interface IRequests {
@@ -30,6 +34,7 @@ interface IRequestProps {
 }
 
 interface IRequestStates {
+  modalVisible: boolean;
   requests: IRequests[];
   loading: boolean;
 }
@@ -37,10 +42,11 @@ interface IRequestStates {
 @inject(Stores.RequestStore)
 @observer
 export default class EditRequest extends Component<IRequestProps, IRequestStates> {
-  modalRef = React.createRef<FormInstance>();
+  modalRef = React.createRef<HandleModal>();
   constructor(props: any) {
     super(props);
     this.state = {
+      modalVisible: false,
       requests: [],
       loading: false,
     };
@@ -52,6 +58,33 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
     this.props.requestStore.get(id)
     
   }
+
+  //Modal
+  async handleModalOpen(params: any) {
+    
+    await this.props.requestStore.createRequest();
+
+    this.toggleModal(() => {
+      this.modalRef.current?.setFieldsValues(this.props.requestStore.editRequest);
+    });
+  }
+  toggleModal = (cb: Function = () => {}) => {
+    this.setState({ modalVisible: !this.state.modalVisible }, () => {
+      cb();
+    });
+  };
+  handleSave = async (request: CreateRequestInput | null, validatingErrors: Store) => {
+    if (request) {
+      console.log(request)
+      request = {
+        ...request
+      }
+      await this.props.requestStore.update(this.props.match.params, request);
+      this.toggleModal(async () => {
+        await this.props.requestStore.getAll();
+      });
+    }
+  };
 
   render(){ 
     let data = {...this.props.requestStore.editRequest}.status
@@ -122,6 +155,16 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 {{...this.props.requestStore.editRequest}.updatedDate}
                 </Col>
               </Row>
+              <Row>
+              <Button
+              size="small"
+              // style={{ display: 'inline-block', verticalAlign: 'middle' }}
+              type="primary"
+              onClick={() => this.handleModalOpen({ id: '' })}
+            >
+              Update
+            </Button>
+            </Row>
               {/* <RequestForm
                 request={requestDetail}
                 type="update"
@@ -132,7 +175,20 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 }
               /> */}
             </Card>
+            <HandleModal
+          ref={this.modalRef}
+          visible={this.state.modalVisible}
+          onCancel={() =>
+            this.setState({
+              modalVisible: false,
+            })
+          }
+          modalType={ 'create'}
+          onSave={this.handleSave}
+          {...this.props}
+        />
           </Col>
+          
           <Col span={12}>
             <span>Conversation Box</span>
             <ConversationBox />

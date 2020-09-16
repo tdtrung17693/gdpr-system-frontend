@@ -78,10 +78,19 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           description: (values.description) ? values.description : ''
         };
         console.log(valuesUpdate);
-        if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+        if (this.props.modalType=='update'){
+          if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
+          else{
+          this.props.onSave(valuesUpdate, null);
+          message.info("Update successfully");
+          }
+        }
         else{
-        this.props.onSave(valuesUpdate, null);
-        message.info("Create successfully");
+          if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+          else{
+          this.props.onSave(valuesUpdate, null);
+          message.info("Create successfully");
+          }
         }
       })
       .catch((errors) => {
@@ -134,16 +143,16 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           ]}
         >
           <Form {...this.layout} ref= {this.formRef} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
-            <Form.Item name={'title'} label="Title" rules={[{ required: true }]} >
+            <Form.Item name={'title'} label="Title" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
               <Input />
             </Form.Item>
-            <Form.Item name={'startDate'} label="From Date" rules={[{ required: true }]} >
+            <Form.Item name={'startDate'} label="From Date" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
             <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             <Form.Item name={'endDate'} label="To Date"  >
             <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
-            <Form.Item name={'serverId'} label="Server" rules={[{ required: true }]} >
+            <Form.Item name={'serverId'} label="Server" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
             <Select
                 showSearch
                 style={{ width: 315 }}
