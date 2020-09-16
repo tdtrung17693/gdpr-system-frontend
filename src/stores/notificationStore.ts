@@ -1,27 +1,33 @@
 import { action, observable } from 'mobx';
 
-import notificationService from '../services/notification/notificationService';
 import signalRService from '../services/signalRService';
+import notificationService, { INotification } from '../services/notification/notificationService';
 
-interface Notification {
-  id: string;
-  fromUser?: string;
-  toUser: string;
-  data: string;
-  notificationType: string;
-}
 
 class NotificationStore {
-  @observable notifications: Notification[] = [];
+  @observable notifications: INotification[] = [];
+  @observable totalUnreadNotifications: number = 0;
+
   @action
-  public setNotifications(notifications: Notification[]) {
+  public setNotifications(notifications: INotification[]) {
     this.notifications = notifications;
+  }
+
+  @action setTotalUnread(totalUnread: number) {
+    this.totalUnreadNotifications = totalUnread;
+  }
+
+  @action
+  public async getMoreNotifications(page: number) {
+    let result = await notificationService.getMoreNotifications(page)
+    this.notifications = [...this.notifications, ...result]
+    return result.length
   }
 
   public async listenNotifications(userId: string) {
     // init notification store after logged in
     await signalRService.joinGroup(`notification:${userId}`)
-    signalRService.on('newNotification', (notification: Notification) => {
+    signalRService.on('newINotification', (notification: INotification) => {
       this.storeIncomingNotification(notification);
     })
   }
@@ -29,19 +35,19 @@ class NotificationStore {
   public async stopListeningNotifications(userId: string) {
     // init notification store after logged in
     await signalRService.leaveGroup(`notification:${userId}`)
-    signalRService.off('newNotification')
+    signalRService.off('newINotification')
   }
 
   @action
-  public storeIncomingNotification(newNotification: Notification) {
-    this.notifications = [newNotification, ...this.notifications];
+  public storeIncomingNotification(newINotification: INotification) {
+    this.notifications = [newINotification, ...this.notifications];
   }
 
   @action
   public async markAsRead(notificationId: string) {
-    console.log(notificationId)
     await notificationService.markAsRead(notificationId);
-    this.notifications = this.notifications.filter(n => n.id != notificationId);
+    let [notification] = this.notifications.filter(n => n.id === notificationId)
+    if (notification) notification.isRead = true;
   }
 }
 export default NotificationStore;

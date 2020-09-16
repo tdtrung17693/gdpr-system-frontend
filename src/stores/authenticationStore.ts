@@ -12,6 +12,7 @@ import accountService from '../services/account/accountService';
 import { ChangePasswordInput } from '../services/account/dto/changePasswordInput';
 
 interface AppUser extends User {
+  totalUnreadNotifications: number;
   permissions: string[];
   notifications: any;
 }
@@ -24,8 +25,6 @@ class AuthenticationStore {
     if (ls.get(AuthConfig.TOKEN_NAME)) {
       try {
         await this.checkTokenValidity();
-        const user = await userService.getCurrentUser()
-        this.setCurrentUser(user)
       } catch (e) {
         this.logout();
       }
@@ -55,6 +54,7 @@ class AuthenticationStore {
     this.user = user;
     stores.notificationStore?.listenNotifications(String(user.id));
     rootStore.notificationStore?.setNotifications(user.notifications);
+    rootStore.notificationStore?.setTotalUnread(user.totalUnreadNotifications);
   }
 
   protected async checkTokenValidity() {
