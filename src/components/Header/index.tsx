@@ -68,7 +68,7 @@ const renderNotificationDropdownMenu = (notifications: any[] = []) => {
     {
       notifications.length > 0?
       notifications.map(n => {
-        return <Menu.Item className="notifications__item">{renderNotification(n)}</Menu.Item>
+        return <Menu.Item key={n.id} className="notifications__item">{renderNotification(n)}</Menu.Item>
       }) : <Empty style={{padding: '1rem'}} image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any notifications"/>}
   </Menu>)
 }

@@ -2,16 +2,13 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
-//import RequestStore from '../../../../stores/RequestStore';
-//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
-//import { UpdateRequestInput } from '../../../../services/request/dto/UpdateRequestInput';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/lib/input/TextArea';
 import { Select } from 'antd';
 import RequestStore from '../../../../stores/requestStore';
 import { CreateRequestInput } from '../../../../services/request/dto/createRequestInput';
-//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
+
 const { Option } = Select;
 
 
@@ -157,7 +154,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
               {
               (this.props.requestStore.serversList != undefined)?
               this.props.requestStore.serversList.map((server: any, i: any) =>
-                <Option value={server.id}>{server.name} - {server.ipAddress}</Option>
+                <Option key={server.id} value={server.id}>{server.name} - {server.ipAddress}</Option>
               ): null}
             </Select>
             </Form.Item>

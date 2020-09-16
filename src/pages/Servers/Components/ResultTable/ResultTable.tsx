@@ -17,6 +17,7 @@ interface ServerStates {
   selectedRowKeys: any;
   loading: boolean;
   filteredInfo:any;
+  processing: boolean;
 }
 
 @inject(Stores.ServerStore)
@@ -28,6 +29,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       selectedRowKeys: [],
       loading: false,
       filteredInfo: null,
+      processing: false
     };
   }
 
@@ -36,12 +38,19 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   }
 
   async getAllServers() {
-    await this.props.serverStore.getAll();
+    this.setState({
+      loading: true
+    }, async () => {
+      await this.props.serverStore.getAll();
+      this.setState({
+        loading: false
+      })
+    })
   }
 
   start = async () => {
-    this.setState({ loading: true });
-    let listId: any = [];
+    this.setState({ processing: true });
+    let listId: string[] = [];
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[Number(e)].id);
     });
@@ -55,7 +64,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
-        loading: false,
+        processing: false,
       });
     }, 1000);
   };
@@ -66,7 +75,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
-    let { filteredInfo } = this.state;
+    let { filteredInfo, loading, processing, selectedRowKeys } = this.state;
     filteredInfo = filteredInfo || {};
     let columns = [
       {
@@ -137,7 +146,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         this.props.serverStore.handleServerMember(serverObject.status, index);
       });
     }
-    const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -146,12 +154,13 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
+          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={processing}>
             Toggle and reload
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <Table
+          loading={loading}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
