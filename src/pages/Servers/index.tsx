@@ -83,7 +83,7 @@ export default class Servers extends Component<IServerProps> {
 
   render() {
     return (
-      <div style={{ overflow: 'scroll' }}>
+      <div>
         <h2>Servers Management</h2>
         <Collapse defaultActiveKey={['1']}>
           <Panel header="Export Requests By Servers" key="0">
