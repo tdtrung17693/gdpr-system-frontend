@@ -78,8 +78,11 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           description: (values.description) ? values.description : ''
         };
         console.log(valuesUpdate);
+        if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+        else{
         this.props.onSave(valuesUpdate, null);
-        message.info("Create successfully")
+        message.info("Create successfully");
+        }
       })
       .catch((errors) => {
         this.props.onSave(null, errors);

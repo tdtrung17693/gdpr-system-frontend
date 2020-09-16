@@ -14,6 +14,7 @@ class RequestStore {
   };
   @observable editRequest!: GetRequestOutput;
   @observable serversList!: ServerModel[];
+  @observable currentId!: string;
 
   @action
   async getAll() {

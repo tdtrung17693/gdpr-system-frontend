@@ -60,7 +60,6 @@ class RequestService {
     let result = await axios.get(`${url}/api/Request/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-    console.log(result.data)
     return result.data; 
   }
 
