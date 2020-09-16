@@ -241,7 +241,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
                       disabled={item.ownedBy.length != 0 && item.customerid[0] != modalKey.key}>
                         {item.name}
                       </Checkbox>}
-                      description={<><i>{item.customerid[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
+                      description={<><i>{item.ownedBy[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
                       
                     />
                   </List.Item>
