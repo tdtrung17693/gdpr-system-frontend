@@ -5,6 +5,7 @@ import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
 import axios from 'axios';
 import { PagedResultDto } from '../dto/pagedResultDto';
 import { CreateRequestInput } from './dto/createRequestInput';
+import {ManageAcceptDeclineInput} from './dto/manageAcceptDeclineInput';
 //import { UpdateRequestInput } from './dto/UpdateRequestInput';
 
 
@@ -56,14 +57,21 @@ class RequestService {
   
 
   public async get(requestId: string): Promise<any> {
-    let result = await axios.get(`${url}/api/request/detail/${requestId}`, {
+    let result = await axios.get(`${url}/api/Request/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log(result.data)
     return result.data; 
   }
 
   public async update(requestId: string, request: GetRequestOutput){
     let result = await axios.put(`${url}/api/request`, request);
+    console.log(result);
+  }
+
+  //accept decline
+  public async manage(requestId: string, request: ManageAcceptDeclineInput){
+    let result = await axios.put(`${url}/api/Request/manage`, request);
     console.log(result);
   }
 

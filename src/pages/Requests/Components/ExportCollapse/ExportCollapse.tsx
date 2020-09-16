@@ -48,12 +48,13 @@ export default class ExportCollapse extends Component<any, any> {
           datas: requests.data,
         });
         console.log(this.state.datas)
+        this.exportToCSV(this.state.datas,'excel')
       })
     .catch((error) => {
         console.log(error);
       });
 
-    this.exportToCSV(this.state.datas,'excel')
+    
   }
 
 

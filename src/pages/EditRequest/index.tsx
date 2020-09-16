@@ -44,7 +44,9 @@ export default class Requests extends Component<IRequestProps, IRequestStates> {
   }
 
   componentDidMount() {
-    
+    const mockID = '8A0AD6DC-7957-48AE-A363-000000DB378F'
+    this.props.requestStore.get(mockID);
+    console.log(this.props.requestStore.editRequest)
   }
 
   render(){ 
