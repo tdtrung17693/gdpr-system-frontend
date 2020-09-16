@@ -47,7 +47,7 @@ const renderNotification = (notification: INotification) => {
 
   if (notificationType === "new-request") {
     return (
-      <Link to={`/requests/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`} style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+      <Link to={`/requests/editrequest/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
         <div className="notification-icon">
           <FileAddTwoTone style={{fontSize: "2rem", marginRight: "1rem"}}/>        
         </div>

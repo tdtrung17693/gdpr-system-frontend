@@ -1,12 +1,17 @@
 ﻿import React, { Component } from "react";
+import qs from 'qs';
 import { Col, Card, Row } from "antd";
-import ApproveRequestForm from "./Components/ApproveRequestForm/ApproveRequestForm";
 import LogBox from "./Components/LogBox/LogBox";
-import ConversationBox from "./Components/ConversationBox/ConversationBox";
 import Stores from '../../stores/storeIdentifier';
-import RequestStore from '../../stores/requestStore';
 import { inject, observer } from 'mobx-react';
 import { FormInstance } from 'antd/lib/form';
+import RequestStore from '../../stores/requestStore';
+import NotificationStore from '../../stores/notificationStore';
+import CommentBox from './Components/CommentBox';
+import AuthenticationStore from '../../stores/authenticationStore';
+import ApproveRequestForm from "./Components/ApproveRequestForm/ApproveRequestForm";
+
+import './index.less'
 
 interface IRequests {
   key: string;
@@ -24,6 +29,10 @@ interface IRequests {
 }
 interface IRequestProps {
   requestStore: RequestStore;
+  match: {params: any};
+  notificationStore: NotificationStore;
+  authenticationStore: AuthenticationStore;
+  location: any;
 }
 
 interface IRequestStates {
@@ -31,9 +40,9 @@ interface IRequestStates {
   loading: boolean;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore)
 @observer
-export default class Requests extends Component<IRequestProps, IRequestStates> {
+export default class EditRequest extends Component<IRequestProps, IRequestStates> {
   modalRef = React.createRef<FormInstance>();
   constructor(props: any) {
     super(props);
@@ -44,9 +53,25 @@ export default class Requests extends Component<IRequestProps, IRequestStates> {
   }
 
   componentDidMount() {
-    const mockID = '8A0AD6DC-7957-48AE-A363-000000DB378F'
-    this.props.requestStore.get(mockID);
-    console.log(this.props.requestStore.editRequest)
+    const {id} = this.props.match.params;
+    this.props.requestStore.get(id);
+    console.log(this.props.requestStore.currentId)
+    let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
+    
+    if (notificationId && notificationId != "") {
+      this.props.notificationStore?.markAsRead(String(notificationId));
+    }
+  }
+
+  componentDidUpdate(prevProps: any) {
+    const {match: {params}} = this.props
+    const {id} = params;
+    if (id === prevProps.match.params.id) return;
+
+    let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
+    if (notificationId && notificationId != "") {
+      this.props.notificationStore?.markAsRead(String(notificationId));
+    }
   }
 
   render(){ 
@@ -58,8 +83,7 @@ export default class Requests extends Component<IRequestProps, IRequestStates> {
               <Card
                 title="Response"
                 bordered={true}
-                headStyle={{ backgroundColor: "#52c41a", color: "white" }}
-                bodyStyle={{ border: "1px solid #3f6600"}}
+                headStyle={{ backgroundColor: "#1a5792", color: "white" }}
                 style = {{ marginBottom: 10}}
               >
                 <ApproveRequestForm
@@ -72,8 +96,7 @@ export default class Requests extends Component<IRequestProps, IRequestStates> {
             <Card
               title="Update Detail"
               bordered={true}
-              headStyle={{ backgroundColor: "#52c41a", color: "white" }}
-              bodyStyle={{ border: "1px solid #3f6600" }}
+              headStyle={{ backgroundColor: "#1a5792", color: "white" }}
             >
               <Row>
                 <p>
@@ -119,8 +142,7 @@ export default class Requests extends Component<IRequestProps, IRequestStates> {
             </Card>
           </Col>
           <Col span={12}>
-            <span>Conversation Box</span>
-            <ConversationBox />
+              <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
             <span>Log Box</span>
             <LogBox />
           </Col>

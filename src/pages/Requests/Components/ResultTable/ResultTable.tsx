@@ -7,6 +7,8 @@ import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
+//import { IdcardFilled } from '@ant-design/icons';
 //import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
 interface IRequests {
@@ -70,8 +72,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     this.setState({ selectedRowKeys });
   };
 
+  
   render() {
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
+    
     const columns:ColumnProps<GetRequestOutput>[] = [
       {
         title: 'ID',
@@ -149,11 +153,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       },
       {
         title: 'Action',
-        dataIndex: 'button',
-        key: 'button',
-        render: () => (
-        <Link to={"/requests/editrequest"}>
-        <Button type='primary' size ='small'>Edit</Button>
+        dataIndex: 'Id',
+        render: (key: any) => (
+        <Link to={`/requests/editrequest/${key}`}>
+        <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key}}>Edit</Button>
         </Link>)
       },
     ];
@@ -178,6 +181,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <Table
+          rowKey={record => record.id}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}

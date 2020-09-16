@@ -52,10 +52,9 @@ class RequestService {
   
 
   public async get(requestId: string): Promise<any> {
-    let result = await http.get(`api/request/detail/${requestId}`, {
+    let result = await http.get(`api/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
-    console.log(result.data)
     return result.data; 
   }
 

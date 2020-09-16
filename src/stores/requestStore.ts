@@ -15,6 +15,7 @@ class RequestStore {
   };
   @observable editRequest!: GetRequestOutput;
   @observable serversList: GetServerOutput[] = [];
+  @observable currentId!: string;
 
   @action
   async getAll() {
@@ -49,7 +50,6 @@ class RequestStore {
     let result = await requestService.getServerList();
     this.serversList = result
   }
-
 
   @action
   async create(request: CreateRequestInput) {
