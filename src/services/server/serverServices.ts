@@ -7,16 +7,15 @@ import http from '../httpService';
 import { GetListServerFilter } from './dto/GetListServerFilter';
 
 
-const url = process.env.REACT_APP_REMOTE_SERVICE_BASE_URL;
 
 class ServerService {
   public async create(createServerInput: GetServerInput) {
-    let result = await http.post(`${url}api/server/create`, createServerInput);
+    let result = await http.post(`api/server/create`, createServerInput);
     return result.data;
   }
 
   public async getAll(): Promise<PagedResultDtoServer<GetServerOutput>> {
-    let result = await http.get(`${url}api/server/listServer`, {
+    let result = await http.get(`api/server/listServer`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
 
@@ -28,7 +27,7 @@ class ServerService {
   }
 
   public async get(serverId: string): Promise<any> {
-    let result = await http.get(`${url}api/server/detail/${serverId}`, {
+    let result = await http.get(`api/server/detail/${serverId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
     console.log( result.data);
@@ -36,20 +35,20 @@ class ServerService {
   }
 
   public async update(serverId: string, server: GetServerInput) {
-    await http.put(`${url}api/server`, server);
+    await http.put(`api/server`, server);
   }
 
   public async updateBulkServerStatus(bulkReq: BulkServerStatus) {
-    await http.put(`${url}api/server/bulkStatus`, bulkReq);
+    await http.put(`api/server/bulkStatus`, bulkReq);
   }
 
   public async importFileServer(listServer: any) {
-    let result = await http.post(`${url}api/server/importExcel`, listServer);
+    let result = await http.post(`api/server/importExcel`, listServer);
     console.log(result);
   }
 
   public async getListServerByFilter(filter: GetListServerFilter) {
-    let result = await http.get(`${url}api/server/filter/${filter.filterKey}`);
+    let result = await http.get(`api/server/filter/${filter.filterKey}`);
     return result.data;
   }
 }

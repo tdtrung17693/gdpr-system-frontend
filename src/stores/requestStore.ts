@@ -4,15 +4,16 @@ import { GetRequestOutput } from '../services/request/dto/getRequestOutput';
 import requestService from '../services/request/requestServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 //import { UpdateRequestInput } from '../services/request/dto/UpdateRequestInput';
-import {ServerModel} from '../services/request/dto/serverModel'
+// import {ServerModel} from '../services/request/dto/serverModel'
 import { CreateRequestInput } from '../services/request/dto/createRequestInput';
+import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalItems: 0,
     items: [],
   };
   @observable editRequest!: GetRequestOutput;
-  @observable serversList!: ServerModel[];
+  @observable serversList: GetServerOutput[] = [];
 
   @action
   async getAll() {

@@ -3,6 +3,7 @@ import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
 import { PagedResultDto } from '../dto/pagedResultDto';
 import { CreateRequestInput } from './dto/createRequestInput';
 import http from '../httpService';
+import serverServices from '../server/serverServices';
 
 class RequestService {
   public async create(createRequestInput: CreateRequestInput){
@@ -63,10 +64,8 @@ class RequestService {
 
   public async getServerList(){
     //let result = await axios.get(`${url}/api/request`,{
-    let result = await http.get(`api/Server`,{
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    });
-    return result.data; 
+    let result = await serverServices.getAll()
+    return result.items; 
   }
 }
 
