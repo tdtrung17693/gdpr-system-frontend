@@ -4,6 +4,7 @@ import { PagedResultDto } from '../dto/pagedResultDto';
 import { CreateRequestInput } from './dto/createRequestInput';
 import http from '../httpService';
 import serverServices from '../server/serverServices';
+import {ManageAcceptDeclineInput} from './dto/manageAcceptDeclineInput';
 
 class RequestService {
   public async create(createRequestInput: CreateRequestInput){
@@ -54,11 +55,18 @@ class RequestService {
     let result = await http.get(`api/request/detail/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log(result.data)
     return result.data; 
   }
 
   public async update(requestId: string, request: GetRequestOutput){
     let result = await http.put(`api/request`, request);
+    console.log(result);
+  }
+
+  //accept decline
+  public async manage(requestId: string, request: ManageAcceptDeclineInput){
+    let result = await http.put(`api/Request/manage`, request);
     console.log(result);
   }
 

@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Collapse, Button, Card, Col, Row, Input, DatePicker } from 'antd';
+import { Button/*, Card, Col, Row, Input, DatePicker */} from 'antd';
 import Search from 'antd/lib/input/Search';
 import './index.css';
 
@@ -9,20 +9,18 @@ import { inject, observer } from 'mobx-react';
 import ResultTable from './Components/ResultTable/ResultTable';
 //import CreateOrEditRequestModal from './Components/CreateOrEditRequestModal/CreateOrEditRequestModal';
 
-import {  EditOutlined } from '@ant-design/icons';
+//import {  EditOutlined } from '@ant-design/icons';
 import Stores from '../../stores/storeIdentifier';
 import RequestStore from '../../stores/requestStore';
 import HandleModal from './Components/CreateModal/HandleModal';
 //import { GetRequestOutput } from '../../services/request/dto/getRequestOutput';
 import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
+import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
-const { Panel } = Collapse;
-// const { Option } = Select;
-// let mockusers: string[] = ['long.dao@netpower.no1', 'long.dao@netpower.no2', 'long.dao@netpower.no3'];
-// let mockadmins: string[] = ['long.dao@netpower.no4', 'long.dao@netpower.no5', 'long.dao@netpower.no6'];
+//const { Panel } = Collapse;
 
 interface IRequestProps {
   requestStore: RequestStore;
@@ -85,7 +83,7 @@ export default class Requests extends Component<IRequestProps> {
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Requests Management</h2>
-        <Collapse defaultActiveKey={['1']}>
+        {/* <Collapse defaultActiveKey={['1']}>
           <Panel header="Export Requests" key="0">
             <div className="site-card-wrapper">
               <Row gutter={16}>
@@ -109,7 +107,8 @@ export default class Requests extends Component<IRequestProps> {
             </div>
             <Button type="primary"> Export </Button>
           </Panel>
-        </Collapse>
+        </Collapse> */}
+        <ExportCollapse/>
         <div className="create-filter">
           <div>
             <Button

@@ -7,6 +7,7 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 // import {ServerModel} from '../services/request/dto/serverModel'
 import { CreateRequestInput } from '../services/request/dto/createRequestInput';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
+import {ManageAcceptDeclineInput} from '../services/request/dto/manageAcceptDeclineInput';
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalItems: 0,
@@ -22,6 +23,13 @@ class RequestStore {
     this.requests.totalItems = result.totalItems;
   }
 
+  @action
+  async manageAccDecl(requestId: string, request: ManageAcceptDeclineInput) {
+    let result = await requestService.manage(requestId,request);
+    console.log(result)
+  }
+
+  
   @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
@@ -80,13 +88,15 @@ class RequestStore {
       createdDate: result.CreatedAt,
       createdBy: result.CreatedByName,
       updatedDate: result.UpdatedAt,
-      updatedBy: result.UpdatedBy,
+      updatedBy: result.UpdatedByName,
       serverId: result.ServerId,
       title: result.Title,
       startDate: result.StartDate,
       endDate: result.EndDate,
     };
   }
+
+  
 
   @action
   async update(requestId: string, request: GetRequestOutput) {
