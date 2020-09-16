@@ -51,7 +51,7 @@ export const appRouters: any = [
     name: 'server',
     permission: Permissions.VIEW_SERVER,
     title: 'Servers',
-    icon: 'home',
+    icon: 'cloud-server',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Servers')),
   },

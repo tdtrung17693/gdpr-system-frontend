@@ -7,14 +7,22 @@ import CommentBox from './components/CommentBox';
 import Stores from '../../stores/storeIdentifier';
 import { inject, observer } from 'mobx-react';
 import NotificationStore from '../../stores/notificationStore';
+import CommentStore from '../../stores/commentStore';
+import AuthenticationStore from '../../stores/authenticationStore';
 
 interface IRequestDetails {
   match: {params: any};
-  notificationStore?: NotificationStore
-  location: any
+  notificationStore?: NotificationStore;
+  location: any;
+  commentStore: CommentStore;
+  authenticationStore: AuthenticationStore;
 }
 
-@inject(Stores.NotificationStore)
+
+interface IRequestDetails {
+}
+
+@inject(Stores.CommentStore,  Stores.AuthenticationStore,Stores.NotificationStore)
 @observer
 export class RequestDetails extends React.Component<IRequestDetails> {
   componentDidMount() {
@@ -40,7 +48,7 @@ export class RequestDetails extends React.Component<IRequestDetails> {
     return (
       <Row>
         <Col span={24}>
-          <CommentBox  requestId={this.props.match.params.id.toLowerCase()}/>
+          <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
         </Col>
       </Row>
     )
