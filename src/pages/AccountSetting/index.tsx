@@ -10,6 +10,7 @@ import { ChangePasswordInput } from '../../services/account/dto/changePasswordIn
 import ImgCrop from 'antd-img-crop';
 //import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { PictureOutlined } from '@ant-design/icons';
+import http from '../../services/httpService';
 
 const { Title } = Typography;
 const FormItem = Form.Item;
@@ -47,8 +48,25 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
     isDirty: false,
     loading: false,
     imageUrl: '',
+    currentAvatarId: '',
   };
 
+  fetchAvatar = async () => {
+    await http.get('api/users/avatar/id=' + this.props.authenticationStore.user!.id, /*{headers : header}*/)
+    .then( (response) =>{
+      this.setState({imageUrl: 'data:image/png;base64,' + response.data.content, currentAvatarId: response.data.id});
+      console.log(response.data)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  componentDidMount = async () => {
+    await this.fetchAvatar();
+    console.log(this.state.currentAvatarId);
+  }
+  
   handleAvatarChange = (info: any) => {
     if (info.file.status === 'uploading') {
       this.setState({ loading: true });
@@ -61,7 +79,31 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
         this.setState({
           imageUrl: imageUrl,
           loading: false,
-        }); console.log(imageUrl)},
+        }); 
+          if (this.state.currentAvatarId == undefined || this.state.currentAvatarId == ''){
+            http.post("api/users/avatar", {
+              userId: this.props.authenticationStore.user!.id,
+              fileName: info.file.name.replace("." + info.file.name.split('.').pop(), ""),
+              fileExtension: info.file.name.split('.').pop(),
+              content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+            }).then((response) =>{
+              this.setState({currentAvatarId: response.data.id})
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          }
+          else{
+            http.put("api/users/avatar", {
+              userId: this.props.authenticationStore.user!.id,
+              fileName: info.file.name.replace("." + info.file.name.split('.').pop(), ""),
+              fileExtension: info.file.name.split('.').pop(),
+              content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
+              fileId: this.state.currentAvatarId,
+            }, );
+          }
+        },
       );
     }
   };
