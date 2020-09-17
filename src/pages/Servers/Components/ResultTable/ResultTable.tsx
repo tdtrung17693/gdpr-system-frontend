@@ -70,7 +70,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    //console.log('selectedRowKeys changed: ', selectedRowKeys);
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    console.log(this.props.serverStore.servers.items)
     this.setState({ selectedRowKeys });
   };
 

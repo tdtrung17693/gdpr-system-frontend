@@ -19,6 +19,7 @@ import { CreateRequestInput } from '../../services/request/dto/createRequestInpu
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 import ProtectedComponent from '../../components/ProtectedComponent';
 import AuthenticationStore from '../../stores/authenticationStore';
+import UserStore from '../../stores/userStore';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
@@ -27,9 +28,10 @@ import AuthenticationStore from '../../stores/authenticationStore';
 interface IRequestProps {
   authenticationStore: AuthenticationStore;
   requestStore: RequestStore;
+  userStore: UserStore;
 }
 
-@inject(Stores.RequestStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore, Stores.UserStore)
 @observer
 export default class Requests extends Component<IRequestProps> {
   modalRef = React.createRef<HandleModal>();

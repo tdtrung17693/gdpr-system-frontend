@@ -40,6 +40,7 @@ interface IRequestProps {
   notificationStore: NotificationStore;
   authenticationStore: AuthenticationStore;
   location: any;
+  isEmployee: boolean;
   onSave: (user: CreateRequestInput | null, errors: any) => void;
 }
 
@@ -153,8 +154,8 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
   };
 
   render() {
-    let data = { ...this.props.requestStore.editRequest }.status;
-    console.log(data);
+    const isEmployee = ({ ...this.props.requestStore.editRequest }.RoleName == 'Employee')
+    console.log(isEmployee)
     let requestStatus = { ...this.props.requestStore.editRequest }.status;
     let isClosed = (requestStatus==='Closed')? true: false;
     return (
@@ -162,17 +163,19 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
         <h2>Request Detail</h2>
         <Row gutter={[16, 16]}>
           <Col span={12}>
+          {(isEmployee==false)?
             <Card title="Response" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }} style={{ marginBottom: 10 }}>
-              <ApproveRequestForm
+              
+                <ApproveRequestForm
                 authenticationStore={this.props.authenticationStore}
                 requestStore={this.props.requestStore}
                 requestId={this.props.match.params.id}
                 IsApproved={{ ...this.props.requestStore.editRequest }.status == 'Open' ? true : false}
                 IsClosed={{ ...this.props.requestStore.editRequest }.status == 'Closed' ? true : false}
               />
-            </Card>
+            </Card>: null}
 
-            <Card title="Update Detail" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }}>
+            <Card title="Request Detail" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }}>
               <Form style={{ marginBottom: 17 }}>
                 <Row>
                   <Col span={6}>
@@ -196,21 +199,24 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   </Col>
                   <Col>{{ ...this.props.requestStore.editRequest }.createdBy}</Col>
                 </Row>
-                <Row>
-                  <Col span={6}>
-                    <strong>Update By </strong>
-                  </Col>
-                  <Col>{{ ...this.props.requestStore.editRequest }.updatedBy}</Col>
-                </Row>
-                <Row>
-                  <Col span={6}>
-                    <strong>Update Date </strong>
-                  </Col>
-                  <Col>{{ ...this.props.requestStore.editRequest }.updatedDate}</Col>
-                </Row>
+                {isEmployee == false ? (
+                      <Row>
+                      <Col span={6}>
+                        <strong>Update By </strong>
+                      </Col>
+                      <Col>{{ ...this.props.requestStore.editRequest }.updatedBy}</Col>
+                    </Row>) : null}
+                    {isEmployee == false ? (<Row>
+                      <Col span={6}>
+                        <strong>Update Date </strong>
+                      </Col>
+                      <Col>{{ ...this.props.requestStore.editRequest }.updatedDate}</Col>
+                    </Row>
+                          ) : null}
+                
               </Form>
               <Collapse defaultActiveKey={['1']}>
-                <Collapse.Panel header="Update Request" key="0">
+                <Collapse.Panel header="Updatable Request Detail" key="0">
                   <Form {...this.layout} ref={this.formRef}>
                     <Form.Item name={'title'} label="Title">
                     <Input disabled={isClosed} defaultValue={{ ...this.props.requestStore.editRequest }.title} />
@@ -247,15 +253,18 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                       <Input disabled={isClosed} defaultValue={{ ...this.props.requestStore.editRequest }.description} />
                     </Form.Item>
                     <Form.Item >
-                    <Button
-                    disabled={isClosed}
-                    type="primary"
-                    onClick={() => {
-                      this.handleUpdateClick();
-                    }}
-                  >
-                    Update
-                  </Button>
+                    {isEmployee == false ? (
+                      <Button
+                      disabled={isClosed}
+                      type="primary"
+                      onClick={() => {
+                        this.handleUpdateClick();
+                      }}
+                    >
+                      Update
+                    </Button>
+                          ) : null}
+                    
                   </Form.Item>
                   </Form>
                   

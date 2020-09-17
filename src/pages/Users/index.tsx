@@ -70,7 +70,7 @@ export class Users extends React.Component<IUserProps> {
     this.setState({
       editingUserId: this.props.userStore.editUser!.id
     })
-
+    
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.userStore.editUser);
     });
@@ -191,7 +191,6 @@ export class Users extends React.Component<IUserProps> {
 
       return acc;
     }, []);
-
     const columns:ColumnProps<User>[] = [
       { title: "Username", dataIndex: 'username', key: 'Username', width: 150, render: (text: string) => <div>{text}</div>, sorter: true, sortDirections: ['ascend', 'descend', 'ascend'] },
       { title: "First Name", dataIndex: 'firstName', key: 'FirstName', width: 150, render: (text: string) => <div>{text}</div>, sorter: true, sortDirections: ['ascend', 'descend', 'ascend'] },

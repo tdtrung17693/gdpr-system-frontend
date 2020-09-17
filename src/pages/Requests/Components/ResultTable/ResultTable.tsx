@@ -75,8 +75,11 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   
   render() {
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
-    
-    const columns:ColumnProps<GetRequestOutput>[] = [
+    this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.id }))
+    console.log({...this.props.requestStore.requests.items})
+    const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
+
+    const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
       
       {
         title: 'Status',
@@ -109,7 +112,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Create Date',
         dataIndex: 'CreatedAt',
         key: 'createdAt',
-        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -123,7 +126,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Update Date',
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
-        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.UpdatedAt).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -151,14 +154,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       {
         title: 'Request From',
         dataIndex: 'StartDate',
-        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.contractBeginDate).unix(),
+        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
-        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.contractBeginDate).unix(),
+        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -166,10 +169,92 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         dataIndex: 'Id',
         render: (key: any) => (
         <Link to={`/requests/editrequest/${key}`}>
-        <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key}}>Edit</Button>
+        <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key}}>Detail</Button>
         </Link>)
       },
     ];
+
+    const columnsEmployee:ColumnProps<GetRequestOutput>[] = [
+      
+      {
+        title: 'Status',
+        dataIndex: 'RequestStatus',
+        key: 'RequestStatus',
+        filters: [
+          {
+            text: 'New',
+            value: 'New',
+          },
+          {
+            text: 'Open',
+            value: 'Open',
+          },
+          {
+            text: 'Closed',
+            value: 'Closed',
+          }
+        ],
+        onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
+        render: (requestStatus: string) => (
+          <>            
+                <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
+                  {requestStatus}
+                </Tag>
+          </>
+        ),
+      },
+      {
+        title: 'Create Date',
+        dataIndex: 'CreatedAt',
+        key: 'createdAt',
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        title: 'Create By',
+        dataIndex: 'CreatedByNameEmail',
+        key: 'createdAt',
+        //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        title: 'Server',
+        dataIndex: 'ServerName',
+        key: 'serverId',
+      },
+      {
+        title: 'ServerIP',
+        dataIndex: 'ServerIP',
+        key: 'serverIP',
+      },
+      {
+        title: 'Title',
+        dataIndex: 'Title',
+        key: 'title',
+      },
+      {
+        title: 'Request From',
+        dataIndex: 'StartDate',
+        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        title: 'Request To',
+        dataIndex: 'EndDate',
+        key: 'endDate',
+        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        title: 'Action',
+        dataIndex: 'Id',
+        render: (key: any) => (
+        <Link to={`/requests/editrequest/${key}`}>
+        <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key;}}>Edit</Button>
+        </Link>)
+      },
+    ];
+
 
     if (this.props.requestStore.requests.items.length !== 0) {
       this.props.requestStore.requests.items.forEach((requestObject: any, index: number) => {
@@ -178,6 +263,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     }
     const { loading, selectedRowKeys }: any = this.state;
     const rowSelection = {
+
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
@@ -193,7 +279,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         <Table
           rowKey={record => record.id}
           rowSelection={rowSelection}
-          columns={columns}
+          columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
         />
       </div>

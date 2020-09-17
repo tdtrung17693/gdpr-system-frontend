@@ -22,7 +22,7 @@ class RequestStore {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
-    console.log(this.requests.items)
+    console.log()
   }
 
   @action
@@ -36,7 +36,6 @@ class RequestStore {
     let result = await requestService.getFilter(filterStatus);
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
-    console.log(this.requests.items)
   }
 
   @action
@@ -72,7 +71,7 @@ class RequestStore {
       title: '',
       startDate: '',
       endDate: '',
-
+      RoleName: '',
     };
   }
 
@@ -99,6 +98,7 @@ class RequestStore {
       title: result.RequestDetails.Title,
       startDate: result.RequestDetails.StartDate,
       endDate: result.RequestDetails.EndDate,
+      RoleName: result.RequestDetails.RoleName,
     };
     console.log(this.editRequest)
   }
