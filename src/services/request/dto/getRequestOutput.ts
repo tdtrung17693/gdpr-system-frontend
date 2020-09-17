@@ -8,7 +8,7 @@ export interface GetRequestOutput {
     updatedBy: string;
     serverId: string;
     serverName: string;
-    serverIp: string;
+    serverIP: string;
     title: string;
     description?: string,
     startDate: string;

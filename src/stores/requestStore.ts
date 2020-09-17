@@ -22,6 +22,7 @@ class RequestStore {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
+    console.log(this.requests.items)
   }
 
   @action
@@ -66,7 +67,7 @@ class RequestStore {
       updatedDate: '',
       updatedBy: '',
       serverId: '',
-      serverIp: '',
+      serverIP: '',
       serverName: '',
       title: '',
       startDate: '',
@@ -93,7 +94,7 @@ class RequestStore {
       updatedDate: result.RequestDetails.UpdatedAt,
       updatedBy: result.RequestDetails.UpdatedByNameEmail,
       serverId: result.RequestDetails.ServerId,
-      serverIp: result.RequestDetails.ServerIp,
+      serverIP: result.RequestDetails.ServerIP,
       serverName: result.RequestDetails.ServerName,
       title: result.RequestDetails.Title,
       startDate: result.RequestDetails.StartDate,

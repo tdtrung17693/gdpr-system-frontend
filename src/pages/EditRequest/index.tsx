@@ -227,7 +227,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                         //style={{ width: 315 }}
                         placeholder="Select a server"
                         optionFilterProp="children"
-                        defaultValue={{ ...this.props.requestStore.editRequest }.serverName + ' - ' + { ...this.props.requestStore.editRequest }.serverIp}
+                        defaultValue={{ ...this.props.requestStore.editRequest }.serverName + ' - ' + { ...this.props.requestStore.editRequest }.serverIP}
                         // filterOption={(input, option) =>
                         // (option!=undefined) ?  option.indexOf(input.toLowerCase()) >= 0 : true
                         // }
