@@ -125,8 +125,8 @@ class ServerStore {
       let listServerByFilter = await serverService.getServerListByPaging(filter);
       console.log(listServerByFilter);
       this.servers = listServerByFilter;
-      //this.servers.totalItems = listServerByFilter.length;
     } else {
+      this.pagingObj.filterBy = "";
       this.getServerListByPaging({...this.pagingObj});
     }
   }

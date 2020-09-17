@@ -181,7 +181,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: '',
         render: (text: string, item: any) => (
-          <Button shape="round" danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
+          <Button danger onClick={() => this.props.createOrUpdateModalOpen({ id: item.id })}>
             Edit
           </Button>
         ),
