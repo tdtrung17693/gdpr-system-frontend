@@ -48,7 +48,7 @@ export default class Requests extends Component<IRequestProps> {
     }
 
     this.setState({
-      editingRequestId: this.props.requestStore.editRequest!.id,
+      editingRequestId: this.props.requestStore.editRequest!.Id,
     });
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.requestStore.editRequest);
