@@ -170,11 +170,11 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
             <Input.Group compact>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractBeginDate) : null} name='contractBeginDate' 
                 label="Contract Begin Date" rules={[{ required: true }]}  style={{ width: '50%' }}>
-                    <DatePicker onChange={value => this.setState({contractBeginDate: moment(value)})}  style={{ width: '100%' }} />
+                    <DatePicker onChange={value => this.setState({contractBeginDate: moment(String(value))})}  style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractEndDate) : null} name='contractEndDate' 
                 label="Contract End Date" style={{ width: '50%' }}>
-                    <DatePicker onChange={value => this.setState({contractEndDate: moment(value)})}  style={{ width: '100%' }} />
+                    <DatePicker onChange={value => this.setState({contractEndDate: moment(String(value))})}  style={{ width: '100%' }} />
                 </Form.Item>
             </Input.Group>
             <Form.Item initialValue={modalKey.contactPointID} name='contactPoint' label="Contact Point" rules={[{ required: true, message: L('ThisFieldIsRequired') }]}>

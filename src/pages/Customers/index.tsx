@@ -50,6 +50,7 @@ export default class Customers extends React.Component {
     modalKey: [],
     createModalVisible: false,
     createModalKey: {},
+    processing: false
   };
 
   // resultTable: ResultTable = new ResultTable(this.props);
@@ -104,23 +105,31 @@ export default class Customers extends React.Component {
   ];
 
   fetchData = () => {
-    http.get('http://localhost:5000/api/Customer/', /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
+    this.setState({
+      loading: true
+    }, () => {
+      http.get('api/Customer/', /*{headers : header}*/)
+      .then( (response) =>{
+        this.setState({data: response.data, loading: false});
+      })
+      .catch(function (error) {
+        //console.log(error);
+      });
     })
-    .catch(function (error) {
-      //console.log(error);
-    });
   }
 
   filterData = (keyword: any) => {
-    http.get('http://localhost:5000/api/Customer/' + keyword, /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
+    this.setState({
+      loading: true
+    }, () => {
+      http.get('api/Customer/keyword')
+      .then( (response) =>{
+        this.setState({data: response.data, loading: false});
+      })
+      .catch(function (error) {
+        //console.log(error);
+      });
     })
-    .catch(function (error) {
-      //console.log(error);
-    });
   }
 
   handleSearch = (keyword: any) => {
@@ -128,13 +137,13 @@ export default class Customers extends React.Component {
   }
 
   start = () => {
-    this.setState({ loading: true, });
+    this.setState({ processing: true, });
     this.fetchData();
     // ajax request after empty completing
     setTimeout(() => {
       this.setState({
         selectedRowKeys: [],
-        loading: false,
+        processing: false,
       });
     }, 1000);
   };
@@ -166,7 +175,7 @@ export default class Customers extends React.Component {
   }
 
   render(){ 
-    const { loading, selectedRowKeys }:any = this.state;
+    const { loading, processing, selectedRowKeys }:any = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -245,13 +254,13 @@ export default class Customers extends React.Component {
         </div>
         <div>
           <div style={{ marginBottom: 16 }}>
-            <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
+            <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={processing}>
               Reload
             </Button>
             
             <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
           </div>
-          <Table rowSelection={rowSelection} columns={this.columns} dataSource={this.state.data}></Table>
+          <Table loading={loading} rowSelection={rowSelection} columns={this.columns} dataSource={this.state.data}></Table>
         </div>
       </div>
     </div>
