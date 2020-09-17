@@ -1,4 +1,5 @@
 import LoadableComponent from './../Loadable/index';
+import { Permissions } from './../../config/permissions';
 
 export const userRouter: any = [
   {
@@ -16,6 +17,12 @@ export const userRouter: any = [
     component: LoadableComponent(() => import('../../pages/Login')),
     showInMenu: false,
   },
+  {
+    path: '/user/test/:id',
+    name: 'test',
+    title: 'Test',
+    component: LoadableComponent(() => import('../../pages/RequestDetails'))
+  }
 ];
 
 export const appRouters: any = [
@@ -33,7 +40,7 @@ export const appRouters: any = [
   {
     path: '/customers',
     name: 'customers',
-    permission: '',
+    permission: Permissions.VIEW_CUSTOMER,
     title: 'Customers',
     icon: 'home',
     showInMenu: true,
@@ -42,16 +49,16 @@ export const appRouters: any = [
   {
     path: '/servers',
     name: 'server',
-    permission: '',
+    permission: Permissions.VIEW_SERVER,
     title: 'Servers',
-    icon: 'home',
+    icon: 'cloud-server',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Servers')),
   },
   {
     path: '/requests',
     name: 'requests',
-    permission: '',
+    permission: Permissions.VIEW_REQUEST,
     title: 'Requests',
     icon: 'mail',
     showInMenu: true,
@@ -60,15 +67,24 @@ export const appRouters: any = [
   {
     path: '/requests/editrequest/:id',
     name: 'editrequest',
-    permission: '',
+    permission: Permissions.EDIT_REQUEST,
     title: 'Edit Request',
     icon: 'mail',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/EditRequest')),
   },
   {
+    path: '/requests/:id',
+    name: 'request-details',
+    permission: '',
+    title: 'Request Details',
+    icon: 'mail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/RequestDetails')),
+  },
+  {
     path: '/users',
-    permission: 'Pages.Users',
+    permission: Permissions.VIEW_USER,
     title: 'Users',
     name: 'user',
     icon: 'user',
@@ -84,16 +100,15 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/AccountSetting')),
   },
-  
   {
     path: '/logout',
-    permission: '',
     title: 'Logout',
     name: 'logout',
     icon: 'info-circle',
     showInMenu: false,
     component: LoadableComponent(() => import('../../components/Logout')),
   },
+  
   {
     path: '/exception?:type',
     permission: '',

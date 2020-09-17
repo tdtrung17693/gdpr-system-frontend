@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import { Modal, Button, Input, Form, DatePicker, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
-//import RequestStore from '../../../../stores/RequestStore';
-//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
-//import { UpdateRequestInput } from '../../../../services/request/dto/UpdateRequestInput';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/lib/input/TextArea';
 import { Select } from 'antd';
 import RequestStore from '../../../../stores/requestStore';
 import { CreateRequestInput } from '../../../../services/request/dto/createRequestInput';
-//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
+import AuthenticationStore from '../../../../stores/authenticationStore';
+
 const { Option } = Select;
 
 
 interface RequestsProps {
   requestStore: RequestStore;
+  authenticationStore: AuthenticationStore;
   visible: boolean;
   onCancel: () => void;
   modalType: string;
@@ -28,7 +27,7 @@ interface RequestStates {
   handleModalOpen: boolean;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore)
 @observer
 export default class HandleModal extends Component<RequestsProps, RequestStates> {
   formRef = React.createRef<FormInstance>();
@@ -70,7 +69,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
         let valuesUpdate: any = {
           ...values,
 
-          createdBy: 'B2039BE6-AD14-4B07-A4B1-C605E293571A',  
+          createdBy: this.props.authenticationStore.user?.id,  
           title: values.title,
           startDate: values.startDate.format('YYYY-MM-DD HH:mm:ss'),
           endDate: values.endDate.format('YYYY-MM-DD HH:mm:ss'),
@@ -167,7 +166,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
               {
               (this.props.requestStore.serversList != undefined)?
               this.props.requestStore.serversList.map((server: any, i: any) =>
-                <Option value={server.id}>{server.name} - {server.ipAddress}</Option>
+                <Option key={server.id} value={server.id}>{server.name} - {server.ipAddress}</Option>
               ): null}
             </Select>
             </Form.Item>

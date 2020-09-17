@@ -1,38 +1,105 @@
 import { action, observable } from 'mobx';
 
-import AppConsts from './../lib/appconst';
 import LoginModel from '../models/Login/loginModel';
 import tokenAuthService from '../services/tokenAuth/tokenAuthService';
+import { ls } from '../services/localStorage';
+import { AuthConfig } from '../config/auth';
+import userService, { User } from '../services/user/userService';
+import {stores as rootStore, stores} from '../stores/storeInitializer';
+import signalRService from '../services/signalRService';
+import { UpdateProfileInfoInput } from '../services/account/dto/updateProfileInfoInput';
+import accountService from '../services/account/accountService';
+import { ChangePasswordInput } from '../services/account/dto/changePasswordInput';
 
-declare var abp: any;
+interface AppUser extends User {
+  permissions: string[];
+  notifications: any;
+}
 
 class AuthenticationStore {
   @observable loginModel: LoginModel = new LoginModel();
+  @observable loggedIn: boolean = false;
+  @observable user: AppUser | null = null;
+  public async init() {
+    if (ls.get(AuthConfig.TOKEN_NAME)) {
+      try {
+        await this.checkTokenValidity();
+        const user = await userService.getCurrentUser()
+        this.setCurrentUser(user)
+      } catch (e) {
+        this.logout();
+      }
+    }
+  }
 
   get isAuthenticated(): boolean {
-    if (!abp.session.userId) return false;
+    if (!this.loggedIn) return false;
 
     return true;
   }
 
   @action
+  public async updateCurrentUserInfo(updateInfo: UpdateProfileInfoInput) {
+    await accountService.updateInfo(updateInfo);
+    this.user!.firstName = updateInfo.firstName;
+    this.user!.lastName = updateInfo.lastName;
+  }
+
+  public async changeUserPassword(values: ChangePasswordInput) {
+    await accountService.changePassword(values);
+  }
+
+  @action
+  public setCurrentUser(user: AppUser) {
+    this.loggedIn = true;
+    this.user = user;
+    stores.notificationStore?.listenNotifications(String(user.id));
+    rootStore.notificationStore?.setNotifications(user.notifications);
+  }
+
+  protected async checkTokenValidity() {
+    // Try getting current user using current JWT Token
+    this.getCurrentUser()
+      .catch(() => {
+        // Log out if failed
+        this.logout();
+      })
+  }
+
+  public async refreshCurrentUser() {
+    await this.getCurrentUser();
+  }
+
+  public async getCurrentUser() {
+    let user = await userService.getCurrentUser();
+    this.setCurrentUser(user);
+  }
+
   public async login(model: LoginModel) {
     let result = await tokenAuthService.authenticate({
-      userNameOrEmailAddress: model.userNameOrEmailAddress,
+      username: model.username,
       password: model.password,
       rememberClient: model.rememberMe,
     });
 
-    var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expireInSeconds) : undefined;
-    abp.auth.setToken(result.accessToken, tokenExpireDate);
-    abp.utils.setCookieValue(AppConsts.authorization.encrptedAuthTokenName, result.encryptedAccessToken, tokenExpireDate, abp.appPath);
+    // TODO: Implement refresh token
+    // var tokenExpireDate = model.rememberMe ? new Date(new Date().getTime() + 1000 * result.expiresIn) : undefined;
+    ls.set(AuthConfig.TOKEN_NAME, result.authToken);
+    let currentUser = await userService.getCurrentUser();
+    await signalRService.start()
+    this.setCurrentUser(currentUser);
+    rootStore.notificationStore?.setNotifications(currentUser.notifications);
   }
 
   @action
   logout() {
-    localStorage.clear();
-    sessionStorage.clear();
-    abp.auth.clearToken();
+    ls.remove(AuthConfig.TOKEN_NAME);
+    this.user = null;
+    this.loggedIn = false;
+  }
+
+  isGranted(permission: string) {
+    return this.isAuthenticated &&  this.user!.permissions?.indexOf(permission) > 0;
   }
 }
 export default AuthenticationStore;

@@ -2,9 +2,9 @@ import React from 'react';
 import { Collapse, Card, Col, Row, Input, DatePicker, Button } from 'antd';
 import { Component } from 'react';
 import { EditOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import http from '../../../../services/httpService';
 //import moment from 'moment';
 // import { Moment } from 'moment';
 // import { stringify } from 'querystring';
@@ -12,7 +12,6 @@ import * as XLSX from 'xlsx';
 const { Panel } = Collapse;
 
 export default class ExportCollapse extends Component<any, any> {
-  
   constructor(props: any) {
     super(props);
     this.state = {
@@ -26,46 +25,47 @@ export default class ExportCollapse extends Component<any, any> {
     this.handleExportClick = this.handleExportClick.bind(this);
   }
 
-
-    exportToCSV = (csvData: unknown[], fileName: string) => {
-        const ws = XLSX.utils.json_to_sheet(csvData);
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const data = new Blob([excelBuffer], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'});
-        FileSaver.saveAs(data, fileName + '.xlsx');
-    }
+  exportToCSV = (csvData: unknown[], fileName: string) => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    FileSaver.saveAs(data, fileName + '.xlsx');
+  }
 
   handleExportClick = () => {
     console.log(this.state.fromDate)
     console.log(this.state.toDate)
-    axios.post(`https://localhost:44347/api/Request/exportRequest`, {fromDate: this.state.fromDate,
+    http.post(`api/Request/exportRequest`, {
+      fromDate: this.state.fromDate,
       toDate: this.state.toDate,
       guids: [
         'B2039BE6-AD14-4B07-A4B1-C605E293571A'
-      ]})
-    .then((requests) => {
-        this.setState({
-          datas: requests.data,
-        });
-        console.log(this.state.datas)
-        this.exportToCSV(this.state.datas,'excel')
-      })
-    .catch((error) => {
-        console.log(error);
-      });
-
-    
-  }
-
-
-  getRequestsData() {
-    axios
-      .post(`https://localhost:44347/api/Request/exportRequest`)
+      ]
+    })
       .then((requests) => {
         this.setState({
           datas: requests.data,
         });
-        console.log((this.state.datas) ? this.state.datas : "Null :(")
+        console.log(this.state.datas)
+        this.exportToCSV(this.state.datas, 'excel')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
+  }
+
+
+  getRequestsData() {
+    http
+      .get(`api/Request`)
+      .then((requests) => {
+        this.setState({
+          datas: requests.data,
+        });
+        console.log((this.state.datas) ? this.state.datas : "No data")
       })
       .catch((error) => {
         console.log(error);
@@ -83,7 +83,7 @@ export default class ExportCollapse extends Component<any, any> {
                   <Card hoverable={true} title="FromDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker style={{ width: '100%' }}  onChange={(date) => {this.setState({fromDate : date})}} />
+                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ fromDate: date }) }} />
                     </Input.Group>
                   </Card>
                 </Col>
@@ -91,13 +91,13 @@ export default class ExportCollapse extends Component<any, any> {
                   <Card hoverable={true} title="ToDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker style={{ width: '100%' }} onChange={(date) => {this.setState({toDate : date})}}/>
+                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ toDate: date }) }} />
                     </Input.Group>
                   </Card>
                 </Col>
               </Row>
             </div>
-            <Button type='primary' onClick={() => {this.handleExportClick()}}>Export</Button>
+            <Button type='primary' onClick={() => { this.handleExportClick() }}>Export</Button>
           </Panel>
         </Collapse>
       </div>

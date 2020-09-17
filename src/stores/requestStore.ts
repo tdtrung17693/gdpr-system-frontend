@@ -4,37 +4,37 @@ import { GetRequestOutput } from '../services/request/dto/getRequestOutput';
 import requestService from '../services/request/requestServices';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 //import { UpdateRequestInput } from '../services/request/dto/UpdateRequestInput';
-import {ServerModel} from '../services/request/dto/serverModel'
+// import {ServerModel} from '../services/request/dto/serverModel'
 import { CreateRequestInput } from '../services/request/dto/createRequestInput';
+import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 import {ManageAcceptDeclineInput} from '../services/request/dto/manageAcceptDeclineInput';
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
-    totalCount: 0,
+    totalItems: 0,
     items: [],
   };
   @observable editRequest!: GetRequestOutput;
-  @observable serversList!: ServerModel[];
+  @observable serversList: GetServerOutput[] = [];
   @observable currentId!: string;
 
   @action
   async getAll() {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
-    
+    this.requests.totalItems = result.totalItems;
   }
 
   @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
+    this.requests.totalItems = result.totalItems;
   }
 
   async getFilter(filterStatus: string) {
     let result = await requestService.getFilter(filterStatus);
     this.requests.items = [...result.items];
-    this.requests.totalCount = result.totalCount;
+    this.requests.totalItems = result.totalItems;
     console.log(this.requests.items)
   }
 
@@ -66,6 +66,8 @@ class RequestStore {
       updatedDate: '',
       updatedBy: '',
       serverId: '',
+      serverIp: '',
+      serverName: '',
       title: '',
       startDate: '',
       endDate: '',
@@ -82,7 +84,7 @@ class RequestStore {
   @action
   async get(requestId: string) {
     let result = await requestService.get(requestId);
-    //console.log(result);
+    console.log(result);
     this.editRequest = {
       id: result.RequestDetails.Id,
       status: result.RequestDetails.RequestStatus,
@@ -91,6 +93,8 @@ class RequestStore {
       updatedDate: result.RequestDetails.UpdatedAt,
       updatedBy: result.RequestDetails.UpdatedByNameEmail,
       serverId: result.RequestDetails.ServerId,
+      serverIp: result.RequestDetails.ServerIp,
+      serverName: result.RequestDetails.ServerName,
       title: result.RequestDetails.Title,
       startDate: result.RequestDetails.StartDate,
       endDate: result.RequestDetails.EndDate,

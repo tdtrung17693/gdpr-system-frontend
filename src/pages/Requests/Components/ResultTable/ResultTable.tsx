@@ -1,6 +1,5 @@
 import { Table, Button, Tag } from 'antd';
 import React from 'react';
-//mobx
 import { inject, observer } from 'mobx-react';
 import RequestStore from '../../../../stores/requestStore';
 import Stores from '../../../../stores/storeIdentifier';

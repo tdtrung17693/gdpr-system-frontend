@@ -5,11 +5,14 @@ import { inject, observer } from 'mobx-react';
 import { FormInstance } from 'antd/lib/form';
 import Stores from '../../../../stores/storeIdentifier';
 import RequestStore from '../../../../stores/requestStore';
+//import { stores } from '../../../../stores/storeInitializer';
+import AuthenticationStore from '../../../../stores/authenticationStore';
 
 //import { ApproveRequestInput } from '../../../../services/request/dto/ApproveRequestInput';
 
 
 interface RequestsProps {
+  authenticationStore: AuthenticationStore;
   requestStore: RequestStore;
   requestId: string,
   IsApproved: boolean;
@@ -22,7 +25,7 @@ interface RequestStates {
   //formRef: any;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore)
 @observer
 export default class ApproveRequestForm extends Component<RequestsProps,RequestStates> {
   formRef = React.createRef<FormInstance>();
@@ -44,13 +47,12 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
       .then((values: any) => {
         console.log(values);
         let valuesUpdate: any = {
-          ...values,
-
-          userId: "B2039BE6-AD14-4B07-A4B1-C605E293571A",
+          answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been accepted',
+          userId: this.props.authenticationStore.user?.id,
           status: "Open",
           requestId: this.props.requestId
         };
-        console.log(valuesUpdate);
+        console.log(this.props.authenticationStore.user?.id);
         this.props.requestStore.manage(valuesUpdate)
         message.info("Approve Request Successfully");
       })
@@ -64,9 +66,9 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
       .then((values: any) => {
         console.log(values);
         let valuesUpdate: any = {
-          ...values,
+          answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been canceled',
 
-          userId: "B2039BE6-AD14-4B07-A4B1-C605E293571A",
+          userId: this.props.authenticationStore.user?.id,
           status: "Closed",
           requestId: this.props.requestId
         };
@@ -81,9 +83,9 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
       .then((values: any) => {
         console.log(values);
         let valuesUpdate: any = {
-          ...values,
+          answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been declined',
 
-          userId: "B2039BE6-AD14-4B07-A4B1-C605E293571A",
+          userId: this.props.authenticationStore.user?.id,
           status: "Closed",
           requestId: this.props.requestId
         };
