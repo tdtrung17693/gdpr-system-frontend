@@ -17,6 +17,12 @@ export const userRouter: any = [
     component: LoadableComponent(() => import('../../pages/Login')),
     showInMenu: false,
   },
+  {
+    path: '/user/test/:id',
+    name: 'test',
+    title: 'Test',
+    component: LoadableComponent(() => import('../../pages/RequestDetails'))
+  }
 ];
 
 export const appRouters: any = [
@@ -45,7 +51,7 @@ export const appRouters: any = [
     name: 'server',
     permission: Permissions.VIEW_SERVER,
     title: 'Servers',
-    icon: 'home',
+    icon: 'cloud-server',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Servers')),
   },
@@ -59,13 +65,22 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Requests')),
   },
   {
-    path: '/requests/editrequest',
+    path: '/requests/editrequest/:id',
     name: 'editrequest',
     permission: Permissions.EDIT_REQUEST,
     title: 'Edit Request',
     icon: 'mail',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/EditRequest')),
+  },
+  {
+    path: '/requests/:id',
+    name: 'request-details',
+    permission: '',
+    title: 'Request Details',
+    icon: 'mail',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../pages/RequestDetails')),
   },
   {
     path: '/users',

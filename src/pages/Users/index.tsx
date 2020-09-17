@@ -2,7 +2,6 @@
 
 import { Row, Dropdown, Menu, Button, Card, Col, Input, Table, Tag, Space, message } from 'antd';
 import UserStore from '../../stores/userStore';
-import { L } from '../../lib/abpUtility';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier';
 import { TablePaginationConfig, ColumnProps } from 'antd/lib/table';
@@ -12,7 +11,7 @@ import CreateOrUpdateUser from './components/createOrUpdateUser';
 import RoleStore from '../../stores/roleStore';
 import { Store } from 'antd/lib/form/interface';
 import { User } from '../../services/user/userService';
-import { PlusOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Title from 'antd/lib/typography/Title';
 
 export interface IUserProps {
@@ -217,7 +216,18 @@ export class Users extends React.Component<IUserProps> {
         ],
         filterMultiple: false,
         filteredValue: filteredInfo.status || null ,
-        render: (text: boolean) => (text === true ? <Tag color="#2db7f5">{L('Yes')}</Tag> : <Tag color="red">{L('No')}</Tag>),
+        render: (isActive: boolean) => {
+
+          return isActive  ? (
+            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green">
+              ACTIVE
+            </Tag>
+          ) : (
+            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue">
+              INACTIVE
+            </Tag>
+          );
+        }
       },
       {
         title: 'Actions',

@@ -1,15 +1,14 @@
-import AppConsts from './../lib/appconst';
-import { L } from '../lib/abpUtility';
 import { Modal } from 'antd';
 import axios from 'axios';
 import { ls } from './localStorage';
-import { Auth } from '../config/auth';
+import { AuthConfig } from '../config/auth';
+import { AppConfig } from '../config/app';
 
 const qs = require('qs');
 
 
 const http = axios.create({
-  baseURL: AppConsts.remoteServiceBaseUrl,
+  baseURL: AppConfig.remoteServiceBaseUrl,
   timeout: 30000,
   paramsSerializer: function(params) {
     return qs.stringify(params, {
@@ -20,9 +19,9 @@ const http = axios.create({
 
 http.interceptors.request.use(
   function(config) {
-    if (!!ls.get(Auth.TOKEN_NAME)) {
+    if (!!ls.get(AuthConfig.TOKEN_NAME)) {
 
-      config.headers.common['Authorization'] = `Bearer ${ ls.get(Auth.TOKEN_NAME) }`;
+      config.headers.common['Authorization'] = `Bearer ${ ls.get(AuthConfig.TOKEN_NAME) }`;
     }
 
     return config;
@@ -44,17 +43,11 @@ http.interceptors.response.use(
       });
     } else if (!!error.response && !!error.response.data.error && error.response.data.error.code === "login_failure") {
       Modal.error({
-        title: L('Login Failed'),
+        title: 'Login Failed',
         content: error.response.data.error.description,
       });
     } else if (error.response && error.response.status === 401) {
-      Modal.error({
-        title: 'Session timeout',
-        content: 'Your session has been timed out. Please log in again.',
-        onOk: () => {
-          window.location.pathname = "/logout"
-        }
-      })
+      window.location.pathname = "/logout"
     } else  {
       Modal.error({ content: "Unknown Error. Please try again later." });
     } 

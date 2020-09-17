@@ -48,7 +48,6 @@ class RoleService {
 
   public async getAll(): Promise<Role[]> {
     let result = await http.get('api/auth/Role/GetAll');
-    console.log(result);
     return result.data;
   }
 }

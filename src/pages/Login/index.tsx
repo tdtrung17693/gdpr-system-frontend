@@ -6,7 +6,6 @@ import { Button, Card, Form, Col, Input, Row, Avatar } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { inject, observer } from 'mobx-react';
 
-import AccountStore from '../../stores/accountStore';
 import AuthenticationStore from '../../stores/authenticationStore';
 import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { Redirect } from 'react-router-dom';
@@ -21,12 +20,11 @@ const FormItem = Form.Item;
 export interface ILoginProps extends FormComponentProps {
   authenticationStore?: AuthenticationStore;
   sessionStore?: SessionStore;
-  accountStore?: AccountStore;
   history: any;
   location: any;
 }
 
-@inject(Stores.AuthenticationStore, Stores.SessionStore, Stores.AccountStore)
+@inject(Stores.AuthenticationStore, Stores.SessionStore)
 @observer
 class Login extends React.Component<ILoginProps> {
   state = {
