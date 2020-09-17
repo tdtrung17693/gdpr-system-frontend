@@ -151,6 +151,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
           visible={visible}
           title={modalKey.name == undefined? "Create new Customer" : "Edit Customer: " + modalKey.name}
           key = {modalKey.key}
+          maskClosable = {false}
           // onOk={this.handleSubmit}
           onCancel={this.handleCancel}
           footer={[

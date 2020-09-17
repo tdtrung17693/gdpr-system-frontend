@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Card, List, Spin, Radio, Checkbox} from 'antd';
+import { Modal, Button, Card, List, Spin, Radio, Checkbox, message} from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 
 //import axios from 'axios'
@@ -165,7 +165,11 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         customerId: this.props.modalKey.key,
         serverIds: this.state.assignedServers,
         action: true,
-      })
+      }).then((response) => {
+        message.success(`Successfully update servers of ${this.props.modalKey.name}`)
+      }).catch((error) => {
+        message.error(`Update servers of ${this.props.modalKey.name} failed`)
+      });
       this.setState({assignedServers: []});
     }
     if (this.state.unassignedServers.length != 0){
@@ -173,9 +177,14 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         customerId: this.props.modalKey.key,
         serverIds: this.state.unassignedServers,
         action: false,
-      }})
+      }}).then((response) => {
+        message.success(`Successfully update servers of ${this.props.modalKey.name}`)
+      }).catch((error) => {
+        message.error(`Update servers of ${this.props.modalKey.name} failed`)
+      });
       this.setState({unassignedServers: []});
     }
+    
     this.handleCancel();
   };
 
@@ -195,6 +204,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         <Modal
           visible={visible}
           key = {modalKey.key}
+          maskClosable = {false}
           title={"Manage Server of: "  + modalKey.name} 
           // onOk={this.handleSubmit}
           onCancel={() => {this.handleCancel()}}

@@ -98,7 +98,7 @@ export default class Customers extends React.Component {
     {
       title: '',
       render: (key: any) => (
-        <Button onClick={() => {this.setState({createModalVisible: true, createModalKey: key}); console.log(key.key)}} danger > Edit </Button>
+        <Button onClick={() => {this.setState({createModalVisible: true, createModalKey: key});}} danger > Edit </Button>
       ),
     },
   ];
