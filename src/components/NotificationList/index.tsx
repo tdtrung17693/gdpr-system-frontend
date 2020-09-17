@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
+import { inject, observer } from 'mobx-react';
+import classNames from 'classnames';
 import moment from 'antd/node_modules/moment';
-import { FileAddTwoTone } from '@ant-design/icons';
+import { CheckOutlined, DeleteOutlined, EllipsisOutlined, FileAddTwoTone } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
-import { Empty, Menu, Space, Typography } from 'antd';
+import { Button, Dropdown, Empty, Menu, Space, Typography } from 'antd';
 
 import Stores from '../../stores/storeIdentifier';
 import NotificationStore from '../../stores/notificationStore';
@@ -22,7 +23,9 @@ interface INotificationState {
     hasMore: boolean;
     loading: boolean;
     currentPage: number;
+    currentContextMenuId: string;
 }
+
 
 @inject(Stores.NotificationStore)
 @observer
@@ -31,31 +34,58 @@ class NotificationList extends React.Component<INotificationProps> {
         loading: false,
         hasMore: this.props.notificationStore?.currentPage! < this.props.notificationStore?.totalPages!,
         currentPage: 1,
+        currentContextMenuId: ""
+    }
+    reanderContextMenu = (notificationId: string) => {
+        const menu = (
+            <Menu>
+                <Menu.Item key="1" onClick={() => {this.props.notificationStore?.markAsRead(notificationId)}}><CheckOutlined /> Mark as read</Menu.Item>
+                <Menu.Item key="2" onClick={() => {this.props.notificationStore?.delete(notificationId)}}><DeleteOutlined /> Delete</Menu.Item>
+            </Menu>
+        );
+
+        return menu
+    }
+
+    markAllAsRead = (ev: any) => {
+        ev.preventDefault();
+        this.props.notificationStore?.markAllAsRead();
     }
 
     handleLoadMore = async (page: number) => {
         const result = await this.props.notificationStore?.getMoreNotifications(page)
         this.setState({
-            hasMore: result?.page! <= result?.totalPages!
+            hasMore: result?.page! < result?.totalPages!
         })
     }
     renderNotification = (notification: INotification) => {
         let notificationData = JSON.parse(notification.data)
-        let {notificationType, createdAt, id} = notification;
+        let { notificationType, createdAt, id } = notification;
 
         if (notificationType === "new-request") {
             return (
-            <Link to={`/requests/editrequest/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
-                <div className="notification-icon">
-                    <FileAddTwoTone style={{fontSize: "2rem", marginRight: "1rem"}}/>        
+                    <Menu.Item
+                        className={classNames({ "notifications__item": true, "notifications__item--unread": !notification.isRead })} key={notification.id}>
+                <div className="notification">
+                        <Link to={`/requests/editrequest/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`} style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <div className="notification-icon">
+                                <FileAddTwoTone style={{ fontSize: "2rem", marginRight: "1rem" }} />
+                            </div>
+                            <div className="notification-content">
+                                <Space direction="vertical" size={1}>
+                                    <Text>User <strong>{notificationData.Username}</strong> has sent an access request to the server <strong>{notificationData.ServerName}</strong></Text>
+                                    <Text className="notifications__item-time" type="secondary" style={{ fontSize: "0.725rem" }}>{moment.utc(createdAt).fromNow()}</Text>
+                                </Space>
+                            </div>
+                            {!notification.isRead ? <div className="notifications__unread-notificator" /> : ''}
+                        </Link>
+                    <Dropdown onVisibleChange={(visible) => {
+                        this.setState({currentContextMenuId: visible ? notification.id : ""})
+                    }} visible={this.state.currentContextMenuId == notification.id} overlay={this.reanderContextMenu(notification.id)} trigger={['click']}>
+                        <EllipsisOutlined className="notifications__item-action-menu" style={this.state.currentContextMenuId == notification.id ? {opacity: 1} : {}}/>
+                    </Dropdown>
                 </div>
-                <div className="notification-content">
-                <Space direction="vertical" size={1}>
-                    <Text>User <strong>{notificationData.Username}</strong> has sent an access request to the server <strong>{notificationData.ServerName}</strong></Text>
-                    <Text type="secondary" style={{fontSize: "0.725rem"}}>{moment.utc(createdAt).fromNow()}</Text>
-                </Space>
-                </div>
-            </Link>
+                    </Menu.Item>
             )
         }
         return "";
@@ -64,14 +94,14 @@ class NotificationList extends React.Component<INotificationProps> {
     render() {
         const notifications = this.props.notificationStore?.notifications;
         const { hasMore } = this.state;
-        console.log(hasMore)
-
+        console.log(notifications);
         return (
             <div className="notifications">
                 <div className="notifications__header">
                     <Title level={4}>Notifications</Title>
+                    <div><Button htmlType="button" type="link" onClick={this.markAllAsRead}>Mark all as read</Button></div>
                 </div>
-                <div style={{maxHeight: 400, overflow: 'auto'}}>
+                <div style={{ maxHeight: 400, overflow: 'auto' }}>
                     <InfiniteScroll
                         initialLoad={false}
                         loader={<div className="loader" key={0}>Loading ...</div>}
@@ -81,12 +111,12 @@ class NotificationList extends React.Component<INotificationProps> {
                         threshold={400}
                         useWindow={false}>
                         <Menu>
-                        {
-                            notifications && notifications.length > 0?
-                            notifications.map(n => {
-                            return <Menu.Item style={!n.isRead ? {backgroundColor: '#ececec'} : {}} key={n.id} className="notifications__item">{this.renderNotification(n)}</Menu.Item>
-                            }) : <Empty style={{padding: '1rem'}} image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any notifications"/>
-                        }
+                            {
+                                notifications && notifications.length > 0 ?
+                                    notifications.map(n => {
+                                        return this.renderNotification(n)
+                                    }) : <Empty style={{ padding: '1rem' }} image={Empty.PRESENTED_IMAGE_SIMPLE} description="You don't have any notifications" />
+                            }
                         </Menu>
                     </InfiniteScroll>
                 </div>

@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
 import signalRService from '../services/signalRService';
 import notificationService, { INotification } from '../services/notification/notificationService';
@@ -18,6 +18,11 @@ class NotificationStore {
     this.totalPages = pagedNotifications.totalPages!;
   }
 
+  @computed
+  get hasMore () {
+    return this.currentPage  < this.totalPages
+  }
+
   @action setTotalUnread(totalUnread: number) {
     this.totalUnreadNotifications = totalUnread;
   }
@@ -32,7 +37,7 @@ class NotificationStore {
   public async listenNotifications(userId: string) {
     // init notification store after logged in
     await signalRService.joinGroup(`notification:${userId}`)
-    signalRService.on('newINotification', (notification: INotification) => {
+    signalRService.on('newNotification', (notification: INotification) => {
       this.storeIncomingNotification(notification);
     })
   }
@@ -40,19 +45,39 @@ class NotificationStore {
   public async stopListeningNotifications(userId: string) {
     // init notification store after logged in
     await signalRService.leaveGroup(`notification:${userId}`)
-    signalRService.off('newINotification')
+    signalRService.off('newNotification')
   }
 
   @action
-  public storeIncomingNotification(newINotification: INotification) {
-    this.notifications = [newINotification, ...this.notifications];
+  public storeIncomingNotification(newNotification: INotification) {
+    this.notifications = [newNotification, ...this.notifications];
+    this.totalUnreadNotifications += 1;
   }
 
   @action
   public async markAsRead(notificationId: string) {
-    await notificationService.markAsRead(notificationId);
     let [notification] = this.notifications.filter(n => n.id === notificationId)
-    if (notification) notification.isRead = true;
+    if (notification && notification.isRead) return;
+    await notificationService.markAsRead(notificationId);
+    if (notification) {
+       notification.isRead = true;
+       this.totalUnreadNotifications -= 1;
+    }
+  }
+
+  @action
+  public async delete(notificationId: string) {
+    await notificationService.delete(notificationId);
+    this.notifications = this.notifications.filter(n => n.id != notificationId);
+  }
+
+  @action
+  public async markAllAsRead() {
+    await notificationService.markAllAsRead()
+    this.notifications.filter(n => !n.isRead).forEach(n => {
+      n.isRead = true;
+    })
+    this.setTotalUnread(0)
   }
 }
 export default NotificationStore;

@@ -102,11 +102,9 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         ],
         onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
-          <>            
                 <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
                   {requestStatus}
                 </Tag>
-          </>
         ),
       },
       {
@@ -181,7 +179,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <Table
-          rowKey={record => record.id}
+          rowKey={record => record.Id}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}

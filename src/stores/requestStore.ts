@@ -59,7 +59,7 @@ class RequestStore {
   @action
   async createRequest() {
     this.editRequest = {
-      id: '',
+      Id: '',
       status: '',
       createdDate: '',
       createdBy: '',
@@ -83,7 +83,7 @@ class RequestStore {
   async get(requestId: string) {
     let result = await requestService.get(requestId);
     this.editRequest = {
-      id: result.Id,
+      Id: result.Id,
       status: result.RequestStatus,
       createdDate: result.CreatedAt,
       createdBy: result.CreatedByName,
@@ -102,7 +102,7 @@ class RequestStore {
   async update(requestId: string, request: GetRequestOutput) {
     await requestService.update(requestId, request);
     this.requests.items = this.requests.items.map((oldRequest:GetRequestOutput)=>{
-      if(oldRequest?.id === requestId){
+      if(oldRequest?.Id === requestId){
         oldRequest = {...oldRequest,...request};
       }
       return oldRequest;

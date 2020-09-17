@@ -59,7 +59,7 @@ export class Header extends React.Component<IHeaderProps> {
                 </Badge>
               </Dropdown>
               <Dropdown overlay={userDropdownMenu} trigger={['click']}>
-                <Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={profilePicture} />
+                <Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={profilePicture}  />
               </Dropdown>
             </Space>
           </div>
