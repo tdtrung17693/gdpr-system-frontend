@@ -2,7 +2,7 @@
 import { Collapse, Button, Card, Col, Row, Input, DatePicker, Badge, Table, message } from 'antd';
 import Search from 'antd/lib/input/Search';
 import '../Customers/index.css';
-import axios from 'axios';
+//import axios from 'axios';
 
 //import ResultTable from './Components/ResultTable/ResultTable';
 import ImportButton from './Components/ImportButton';
@@ -13,6 +13,7 @@ import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import moment from 'moment';
+import http from '../../services/httpService';
 
 const { Panel } = Collapse;
 
@@ -25,7 +26,6 @@ const exportToCSV = (csvData: any, fileName: any) => {
       const csvDataRequest = csvData.map((e: any) => e.request[0]);
       
       const ws = XLSX.utils.json_to_sheet((csvDataRequest));
-      console.log(ws);
       const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
       const data = new Blob([excelBuffer], {type: fileType});
@@ -104,22 +104,22 @@ export default class Customers extends React.Component {
   ];
 
   fetchData = () => {
-    axios.get('http://localhost:5000/api/Customer/', /*{headers : header}*/)
+    http.get('http://localhost:5000/api/Customer/', /*{headers : header}*/)
     .then( (response) =>{
       this.setState({data: response.data});
     })
     .catch(function (error) {
-      console.log(error);
+      //console.log(error);
     });
   }
 
   filterData = (keyword: any) => {
-    axios.get('http://localhost:5000/api/Customer/' + keyword, /*{headers : header}*/)
+    http.get('http://localhost:5000/api/Customer/' + keyword, /*{headers : header}*/)
     .then( (response) =>{
       this.setState({data: response.data});
     })
     .catch(function (error) {
-      console.log(error);
+      //console.log(error);
     });
   }
 
@@ -140,7 +140,7 @@ export default class Customers extends React.Component {
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    //console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });     
   };
 
@@ -149,7 +149,7 @@ export default class Customers extends React.Component {
   }
 
   handleExport = (e: any) => {
-    axios.post('http://localhost:5000/api/Customer/export-csv', {
+    http.post('http://localhost:5000/api/Customer/export-csv', {
     fromDate: this.state.fromDate,
     toDate: this.state.toDate,
     guids: this.state.selectedRowKeys,
@@ -203,7 +203,7 @@ export default class Customers extends React.Component {
       <div>
         <div className="create-filter">
           <div>
-            <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: {}}); console.log(this.state.createModalKey)}}>
+            <Button type="primary" onClick={() => {this.setState({createModalVisible: true, createModalKey: {}});}}>
               Create new Customer
             </Button>
             <CreateCustomerModal

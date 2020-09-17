@@ -83,7 +83,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
           if (this.state.currentAvatarId == undefined || this.state.currentAvatarId == ''){
             http.post("api/users/avatar", {
               userId: this.props.authenticationStore.user!.id,
-              fileName: info.file.name.replace("." + info.file.name.split('.').pop(), ""),
+              fileName: this.props.authenticationStore.user!.id + "_" + info.file.name.replace("." + info.file.name.split('.').pop(), ""),
               fileExtension: info.file.name.split('.').pop(),
               content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
             }).then((response) =>{
@@ -97,7 +97,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
           else{
             http.put("api/users/avatar", {
               userId: this.props.authenticationStore.user!.id,
-              fileName: info.file.name.replace("." + info.file.name.split('.').pop(), ""),
+              fileName: this.props.authenticationStore.user!.id + "_" + info.file.name.replace("." + info.file.name.split('.').pop(), ""),
               fileExtension: info.file.name.split('.').pop(),
               content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
               fileId: this.state.currentAvatarId,
