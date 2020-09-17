@@ -1,5 +1,5 @@
 ﻿import React from 'react';
-import { Collapse, Button, Card, Col, Row, Input, DatePicker, Badge, Table } from 'antd';
+import { Collapse, Button, Card, Col, Row, Input, DatePicker, Badge, Table, message } from 'antd';
 import Search from 'antd/lib/input/Search';
 import '../Customers/index.css';
 import axios from 'axios';
@@ -155,11 +155,12 @@ export default class Customers extends React.Component {
     guids: this.state.selectedRowKeys,
   })
     .then((response) =>{
-      console.log(response.data.responsedRequest);
+      //console.log(response.data.responsedRequest);
       exportToCSV(response.data.responsedRequest, 'RequestList');
     })
     .catch(function (error) {
-      console.log(error);
+      //console.log(error);
+      message.error("Cannot export data");
     });
     //console.log(e.target.value);
   }
