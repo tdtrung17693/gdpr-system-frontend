@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-﻿import React, { Component } from "react";
+import React, { Component } from "react";
 import qs from 'qs';
-import { Col, Card, Row } from "antd";
-import LogBox from "./Components/LogBox/LogBox";
-=======
-﻿import React, { Component } from 'react';
 import { Col, Card, Row, Button, Form, Input, Tag, Collapse, message, Select, DatePicker } from 'antd';
-import qs from 'qs';
-import LogBox from './Components/LogBox/LogBox';
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
+import LogBox from "./Components/LogBox/LogBox";
 import Stores from '../../stores/storeIdentifier';
 import { inject, observer } from 'mobx-react';
 //import { FormInstance } from 'antd/lib/form';
@@ -25,17 +18,7 @@ import ApproveRequestForm from './Components/ApproveRequestForm/ApproveRequestFo
 
 import './index.less';
 import { FormInstance } from 'antd/lib/form';
-<<<<<<< HEAD
-import RequestStore from '../../stores/requestStore';
-import NotificationStore from '../../stores/notificationStore';
-import CommentBox from './Components/CommentBox';
-import AuthenticationStore from '../../stores/authenticationStore';
-import ApproveRequestForm from "./Components/ApproveRequestForm/ApproveRequestForm";
-
-import './index.less'
-=======
 import moment from 'moment';
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
 
 interface IRequests {
   key: string;
@@ -53,18 +36,11 @@ interface IRequests {
 }
 interface IRequestProps {
   requestStore: RequestStore;
-<<<<<<< HEAD
-  match: {params: any};
-  notificationStore: NotificationStore;
-  authenticationStore: AuthenticationStore;
-  location: any;
-=======
   match: { params: any };
   notificationStore: NotificationStore;
   authenticationStore: AuthenticationStore;
   location: any;
   onSave: (user: CreateRequestInput | null, errors: any) => void;
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
 }
 
 interface IRequestStates {
@@ -88,14 +64,6 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
   }
 
   componentDidMount() {
-<<<<<<< HEAD
-    const {id} = this.props.match.params;
-    this.props.requestStore.get(id);
-    console.log(this.props.requestStore.currentId)
-    let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
-    
-    if (notificationId && notificationId != "") {
-=======
     const { id } = this.props.match.params;
     console.log(id);
     this.getServer();
@@ -103,25 +71,12 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
     let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
 
     if (notificationId && notificationId != '') {
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
       this.props.notificationStore?.markAsRead(String(notificationId));
     }
   }
 
-<<<<<<< HEAD
-  componentDidUpdate(prevProps: any) {
-    const {match: {params}} = this.props
-    const {id} = params;
-    if (id === prevProps.match.params.id) return;
-
-    let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
-    if (notificationId && notificationId != "") {
-      this.props.notificationStore?.markAsRead(String(notificationId));
-    }
-=======
   async getServer() {
     await this.props.requestStore.getServerList();
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
   }
 
   componentDidUpdate(prevProps: any) {
@@ -182,7 +137,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
         console.log(valuesUpdate);
           if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
           else{
-          this.props.requestStore.update({ ...this.props.requestStore.editRequest }.id,valuesUpdate)
+          this.props.requestStore.update({ ...this.props.requestStore.editRequest }.Id,valuesUpdate)
           
           message.info("Update successfully");
       }});
@@ -207,67 +162,6 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
         <h2>Request Detail</h2>
         <Row gutter={[16, 16]}>
           <Col span={12}>
-<<<<<<< HEAD
-              <Card
-                title="Response"
-                bordered={true}
-                headStyle={{ backgroundColor: "#1a5792", color: "white" }}
-                style = {{ marginBottom: 10}}
-              >
-                <ApproveRequestForm
-                  // requestId = '123456'
-                  IsApproved = {true}
-                  IsClosed = {true}
-                />
-              </Card>
-
-            <Card
-              title="Update Detail"
-              bordered={true}
-              headStyle={{ backgroundColor: "#1a5792", color: "white" }}
-            >
-              <Row>
-                <p>
-                  <strong>Status: </strong>
-                  {"Open"}
-                </p>
-              </Row>
-              <Row>
-                <p>
-                  <strong>Created Date: </strong>
-                  {new Date().toString()}
-                </p>
-              </Row>
-              <Row>
-                <p>
-                  <strong>Created By: </strong>
-                  {"requestDetail.CreatedBy"}
-                </p>
-              </Row>
-              <Row>
-                <p>
-                  <strong>Updated Date: </strong>
-                  {"requestDetail.UpdatedDate"}
-                    {/* //? new Date(requestDetail.UpdatedDate).toString()
-                    //: """} */}
-                </p>
-              </Row>
-              <Row>
-                <p>
-                  <strong>Update By: </strong>
-                  {"requestDetail.UpdatedBy"}
-                </p>
-              </Row>
-              {/* <RequestForm
-                request={requestDetail}
-                type="update"
-                disable={
-                  requestDetail.OwnerId !== userId ||
-                  requestDetail.IsApproved ||
-                  requestDetail.IsClosed
-                }
-              /> */}
-=======
             <Card title="Response" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }} style={{ marginBottom: 10 }}>
               <ApproveRequestForm
                 authenticationStore={this.props.authenticationStore}
@@ -276,7 +170,6 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 IsApproved={{ ...this.props.requestStore.editRequest }.status == 'Open' ? true : false}
                 IsClosed={{ ...this.props.requestStore.editRequest }.status == 'Closed' ? true : false}
               />
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
             </Card>
 
             <Card title="Update Detail" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }}>
@@ -318,15 +211,15 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
               </Form>
               <Collapse defaultActiveKey={['1']}>
                 <Collapse.Panel header="Update Request" key="0">
-                  <Form {...this.layout} ref={this.formRef}>
+                  <Form {...this.layout} ref={this.formRef} initialValues={{startDate: moment({ ...this.props.requestStore.editRequest }.startDate), endDate: moment(new Date({ ...this.props.requestStore.editRequest }.endDate))}}>
                     <Form.Item name={'title'} label="Title">
                     <Input disabled={isClosed} defaultValue={{ ...this.props.requestStore.editRequest }.title} />
                     </Form.Item>
                     <Form.Item name={'startDate'} label="From Date" >
-                    <DatePicker  disabled={isClosed} showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment(new Date({ ...this.props.requestStore.editRequest }.startDate))} />
+                    <DatePicker  disabled={isClosed} showTime format="YYYY-MM-DD HH:mm:ss" />
                     </Form.Item>
                     <Form.Item name={'endDate'} label="To Date">
-                    <DatePicker  disabled={isClosed} showTime format="YYYY-MM-DD HH:mm:ss" defaultValue={moment(new Date({ ...this.props.requestStore.editRequest }.endDate))} />
+                    <DatePicker  disabled={isClosed} showTime format="YYYY-MM-DD HH:mm:ss" />
                     </Form.Item>
                     <Form.Item name={'serverId'} label="Server">
                       <Select
@@ -384,11 +277,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           </Col>
 
           <Col span={12}>
-<<<<<<< HEAD
-              <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
-=======
             <CommentBox authenticationStore={this.props.authenticationStore} requestId={this.props.match.params.id.toLowerCase()} />
->>>>>>> 54a026c81a6f01c94fa269495c43d846ef36625d
             <span>Log Box</span>
             <LogBox />
           </Col>
