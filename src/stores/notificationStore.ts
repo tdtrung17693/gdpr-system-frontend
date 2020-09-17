@@ -2,15 +2,20 @@ import { action, observable } from 'mobx';
 
 import signalRService from '../services/signalRService';
 import notificationService, { INotification } from '../services/notification/notificationService';
+import { PagedResultDto } from '../services/dto/pagedResultDto';
 
 
 class NotificationStore {
   @observable notifications: INotification[] = [];
+  @observable currentPage = 1;
+  @observable totalPages = -1;
   @observable totalUnreadNotifications: number = 0;
 
   @action
-  public setNotifications(notifications: INotification[]) {
-    this.notifications = notifications;
+  public setNotifications(pagedNotifications: PagedResultDto<INotification>) {
+    this.notifications = pagedNotifications.items;
+    this.currentPage = pagedNotifications.page!;
+    this.totalPages = pagedNotifications.totalPages!;
   }
 
   @action setTotalUnread(totalUnread: number) {
@@ -20,8 +25,8 @@ class NotificationStore {
   @action
   public async getMoreNotifications(page: number) {
     let result = await notificationService.getMoreNotifications(page)
-    this.notifications = [...this.notifications, ...result]
-    return result.length
+    this.notifications = [...this.notifications, ...result.items]
+    return result
   }
 
   public async listenNotifications(userId: string) {

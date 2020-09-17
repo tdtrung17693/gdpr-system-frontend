@@ -1,4 +1,5 @@
 import http from '../httpService';
+import { PagedResultDto } from '../dto/pagedResultDto';
 
 export interface INotification {
     id: string;
@@ -11,9 +12,8 @@ export interface INotification {
 }
 
 class NotificationService {
-    public async getMoreNotifications(page: number) {
+    public async getMoreNotifications(page: number): Promise<PagedResultDto<INotification>> {
         let result = await http.get(`api/Notifications/more?page=${page}`)
-        console.log(result.data)
         return result.data
     }
     public async markAsRead(notificationId: string) {

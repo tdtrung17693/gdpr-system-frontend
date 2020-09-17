@@ -19,9 +19,9 @@ interface INotificationProps {
 }
 
 interface INotificationState {
+    hasMore: boolean;
     loading: boolean;
     currentPage: number;
-    hasMore: boolean;
 }
 
 @inject(Stores.NotificationStore)
@@ -29,15 +29,14 @@ interface INotificationState {
 class NotificationList extends React.Component<INotificationProps> {
     state: INotificationState = {
         loading: false,
+        hasMore: this.props.notificationStore?.currentPage! < this.props.notificationStore?.totalPages!,
         currentPage: 1,
-        hasMore: true
     }
 
     handleLoadMore = async (page: number) => {
-        console.log(page)
-        const length = await this.props.notificationStore?.getMoreNotifications(page)
+        const result = await this.props.notificationStore?.getMoreNotifications(page)
         this.setState({
-            hasMore: length < 5
+            hasMore: result?.page! <= result?.totalPages!
         })
     }
     renderNotification = (notification: INotification) => {

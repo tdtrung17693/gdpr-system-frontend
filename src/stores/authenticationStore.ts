@@ -10,11 +10,13 @@ import signalRService from '../services/signalRService';
 import { UpdateProfileInfoInput } from '../services/account/dto/updateProfileInfoInput';
 import accountService from '../services/account/accountService';
 import { ChangePasswordInput } from '../services/account/dto/changePasswordInput';
+import { PagedResultDto } from '../services/dto/pagedResultDto';
+import { INotification } from '../services/notification/notificationService';
 
 interface AppUser extends User {
   totalUnreadNotifications: number;
   permissions: string[];
-  notifications: any;
+  notifications: PagedResultDto<INotification>;
 }
 
 class AuthenticationStore {
