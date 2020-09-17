@@ -77,11 +77,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
     
     const columns:ColumnProps<GetRequestOutput>[] = [
-      {
-        title: 'ID',
-        dataIndex: 'index',
-        key: 'index',
-      },
+      
       {
         title: 'Status',
         dataIndex: 'RequestStatus',
@@ -109,16 +105,30 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       },
       {
         title: 'Create Date',
-        dataIndex: 'CreatedByNameEmail',
+        dataIndex: 'CreatedAt',
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
+        title: 'Create By',
+        dataIndex: 'CreatedByNameEmail',
+        key: 'createdAt',
+        //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
         title: 'Update Date',
-        dataIndex: 'UpdatedByNameEmail',
+        dataIndex: 'UpdatedAt',
         key: 'updatedAt',
         sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
+        sortDirections: ['descend', 'ascend']
+      },
+      {
+        title: 'Update By',
+        dataIndex: 'UpdatedByNameEmail',
+        key: 'updatedAt',
+        //sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {

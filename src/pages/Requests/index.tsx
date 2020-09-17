@@ -18,16 +18,18 @@ import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 import ProtectedComponent from '../../components/ProtectedComponent';
+import AuthenticationStore from '../../stores/authenticationStore';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
 //const { Panel } = Collapse;
 
 interface IRequestProps {
+  authenticationStore: AuthenticationStore;
   requestStore: RequestStore;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore)
 @observer
 export default class Requests extends Component<IRequestProps> {
   modalRef = React.createRef<HandleModal>();
@@ -111,6 +113,7 @@ export default class Requests extends Component<IRequestProps> {
         <ResultTable requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
 
         <HandleModal
+          //authenticationStore = {this.props.authenticationStore}
           ref={this.modalRef}
           visible={this.state.modalVisible}
           onCancel={() =>

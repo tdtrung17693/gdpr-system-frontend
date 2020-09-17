@@ -55,16 +55,18 @@ class RequestService {
     let result = await http.get(`api/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    console.log(result.data.RequestDetails)
     return result.data; 
+    
   }
 
-  public async update(requestId: string, request: GetRequestOutput){
-    let result = await http.put(`api/request`, request);
+public async update(requestId: string, request: CreateRequestInput){
+    let result = await http.put(`api/request/update/${requestId}`, request);
     console.log(result);
   }
 
   //accept decline
-  public async manage(requestId: string, request: ManageAcceptDeclineInput){
+  public async manage(request: ManageAcceptDeclineInput){
     let result = await http.put(`api/Request/manage`, request);
     console.log(result);
   }

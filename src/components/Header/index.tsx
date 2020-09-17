@@ -21,6 +21,7 @@ export interface IHeaderProps {
   notificationStore?: NotificationStore
 }
 
+
 const userDropdownMenu = (
   <Menu>
     <Menu.Item key="2">
