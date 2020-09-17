@@ -5,7 +5,7 @@ import { GetServerInput } from '../services/server/dto/GetServerInput';
 import serverService from '../services/server/serverServices';
 import { BulkServerStatus } from '../services/server/dto/BulkServerStatus';
 //import { PagedResultDtoServer } from '../services/server/dto/pagedResultDto';
-import { GetListServerFilter } from '../services/server/dto/GetListServerFilter';
+//import { GetListServerFilter } from '../services/server/dto/GetListServerFilter';
 
 import moment from 'moment';
 import { PagedResultDto } from '../services/dto/pagedResultDto';
@@ -120,11 +120,12 @@ class ServerStore {
   }
 
   @action
-  public async getListServerByFilter(filter: GetListServerFilter) {
-    if (filter.filterKey.length !== 0) {
-      let listServerByFilter = await serverService.getListServerByFilter(filter);
-      this.servers.items = listServerByFilter;
-      this.servers.totalItems = listServerByFilter.length;
+  public async getListServerByFilter(filter: PagingObject) {
+    if (filter.filterBy.length !== 0) {
+      let listServerByFilter = await serverService.getServerListByPaging(filter);
+      console.log(listServerByFilter);
+      this.servers = listServerByFilter;
+      //this.servers.totalItems = listServerByFilter.length;
     } else {
       this.getServerListByPaging({...this.pagingObj});
     }

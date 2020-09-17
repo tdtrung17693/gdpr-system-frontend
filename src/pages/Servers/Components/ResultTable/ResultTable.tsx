@@ -100,15 +100,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.setState({ selectedRowKeys });
   };
 
-  // ClickButton() {
-  //   this.props.serverStore.getServerListByPaging({
-  //     Page: 1,
-  //     PageSize: 10,
-  //     FilterBy: '',
-  //     SortedBy: 'ServerName',
-  //     SortOrder: true,
-  //   });
-  // }
 
   handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, Key[] | null>, sorter: SorterResult<GetServerOutput> | SorterResult<GetServerOutput>[]) => {
     let sortOrder = true;

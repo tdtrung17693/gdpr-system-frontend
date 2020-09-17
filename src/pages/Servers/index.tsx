@@ -108,7 +108,12 @@ export default class Servers extends Component<IServerProps> {
     let filter: GetListServerFilter = {
       filterKey: value,
     };
-    await this.props.serverStore.getListServerByFilter(filter);
+    this.props.serverStore.pagingObj = {
+      ...this.props.serverStore.pagingObj,
+      page: 0,
+      filterBy: filter.filterKey
+    }
+    await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
   }
 
   async handleExport(e: any) {

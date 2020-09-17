@@ -50,12 +50,13 @@ class ServerService {
 
   public async getListServerByFilter(filter: GetListServerFilter) {
     let result = await http.get(`api/server/filter/${filter.filterKey}`);
+    console.log(result);
     return result.data;
   }
 
   public async getServerListByPaging(pagingObj : any){
     let result = await http.get(`api/server/count`);
-    console.log(result.data[0].serverCount);
+    //console.log(result.data[0].serverCount);
     let result1 =  await http.post(`api/server/paging`, pagingObj);
     console.log(result1.data)
     let pagingList : PagedResultDto<GetServerOutput> = {
