@@ -7,6 +7,7 @@ import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import HistoryLogStore from '../../../../stores/historyLogStore';
 //import { Link } from 'react-router-dom';
 //import { IdcardFilled } from '@ant-design/icons';
 //import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
@@ -28,6 +29,7 @@ interface IRequests {
 
 interface RequestsProps {
   requestStore: RequestStore;
+  historyLogStore: HistoryLogStore;
   handleModalOpen: any;
 }
 
@@ -37,7 +39,7 @@ interface RequestStates {
   loading: boolean;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.HistoryLogStore)
 @observer
 export default class ResultTable extends React.Component<RequestsProps, RequestStates> {
   constructor(props: any) {

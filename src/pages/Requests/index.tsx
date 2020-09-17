@@ -18,6 +18,7 @@ import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 import ProtectedComponent from '../../components/ProtectedComponent';
+import HistoryLogStore from '../../stores/historyLogStore';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
 //import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
 
@@ -25,9 +26,10 @@ import ProtectedComponent from '../../components/ProtectedComponent';
 
 interface IRequestProps {
   requestStore: RequestStore;
+  historyLogStore: HistoryLogStore;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.HistoryLogStore)
 @observer
 export default class Requests extends Component<IRequestProps> {
   modalRef = React.createRef<HandleModal>();
@@ -108,7 +110,7 @@ export default class Requests extends Component<IRequestProps> {
             onSearch={(value) => this.props.requestStore.getSearch(value)}
           />
         </div>
-        <ResultTable requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
+        <ResultTable historyLogStore = {this.props.historyLogStore} requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
 
         <HandleModal
           ref={this.modalRef}

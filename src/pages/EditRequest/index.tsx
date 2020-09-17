@@ -12,6 +12,7 @@ import AuthenticationStore from '../../stores/authenticationStore';
 import ApproveRequestForm from "./Components/ApproveRequestForm/ApproveRequestForm";
 
 import './index.less'
+import HistoryLogStore from '../../stores/historyLogStore';
 
 interface IRequests {
   key: string;
@@ -32,6 +33,7 @@ interface IRequestProps {
   match: {params: any};
   notificationStore: NotificationStore;
   authenticationStore: AuthenticationStore;
+  historyLogStore: HistoryLogStore;
   location: any;
 }
 
@@ -40,7 +42,7 @@ interface IRequestStates {
   loading: boolean;
 }
 
-@inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore, Stores.HistoryLogStore)
 @observer
 export default class EditRequest extends Component<IRequestProps, IRequestStates> {
   modalRef = React.createRef<FormInstance>();
@@ -142,9 +144,8 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
             </Card>
           </Col>
           <Col span={12}>
-              <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
-            <span>Log Box</span>
-            <LogBox />
+            <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
+            <LogBox requestId = {this.props.match.params.id} historyLogStore = {this.props.historyLogStore} />
           </Col>
         </Row>
       </>
