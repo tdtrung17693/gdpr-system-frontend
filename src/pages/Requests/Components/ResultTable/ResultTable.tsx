@@ -51,6 +51,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       loading: false,
       data: [],
     };
+    this.handleBulkExportClick = this.handleBulkExportClick.bind(this)
   }
 
   exportToCSV = (csvData: unknown[], fileName: string) => {
@@ -61,9 +62,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     FileSaver.saveAs(data, fileName + '.xlsx');
   }
 
-  handleExportClick = () => {
-    http.post(`api/Request/exportRequest`, {
-      guids: this.state.selectedRowKeys
+  handleBulkExportClick = () => {
+    console.log(this.state.selectedRowKeys.toString())
+    http.post(`api/Request/bulkExport`, {
+      idList: this.state.selectedRowKeys.toString()
     })
       .then((requests) => {
         this.setState({
@@ -314,8 +316,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading} >
-            Reload
+          <Button type="primary" onClick={this.handleBulkExportClick} disabled={!hasSelected} loading={loading} >
+            Export
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
