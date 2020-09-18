@@ -54,6 +54,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         console.log(this.props.authenticationStore.user?.id);
         this.props.requestStore.manage(valuesUpdate)
+        this.props.requestStore.updateAcceptDecline("Open",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         message.info("Approve Request Successfully");
       })
   }
@@ -74,6 +75,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         console.log(valuesUpdate);
         this.props.requestStore.manage(valuesUpdate)
+        this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         message.info("Cancel Request Successfully");
       })
   }
@@ -91,6 +93,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         console.log(valuesUpdate);
         this.props.requestStore.manage(valuesUpdate)
+        this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         message.info("Decline Request Successfully");
       })
   }

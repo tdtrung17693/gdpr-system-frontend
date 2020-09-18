@@ -1,6 +1,6 @@
 export interface GetRequestOutput {
     Id: string;
-    key?: string
+    key: string
     status: string;
     createdDate: string;
     createdBy: string;

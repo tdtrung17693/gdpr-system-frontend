@@ -47,6 +47,7 @@ interface IRequestStates {
   modalVisible: boolean;
   requests: IRequests[];
   loading: boolean;
+  status: string;
 }
 
 @inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore, Stores.HistoryLogStore)
@@ -60,6 +61,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       modalVisible: false,
       requests: [],
       loading: false,
+      status: '',
     };
   }
 
@@ -123,14 +125,14 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       ?.validateFields()
       .then((values: any) => {
         console.log(values);
-        if (!(values.title) && !(values.startDate) && !(values.startDate) && !(values.serverId) && !(values.description)){message.info("No information changed !"); return;}
+        if (!(values.title) && !(values.startDate) && !(values.endDate) && !(values.serverId) && !(values.description)){message.info("No information changed !"); return;}
         let valuesUpdate: any = {
           ...values,
 
           updatedBy: this.props.authenticationStore.user?.id,  
           title: (values.title)?(values.title):{ ...this.props.requestStore.editRequest }.title,
           startDate: (values.startDate)?(values.startDate.format('YYYY-MM-DD HH:mm:ss')):{ ...this.props.requestStore.editRequest }.startDate,
-          endDate: (values.startDate)?(values.endDate.format('YYYY-MM-DD HH:mm:ss')):{ ...this.props.requestStore.editRequest }.endDate,
+          endDate: (values.endDate)?(values.endDate.format('YYYY-MM-DD HH:mm:ss')):{ ...this.props.requestStore.editRequest }.endDate,
           serverId: (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
           description: (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''),
         };
@@ -138,7 +140,17 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
           else{
           this.props.requestStore.update({ ...this.props.requestStore.editRequest }.Id,valuesUpdate)
-          
+          this.props.requestStore.updateData({ ...this.props.requestStore.editRequest }.status,
+            "John the Admin - john@admin.com",
+            //{ ...this.props.requestStore.editRequest }.updatedBy,
+            new Date().toLocaleString(),
+            (values.title)?(values.title):{ ...this.props.requestStore.editRequest }.title,
+            (values.startDate)?(values.startDate.format('YYYY-MM-DD HH:mm:ss')):{ ...this.props.requestStore.editRequest }.startDate,
+            (values.endDate)?(values.endDate.format('YYYY-MM-DD HH:mm:ss')):{ ...this.props.requestStore.editRequest }.endDate,
+            (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
+            (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''
+            ))
+          console.log({ ...this.props.requestStore.editRequest }.updatedDate)
           message.info("Update successfully");
       }});
       this.setState({ loading: true });
@@ -254,6 +266,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                     <Form.Item >
                     {isEmployee == false ? (
                       <Button
+                      style = {{marginLeft:150}}
                       disabled={isClosed}
                       type="primary"
                       onClick={() => {

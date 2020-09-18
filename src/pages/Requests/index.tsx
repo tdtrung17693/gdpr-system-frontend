@@ -13,10 +13,11 @@ import HandleModal from './Components/CreateModal/HandleModal';
 import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
-import ProtectedComponent from '../../components/ProtectedComponent';
+//import ProtectedComponent from '../../components/ProtectedComponent';
 import AuthenticationStore from '../../stores/authenticationStore';
 import HistoryLogStore from '../../stores/historyLogStore';
 import UserStore from '../../stores/userStore';
+import ProtectedComponent from '../../components/ProtectedComponent';
 
 interface IRequestProps {
   authenticationStore: AuthenticationStore;

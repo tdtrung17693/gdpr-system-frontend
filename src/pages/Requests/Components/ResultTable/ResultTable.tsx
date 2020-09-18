@@ -8,6 +8,9 @@ import { GetRequestOutput } from '../../../../services/request/dto/getRequestOut
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import HistoryLogStore from '../../../../stores/historyLogStore';
+import FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import http from '../../../../services/httpService';
 
 interface IRequests {
   key: string;
@@ -34,6 +37,7 @@ interface RequestStates {
   requests: IRequests[];
   selectedRowKeys: any;
   loading: boolean;
+  data: any[];
 }
 
 @inject(Stores.RequestStore, Stores.HistoryLogStore)
@@ -45,7 +49,34 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       requests: [],
       selectedRowKeys: [],
       loading: false,
+      data: [],
     };
+  }
+
+  exportToCSV = (csvData: unknown[], fileName: string) => {
+    const ws = XLSX.utils.json_to_sheet(csvData);
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    FileSaver.saveAs(data, fileName + '.xlsx');
+  }
+
+  handleExportClick = () => {
+    http.post(`api/Request/exportRequest`, {
+      guids: this.state.selectedRowKeys
+    })
+      .then((requests) => {
+        this.setState({
+          data: requests.data,
+        });
+        console.log(this.state.data)
+        this.exportToCSV(this.state.data, 'excel')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+
   }
 
   componentDidMount() {
@@ -64,6 +95,20 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         loading: false,
       });
     }, 1000);
+    http.post(`api/Request/exportRequest`, {
+      guids: this.state.selectedRowKeys
+    })
+      .then((requests) => {
+        this.setState({
+          data: requests.data,
+        });
+        console.log(this.state.data)
+        this.exportToCSV(this.state.data, 'excel')
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
   };
 
   onSelectChange = (selectedRowKeys: any) => {
@@ -169,6 +214,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         <Button type='primary' size ='small' onClick={()=> {this.props.requestStore.currentId=key}}>Detail</Button>
         </Link>)
       },
+
     ];
 
     const columnsEmployee:ColumnProps<GetRequestOutput>[] = [
@@ -268,8 +314,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>
-            Export
+          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading} >
+            Reload
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
