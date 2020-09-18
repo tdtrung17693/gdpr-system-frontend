@@ -22,15 +22,29 @@ class RequestStore {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
+    
   }
 
-  @action
-  async manageAccDecl(requestId: string, request: ManageAcceptDeclineInput) {
-    let result = await requestService.manage(requestId,request);
-    console.log(result)
+  @action updateAcceptDecline(nStatus: string, updatedby: string, updateat: string){
+    this.editRequest.status = nStatus;
+    this.editRequest.updatedBy = updatedby;
+    this.editRequest.updatedDate = updateat;
   }
 
-  
+  @action updateData(status: string, 
+    updatedby: string, updateat: string, title: string, 
+    fromdate: string, todate: string, 
+    serverid: string, description: string){
+    this.editRequest.status = status;
+    this.editRequest.updatedBy = updatedby;
+    this.editRequest.updatedDate = updateat;
+    this.editRequest.title = title;
+    this.editRequest.startDate = fromdate;
+    this.editRequest.endDate = todate;
+    this.editRequest.serverId = serverid;
+    this.editRequest.description = description;
+  }
+
   @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
@@ -42,7 +56,6 @@ class RequestStore {
     let result = await requestService.getFilter(filterStatus);
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
-    console.log(this.requests.items)
   }
 
   @action
@@ -52,6 +65,13 @@ class RequestStore {
   }
 
   @action
+  async manage(request: ManageAcceptDeclineInput) {
+    await requestService.manage(request);
+    
+  }
+
+
+  @action
   async create(request: CreateRequestInput) {
     await requestService.create(request);
   }
@@ -59,17 +79,20 @@ class RequestStore {
   @action
   async createRequest() {
     this.editRequest = {
-      id: '',
+      Id: '',
       status: '',
       createdDate: '',
       createdBy: '',
       updatedDate: '',
       updatedBy: '',
       serverId: '',
+      serverIP: '',
+      serverName: '',
       title: '',
       startDate: '',
       endDate: '',
-
+      RoleName: '',
+      key: ''
     };
   }
 
@@ -82,31 +105,37 @@ class RequestStore {
   @action
   async get(requestId: string) {
     let result = await requestService.get(requestId);
+    
     this.editRequest = {
-      id: result.Id,
-      status: result.RequestStatus,
-      createdDate: result.CreatedAt,
-      createdBy: result.CreatedByName,
-      updatedDate: result.UpdatedAt,
-      updatedBy: result.UpdatedByName,
-      serverId: result.ServerId,
-      title: result.Title,
-      startDate: result.StartDate,
-      endDate: result.EndDate,
+      Id: result.RequestDetails.Id,
+      status: result.RequestDetails.RequestStatus,
+      createdDate: result.RequestDetails.CreatedAt,
+      createdBy: result.RequestDetails.CreatedByNameEmail,
+      updatedDate: result.RequestDetails.UpdatedAt,
+      updatedBy: result.RequestDetails.UpdatedByNameEmail,
+      serverId: result.RequestDetails.ServerId,
+      serverIP: result.RequestDetails.ServerIP,
+      serverName: result.RequestDetails.ServerName,
+      title: result.RequestDetails.Title,
+      startDate: result.RequestDetails.StartDate,
+      endDate: result.RequestDetails.EndDate,
+      RoleName: result.RequestDetails.RoleName,
+      key: result.RequestDetails.Id
     };
+    
   }
 
   
 
   @action
-  async update(requestId: string, request: GetRequestOutput) {
+  async update(requestId: string, request: CreateRequestInput) {
     await requestService.update(requestId, request);
-    this.requests.items = this.requests.items.map((oldRequest:GetRequestOutput)=>{
-      if(oldRequest?.id === requestId){
-        oldRequest = {...oldRequest,...request};
-      }
-      return oldRequest;
-    });
+    // this.requests.items = this.requests.items.map((oldRequest:CreateRequestInput)=>{
+    //   if(oldRequest?.id === requestId){
+    //     oldRequest = {...oldRequest,...request};
+    //   }
+    //   return oldRequest;
+    // });
   }
 }
 export default RequestStore;

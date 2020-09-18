@@ -5,7 +5,7 @@ import { CreateRequestInput } from './dto/createRequestInput';
 import http from '../httpService';
 import serverServices from '../server/serverServices';
 import {ManageAcceptDeclineInput} from './dto/manageAcceptDeclineInput';
-
+import {BulkRequestExport} from './dto/bulkRequestExport';
 class RequestService {
   public async create(createRequestInput: CreateRequestInput){
       let result = await http.post('api/request/create', createRequestInput);
@@ -55,18 +55,23 @@ class RequestService {
     let result = await http.get(`api/request/${requestId}`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
     });
+    
     return result.data; 
+    
   }
 
-  public async update(requestId: string, request: GetRequestOutput){
-    let result = await http.put(`api/request`, request);
-    console.log(result);
+  public async update(requestId: string, request: CreateRequestInput){
+    await http.put(`api/request/update/${requestId}`, request);
   }
 
   //accept decline
-  public async manage(requestId: string, request: ManageAcceptDeclineInput){
-    let result = await http.put(`api/Request/manage`, request);
-    console.log(result);
+  public async manage(request: ManageAcceptDeclineInput){
+    await http.put(`api/Request/manage`, request);
+  }
+
+  public async exportBulk(request: BulkRequestExport){
+    await http.put(`api/Request/manage/`, request);
+    
   }
 
   public async getServerList(){

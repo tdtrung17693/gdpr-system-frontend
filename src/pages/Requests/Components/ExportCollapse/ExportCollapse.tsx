@@ -34,8 +34,8 @@ export default class ExportCollapse extends Component<any, any> {
   }
 
   handleExportClick = () => {
-    console.log(this.state.fromDate)
-    console.log(this.state.toDate)
+    
+    
     http.post(`api/Request/exportRequest`, {
       fromDate: this.state.fromDate,
       toDate: this.state.toDate,
@@ -47,11 +47,11 @@ export default class ExportCollapse extends Component<any, any> {
         this.setState({
           datas: requests.data,
         });
-        console.log(this.state.datas)
+        
         this.exportToCSV(this.state.datas, 'excel')
       })
       .catch((error) => {
-        console.log(error);
+        
       });
 
 
@@ -65,10 +65,10 @@ export default class ExportCollapse extends Component<any, any> {
         this.setState({
           datas: requests.data,
         });
-        console.log((this.state.datas) ? this.state.datas : "Null :(")
+        
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }
 
