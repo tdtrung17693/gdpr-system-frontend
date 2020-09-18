@@ -84,19 +84,17 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
         <><Button type="primary" onClick={this.showModal}>
           Create a new requests
         </Button>
-          
         <Modal
+          maskClosable={false}
           visible={visible}
           title={'Create a new requests'}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          //onCancel={this.handleCancel}
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
             </Button>,
-            <Button key="back" onClick={this.handleCancel}>
-              Cancel
-            </Button>,
+            
           ]}
         >
           <Form {...this.layout} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
