@@ -14,4 +14,5 @@ export interface GetRequestOutput {
     startDate: string;
     endDate: string;
     Index?: number;
+    RoleName: string
 }

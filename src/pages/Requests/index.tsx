@@ -16,18 +16,16 @@ import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 import ProtectedComponent from '../../components/ProtectedComponent';
 import AuthenticationStore from '../../stores/authenticationStore';
 import HistoryLogStore from '../../stores/historyLogStore';
-//import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
-//import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
-
-//const { Panel } = Collapse;
+import UserStore from '../../stores/userStore';
 
 interface IRequestProps {
   authenticationStore: AuthenticationStore;
   requestStore: RequestStore;
   historyLogStore: HistoryLogStore;
+  userStore: UserStore;
 }
 
-@inject(Stores.RequestStore, Stores.HistoryLogStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.HistoryLogStore, Stores.AuthenticationStore, Stores.UserStore)
 @observer
 export default class Requests extends Component<IRequestProps> {
   modalRef = React.createRef<HandleModal>();

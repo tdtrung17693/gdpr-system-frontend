@@ -135,8 +135,14 @@ export default class Customers extends React.Component<ICustomerProps> {
   };
 
   onSelectChange = (selectedRowKeys: any) => {
+<<<<<<< HEAD
     //console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+=======
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    console.log(this.state.data)
+    this.setState({ selectedRowKeys });     
+>>>>>>> 2b8399ecd4a4a639bfbe5b4d9c44f69a128884e1
   };
 
   componentDidMount() {
