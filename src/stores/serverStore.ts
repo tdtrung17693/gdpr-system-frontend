@@ -123,7 +123,6 @@ class ServerStore {
   public async getListServerByFilter(filter: PagingObject) {
     if (filter.filterBy.length !== 0) {
       let listServerByFilter = await serverService.getServerListByPaging(filter);
-      console.log(listServerByFilter);
       this.servers = listServerByFilter;
     } else {
       this.pagingObj.filterBy = "";

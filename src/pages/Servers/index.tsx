@@ -64,6 +64,7 @@ export default class Servers extends Component<IServerProps> {
     fromDate: Date(),
     toDate: Date(),
     guids: [],
+    filterString: '',
   };
 
   async createOrUpdateModalOpen(params: any) {
@@ -108,6 +109,7 @@ export default class Servers extends Component<IServerProps> {
     let filter: GetListServerFilter = {
       filterKey: value,
     };
+    this.setState({filterString: filter.filterKey});
     this.props.serverStore.pagingObj = {
       ...this.props.serverStore.pagingObj,
       page: 0,
@@ -173,7 +175,7 @@ export default class Servers extends Component<IServerProps> {
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
 
-        <ResultTable serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
+        <ResultTable filterString = {this.state.filterString} serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
 
         <CreateOrUpdateModal
           ref={this.modalRef}

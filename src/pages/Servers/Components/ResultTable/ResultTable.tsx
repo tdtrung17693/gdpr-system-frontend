@@ -17,6 +17,7 @@ interface ServersProps {
   serverStore: ServerStore;
   createOrUpdateModalOpen: any;
   authenticationStore: AuthenticationStore;
+  filterString: string;
 }
 
 interface ServerStates {
@@ -104,16 +105,16 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, Key[] | null>, sorter: SorterResult<GetServerOutput> | SorterResult<GetServerOutput>[]) => {
     let sortOrder = true;
     let sortedBy = '';
-    let filterString = "";
+    //let filterString = "";
     if (!Array.isArray(sorter)) {
       sortOrder = sorter.order === 'ascend' ? true : false;
       sortedBy = String(sorter.columnKey);
     }
-    this.setState({pageSize : pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, filterBy: filterString }, async () => {
+    this.setState({pageSize : pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, filterBy: this.props.filterString }, async () => {
       this.props.serverStore.pagingObj = {
         pageSize: this.state.pageSize,
         page: this.state.page,
-        filterBy: this.state.filterBy,
+        filterBy: this.props.filterString,
         sortOrder: this.state.sortOrder,
         sortedBy: this.state.sortedBy
       }
