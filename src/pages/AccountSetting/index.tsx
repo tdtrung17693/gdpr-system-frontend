@@ -58,16 +58,16 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
       .then((response) => {
         if (!response.data) return;
         this.setState({ imageUrl: 'data:image/png;base64,' + response.data.content, currentAvatarId: response.data.id });
-        console.log(response.data)
+        
       })
       .catch(function (error) {
-        console.log(error);
+        
       });
   }
 
   componentDidMount = async () => {
     await this.fetchAvatar();
-    console.log(this.state.currentAvatarId);
+    
   }
 
   handleAvatarChange = (info: any) => {
@@ -76,7 +76,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
       return;
     }
     if (info.file.status === 'done') {
-      console.log(info)
+      
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (imageUrl: any) => {
         this.setState({
@@ -91,10 +91,10 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
             content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
           }).then((response) => {
             this.setState({ currentAvatarId: response.data.id })
-            console.log(response);
+            
           })
             .catch(function (error) {
-              console.log(error);
+              
             });
         }
         else {

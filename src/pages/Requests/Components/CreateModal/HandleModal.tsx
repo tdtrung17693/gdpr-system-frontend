@@ -65,7 +65,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
+        
         let valuesUpdate: any = {
           ...values,
 
@@ -76,7 +76,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           serverId: values.serverId,
           description: (values.description) ? values.description : ''
         };
-        console.log(valuesUpdate);
+        
         if (this.props.modalType=='update'){
           if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
           else{

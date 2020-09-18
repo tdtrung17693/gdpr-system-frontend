@@ -101,7 +101,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       this.getAllServer();
     }
     else if (e.target.value == 'owned'){
-      //console.log(this.props.modalKey.key);
+      //
       this.getOwnedServer(this.props.modalKey.key);
     }
     else{
@@ -129,8 +129,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         this.setState({unassignedServers: this.state.unassignedServers.concat(e.target.value.id)});
       }
     }
-    // console.log(this.state.assignedServers)
-    // console.log(this.state.unassignedServers)
+    // 
+    // 
   }
 
   //Search
@@ -172,7 +172,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     this.props.onCancel();
     this.setState({optionValue: 'all'}); 
     this.getAllServer(); 
-    //console.log(this.state.optionValue);
+    //
   }
 
   render() {

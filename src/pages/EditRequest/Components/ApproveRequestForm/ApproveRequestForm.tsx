@@ -47,14 +47,14 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
     this.formRef.current
       ?.validateFields()
       .then(async (values: any) => {
-        console.log(values);
+        
         let valuesUpdate: any = {
           answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been accepted',
           userId: this.props.authenticationStore.user?.id,
           status: "Open",
           requestId: this.props.requestId
         };
-        console.log(this.props.authenticationStore.user?.id);
+        
         await this.props.requestStore.manage(valuesUpdate)
         await this.props.requestStore.updateAcceptDecline("Open",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
@@ -68,7 +68,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
+        
         let valuesUpdate: any = {
           answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been canceled',
 
@@ -76,7 +76,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
           status: "Closed",
           requestId: this.props.requestId
         };
-        console.log(valuesUpdate);
+        
         this.props.requestStore.manage(valuesUpdate)
         this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
@@ -87,7 +87,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
+        
         let valuesUpdate: any = {
           answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been declined',
 
@@ -95,7 +95,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
           status: "Closed",
           requestId: this.props.requestId
         };
-        console.log(valuesUpdate);
+        
         this.props.requestStore.manage(valuesUpdate)
         this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
         this.props.historyLogStore?.getLogOfRequest(this.props.requestId)

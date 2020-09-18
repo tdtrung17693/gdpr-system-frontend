@@ -11,6 +11,7 @@ import AuthenticationStore from '../../../../stores/authenticationStore';
 import { TablePaginationConfig } from 'antd/lib/table';
 import { Key, SorterResult} from 'antd/lib/table/interface';
 import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
+import moment from 'moment';
 //import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
 interface ServersProps {
@@ -83,8 +84,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    console.log(this.props.serverStore.servers.items)
+    
+    
     this.setState({ selectedRowKeys });
   };
 
@@ -130,12 +131,18 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: 'StartDate',
         dataIndex: 'startDate',
-        key: 'startDate'
+        key: 'startDate',
+        render: (e: Date) => {
+          return <div>{e ? moment(e).format("DD/MM/YYYY") : ''}</div>
+        }
       },
       {
         title: 'EndDate',
         dataIndex: 'endDate',
-        key: 'endDate'
+        key: 'endDate',
+        render: (e: Date) => {
+          return <div>{e ? moment(e).format("DD/MM/YYYY") : ''}</div>
+        }
       },
       {
         title: 'Owner',
@@ -160,11 +167,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
             </Tag>
           );
         },
-        filters: [
-          { text: 'active', value: 'active' },
-          { text: 'inactive', value: 'inactive' },
-        ],
-        filteredValue: filteredInfo.IsActive || null,
       },
       {
         title: '',
@@ -177,7 +179,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     ];
 
     if (this.props.serverStore.servers.items.length !== 0) {
-      //console.log(this.props.serverStore.servers.items);
+      //
       this.props.serverStore.servers.items.forEach((serverObject: any, index: number) => {
         this.props.serverStore.handleServerMember(serverObject.status, index);
       });

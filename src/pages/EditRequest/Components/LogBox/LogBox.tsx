@@ -21,7 +21,7 @@ export class LogBox extends React.Component<LogProps, LogState> {
 
   async getListLogs() {
     await this.props.historyLogStore?.getLogOfRequest(this.props.requestId);
-    console.log(this.props.historyLogStore?.historyLog.items);
+    
   }
 
   renderLogItem = (log: any) => {

@@ -30,7 +30,7 @@ const exportToCSV = (csvData: any, fileName: any) => {
   const csvDataRequest = csvData.map((e: any) => e[0]);
 
   const ws = XLSX.utils.json_to_sheet(csvDataRequest);
-  //console.log(ws);
+  //
   const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   const data = new Blob([excelBuffer], { type: fileType });

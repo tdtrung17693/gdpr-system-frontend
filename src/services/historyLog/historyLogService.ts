@@ -9,7 +9,7 @@ class HistoryLogService {
     await http.get(`api/historylog/${requestId}`).then((res:any) => {
         listLogs.items = res.data;
     });
-    console.log(listLogs);
+    
     return listLogs;
   }
 }

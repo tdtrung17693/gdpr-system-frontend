@@ -51,7 +51,7 @@ class ServerService {
 
   public async getServerListByPaging(pagingObj: any) {
     let result = await http.post(`api/server/count`, { filterString: pagingObj.filterBy });
-    //console.log(result.data[0].serverCount);
+    //
     let result1 = await http.post(`api/server/paging`, pagingObj);
     let pagingList: PagedResultDto<GetServerOutput> = {
       totalItems: result.data[0].serverCount - pagingObj.pageSize,

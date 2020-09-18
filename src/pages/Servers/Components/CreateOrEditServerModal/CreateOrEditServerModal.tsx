@@ -45,7 +45,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
 
   handleOk = () => {
-    //console.log(values);
+    //
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, visible: false});
@@ -77,7 +77,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
 
   render() {
-    console.log("i am rendering");
+    
     const { visible, loading } = this.state;
     const config: any = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],

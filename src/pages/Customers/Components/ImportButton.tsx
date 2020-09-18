@@ -16,8 +16,8 @@ export default function ImportButton(this: any) {
       authorization: 'authorization-text',
     },
     onChange(info: any) {
-      // console.log(info.fileList);
-      // console.log(importData);
+      // 
+      // 
       if (info.file.status !== 'uploading') {
         let reader = new FileReader();
         reader.onload = (e: any) => {
@@ -36,7 +36,7 @@ export default function ImportButton(this: any) {
   };
 
   const handleImport = async () => {
-    //console.log(importData.length);  
+    //  
     if (importData.length != 0){
       for (let i=1; i < importData.length - 1; i++){
         let csv_name = importData[i][0];
@@ -54,7 +54,7 @@ export default function ImportButton(this: any) {
           customerName: csv_name,
         })
         .then((response: any) =>{
-          //console.log(response);
+          //
         })
         .catch((error: any) => {
           setImportData([]); 

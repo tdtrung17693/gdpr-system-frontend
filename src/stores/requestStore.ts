@@ -22,7 +22,7 @@ class RequestStore {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
-    console.log()
+    
   }
 
   @action updateAcceptDecline(nStatus: string, updatedby: string, updateat: string){
@@ -66,8 +66,8 @@ class RequestStore {
 
   @action
   async manage(request: ManageAcceptDeclineInput) {
-    let result = await requestService.manage(request);
-    console.log(result)
+    await requestService.manage(request);
+    
   }
 
 
@@ -105,7 +105,7 @@ class RequestStore {
   @action
   async get(requestId: string) {
     let result = await requestService.get(requestId);
-    console.log(result);
+    
     this.editRequest = {
       Id: result.RequestDetails.Id,
       status: result.RequestDetails.RequestStatus,
@@ -122,7 +122,7 @@ class RequestStore {
       RoleName: result.RequestDetails.RoleName,
       key: result.RequestDetails.Id
     };
-    console.log(this.editRequest)
+    
   }
 
   

@@ -66,7 +66,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         statusText: 'Active',
       })
     };
-    //console.log(e.target.value)
+    //
   }
   
   layout = {
@@ -99,11 +99,11 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         customerName: this.formRef.current?.getFieldValue('name'),
       })
         .then((response) =>{
-          //console.log(response);
+          //
           message.success(`Created successfully`);
         })
         .catch(function (error) {
-          //console.log(error);
+          //
           message.error(`Created failed`);
         });
       this.handleCancel();
@@ -119,11 +119,11 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         id: this.props.modalKey.key
       })
         .then((response) =>{
-          //console.log(response);
+          //
           message.success(`Edited successfully`);
         })
         .catch(function (error) {
-          //console.log(error);
+          //
           message.error(`Edited failed`);
         });
       
@@ -131,7 +131,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     }
     })
     
-    //console.log(e);
+    //
   };
 
   handleCancel = () => {

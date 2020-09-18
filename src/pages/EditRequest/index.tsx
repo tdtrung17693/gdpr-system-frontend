@@ -67,7 +67,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
 
   componentDidMount() {
     const { id } = this.props.match.params;
-    console.log(id);
+    
     this.getServer();
     this.props.requestStore.get(id);
     let notificationId = qs.parse(this.props.location.search, { ignoreQueryPrefix: true })._fromNotification;
@@ -109,7 +109,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
   };
   handleSave = async (request: CreateRequestInput | null, validatingErrors: Store) => {
     if (request) {
-      console.log(request);
+      
       request = {
         ...request,
       };
@@ -124,7 +124,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        console.log(values);
+        
         if (!(values.title) && !(values.startDate) && !(values.endDate) && !(values.serverId) && !(values.description)){message.info("No information changed !"); return;}
         let valuesUpdate: any = {
           ...values,
@@ -136,7 +136,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           serverId: (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
           description: (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''),
         };
-        console.log(valuesUpdate);
+        
           if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
           else{
           this.props.requestStore.update({ ...this.props.requestStore.editRequest }.Id,valuesUpdate)
@@ -150,7 +150,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
             (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
             (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''
             ))
-          console.log({ ...this.props.requestStore.editRequest }.updatedDate)
+          
           message.info("Update successfully");
       }});
       this.setState({ loading: true });
@@ -166,7 +166,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
 
   render() {
     const isEmployee = ({ ...this.props.requestStore.editRequest }.RoleName == 'Employee')
-    console.log(isEmployee)
+    
     let requestStatus = { ...this.props.requestStore.editRequest }.status;
     let isClosed = (requestStatus==='Closed')? true: false;
     return (

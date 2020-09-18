@@ -40,19 +40,16 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
 
   async handleImport() {
     // await this.props.serverStore.importFileServer(this.state.file);
-    console.log('done');
+    
   }
 
   async onChange(info: any) {
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
-      //reader.readAsBinaryString(new Blob(info.fileList));
       reader.readAsBinaryString(info.file.originFileObj);
       reader.onload = async (e: any) => {
-        //console.log(e.target.result);
         let data = e.target.result;
         let wordbook = XLSX.read(data, { type: 'binary' });
-        //console.log(wordbook);
         let ListNewServer: any = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
@@ -66,7 +63,6 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
             });
           });
         });
-        console.log(ListNewServer);
         await this.props.serverStore.importFileServer(ListNewServer);
       };
     }
@@ -87,6 +83,7 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   };
 
   render() {
+    
     return (
       <>
         <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange} showUploadList = {false}>
@@ -94,43 +91,7 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
             Import .CSV
           </Button>
         </Upload>
-        {this.state.isImportinng ? (
-          <Button type="primary" onClick={this.handleImport}>
-            Import
-          </Button>
-        ) : null}
       </>
     );
   }
 }
-
-// export default function ImportButton() {
-//   const props = {
-//     name: 'file',
-//     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-//     headers: {
-//       authorization: 'authorization-text',
-//     },
-//     onChange(info: any) {
-//       if (info.file.status !== 'uploading') {
-//         let reader = new FileReader();
-//         reader.onload = (e: any) => {
-//           console.log(e.target.result);
-//         };
-//         reader.readAsText(info.file.originFileObj);
-//       }
-//       if (info.file.status === 'done') {
-//         message.success(`${info.file.name} file uploaded successfully`);
-//       } else if (info.file.status === 'error') {
-//         message.error(`${info.file.name} file upload failed.`);
-//       }
-//     },
-//   };
-//   return (
-//     <Upload accept="  .xlsx" {...props}>
-//       <Button type="link" icon={<UploadOutlined />}>
-//         Import .CSV
-//       </Button>
-//     </Upload>
-//   );
-// }

@@ -69,11 +69,11 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         this.setState({
           data: requests.data,
         });
-        console.log(this.state.data)
+        
         this.exportToCSV(this.state.data, 'excel')
       })
       .catch((error) => {
-        console.log(error);
+        
       });
 
 
@@ -102,17 +102,17 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         this.setState({
           data: requests.data,
         });
-        console.log(this.state.data)
+        
         this.exportToCSV(this.state.data, 'excel')
       })
       .catch((error) => {
-        console.log(error);
+        
       });
 
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    
     this.setState({ selectedRowKeys });
   };
 
@@ -120,7 +120,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   render() {
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
     this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
-    console.log({...this.props.requestStore.requests.items})
+    
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
 
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
