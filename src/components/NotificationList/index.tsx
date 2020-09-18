@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
-import moment from 'antd/node_modules/moment';
+import moment from 'moment';
 import { CheckOutlined, DeleteOutlined, EllipsisOutlined, FileAddTwoTone } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Button, Dropdown, Empty, Menu, Space, Typography } from 'antd';

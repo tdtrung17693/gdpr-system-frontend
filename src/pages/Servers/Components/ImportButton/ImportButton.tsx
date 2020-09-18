@@ -46,13 +46,10 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   async onChange(info: any) {
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
-      //reader.readAsBinaryString(new Blob(info.fileList));
       reader.readAsBinaryString(info.file.originFileObj);
       reader.onload = async (e: any) => {
-        //console.log(e.target.result);
         let data = e.target.result;
         let wordbook = XLSX.read(data, { type: 'binary' });
-        //console.log(wordbook);
         let ListNewServer: any = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
@@ -66,7 +63,6 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
             });
           });
         });
-        console.log(ListNewServer);
         await this.props.serverStore.importFileServer(ListNewServer);
       };
     }
@@ -87,18 +83,14 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   };
 
   render() {
+    console.log("reload");
     return (
       <>
-        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange}>
+        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange} showUploadList = {false}>
           <Button type="link" icon={<UploadOutlined />}>
             Import .CSV
           </Button>
         </Upload>
-        {this.state.isImportinng ? (
-          <Button type="primary" onClick={this.handleImport}>
-            Import
-          </Button>
-        ) : null}
       </>
     );
   }
