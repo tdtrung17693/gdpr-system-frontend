@@ -25,6 +25,26 @@ class RequestStore {
     console.log()
   }
 
+  @action updateAcceptDecline(nStatus: string, updatedby: string, updateat: string){
+    this.editRequest.status = nStatus;
+    this.editRequest.updatedBy = updatedby;
+    this.editRequest.updatedDate = updateat;
+  }
+
+  @action updateData(status: string, 
+    updatedby: string, updateat: string, title: string, 
+    fromdate: string, todate: string, 
+    serverid: string, description: string){
+    this.editRequest.status = status;
+    this.editRequest.updatedBy = updatedby;
+    this.editRequest.updatedDate = updateat;
+    this.editRequest.title = title;
+    this.editRequest.startDate = fromdate;
+    this.editRequest.endDate = todate;
+    this.editRequest.serverId = serverid;
+    this.editRequest.description = description;
+  }
+
   @action
   async getSearch(keywordInput: string) {
     let result = await requestService.getSearch(keywordInput);
@@ -59,7 +79,7 @@ class RequestStore {
   @action
   async createRequest() {
     this.editRequest = {
-      id: '',
+      Id: '',
       status: '',
       createdDate: '',
       createdBy: '',
@@ -72,6 +92,7 @@ class RequestStore {
       startDate: '',
       endDate: '',
       RoleName: '',
+      key: ''
     };
   }
 
@@ -86,7 +107,7 @@ class RequestStore {
     let result = await requestService.get(requestId);
     console.log(result);
     this.editRequest = {
-      id: result.RequestDetails.Id,
+      Id: result.RequestDetails.Id,
       status: result.RequestDetails.RequestStatus,
       createdDate: result.RequestDetails.CreatedAt,
       createdBy: result.RequestDetails.CreatedByNameEmail,
@@ -99,6 +120,7 @@ class RequestStore {
       startDate: result.RequestDetails.StartDate,
       endDate: result.RequestDetails.EndDate,
       RoleName: result.RequestDetails.RoleName,
+      key: result.RequestDetails.Id
     };
     console.log(this.editRequest)
   }

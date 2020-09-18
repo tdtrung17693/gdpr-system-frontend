@@ -5,7 +5,7 @@ import { CreateRequestInput } from './dto/createRequestInput';
 import http from '../httpService';
 import serverServices from '../server/serverServices';
 import {ManageAcceptDeclineInput} from './dto/manageAcceptDeclineInput';
-
+import {BulkRequestExport} from './dto/bulkRequestExport';
 class RequestService {
   public async create(createRequestInput: CreateRequestInput){
       let result = await http.post('api/request/create', createRequestInput);
@@ -60,7 +60,7 @@ class RequestService {
     
   }
 
-public async update(requestId: string, request: CreateRequestInput){
+  public async update(requestId: string, request: CreateRequestInput){
     let result = await http.put(`api/request/update/${requestId}`, request);
     console.log(result);
   }
@@ -68,6 +68,11 @@ public async update(requestId: string, request: CreateRequestInput){
   //accept decline
   public async manage(request: ManageAcceptDeclineInput){
     let result = await http.put(`api/Request/manage`, request);
+    console.log(result);
+  }
+
+  public async exportBulk(request: BulkRequestExport){
+    let result = await http.put(`api/Request/manage/`, request);
     console.log(result);
   }
 

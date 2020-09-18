@@ -17,7 +17,7 @@ import HandleModal from './Components/CreateModal/HandleModal';
 import { Store } from 'antd/lib/form/interface';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
-import ProtectedComponent from '../../components/ProtectedComponent';
+//import ProtectedComponent from '../../components/ProtectedComponent';
 import AuthenticationStore from '../../stores/authenticationStore';
 import UserStore from '../../stores/userStore';
 //import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
@@ -52,7 +52,7 @@ export default class Requests extends Component<IRequestProps> {
     }
 
     this.setState({
-      editingRequestId: this.props.requestStore.editRequest!.id,
+      editingRequestId: this.props.requestStore.editRequest!.Id,
     });
     this.toggleModal(() => {
       this.modalRef.current?.setFieldsValues(this.props.requestStore.editRequest);
@@ -88,9 +88,9 @@ export default class Requests extends Component<IRequestProps> {
     return (
       <div style={{ overflow: 'scroll' }}>
         <h2>Requests Management</h2>
-        <ProtectedComponent requiredPermission="data:export">
+        {/* <ProtectedComponent requiredPermission="data:export"> */}
           <ExportCollapse/>
-        </ProtectedComponent>
+        {/* </ProtectedComponent> */}
         <div className="create-filter">
           <div>
             <Button
