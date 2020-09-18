@@ -6,7 +6,7 @@ import Stores from '../../../../stores/storeIdentifier';
 import { Comment, Tooltip, List } from 'antd';
 import moment from 'moment';
 interface LogProps {
-  historyLogStore: HistoryLogStore;
+  historyLogStore?: HistoryLogStore;
   requestId: string;
 }
 
@@ -19,12 +19,12 @@ export class LogBox extends React.Component<LogProps, LogState> {
   }
 
   async getListLogs() {
-    await this.props.historyLogStore.getLogOfRequest(this.props.requestId);
-    console.log(this.props.historyLogStore.historyLog.items);
+    await this.props.historyLogStore?.getLogOfRequest(this.props.requestId);
+    console.log(this.props.historyLogStore?.historyLog.items);
   }
 
   render() {
-    let logData = this.props.historyLogStore.historyLog.items.map((log: any) => {
+    let logData = this.props.historyLogStore?.historyLog.items.map((log: any) => {
       return {
         author:log.message,
         content: (

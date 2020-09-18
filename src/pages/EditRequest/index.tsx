@@ -215,13 +215,8 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 
               </Form>
               <Collapse defaultActiveKey={['1']}>
-<<<<<<< HEAD
-                <Collapse.Panel header="Update Request" key="0">
-                  <Form {...this.layout} ref={this.formRef} initialValues={{startDate: moment({ ...this.props.requestStore.editRequest }.startDate), endDate: moment(new Date({ ...this.props.requestStore.editRequest }.endDate))}}>
-=======
                 <Collapse.Panel header="Updatable Request Detail" key="0">
-                  <Form {...this.layout} ref={this.formRef}>
->>>>>>> 2b8399ecd4a4a639bfbe5b4d9c44f69a128884e1
+                  <Form {...this.layout} ref={this.formRef}  initialValues={{startDate: moment({ ...this.props.requestStore.editRequest }.startDate), endDate: moment(new Date({ ...this.props.requestStore.editRequest }.endDate))}}>
                     <Form.Item name={'title'} label="Title">
                     <Input disabled={isClosed} defaultValue={{ ...this.props.requestStore.editRequest }.title} />
                     </Form.Item>
@@ -275,23 +270,12 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 </Collapse.Panel>
               </Collapse>
             </Card>
-            {/* <HandleModal
-              ref={this.modalRef}
-              visible={this.state.modalVisible}
-              onCancel={() =>
-                this.setState({
-                  modalVisible: false,
-                })
-              }
-              modalType={'create'}
-              onSave={this.handleSave}
-              {...this.props}
-            /> */}
+            
           </Col>
 
           <Col span={12}>
             <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
-            <LogBox requestId = {this.props.match.params.id} historyLogStore = {this.props.historyLogStore} />
+            <LogBox requestId = {this.props.match.params.id}/>
           </Col>
         </Row>
       </>

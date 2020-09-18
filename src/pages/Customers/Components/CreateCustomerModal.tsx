@@ -87,7 +87,8 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
 
   //Submmit
   handleSubmit = async (e: any) => {
-    e.preventDefault();
+    this.formRef.current?.validateFields().then(async (values) => {
+      e.preventDefault();
     if (this.props.modalKey.name == undefined){
       await http.post('api/Customer',{
         contractBeginDate:  this.formRef.current?.getFieldValue('contractBeginDate'),
@@ -128,6 +129,8 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
       
       this.handleCancel();
     }
+    })
+    
     //console.log(e);
   };
 
