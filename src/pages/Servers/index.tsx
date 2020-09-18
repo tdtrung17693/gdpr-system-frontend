@@ -21,7 +21,7 @@ import AuthenticationStore from '../../stores/authenticationStore';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 
-import axios from 'axios';
+import http from '../../services/httpService';
 
 const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const fileExtension = '.xlsx';
@@ -55,8 +55,6 @@ export default class Servers extends Component<IServerProps> {
   constructor(props: IServerProps) {
     super(props);
     this.createOrUpdateModalOpen = this.createOrUpdateModalOpen.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleExport = this.handleExport.bind(this);
   }
   state = {
     modalVisible: false,
@@ -64,9 +62,10 @@ export default class Servers extends Component<IServerProps> {
     fromDate: Date(),
     toDate: Date(),
     guids: [],
+    filterString: '',
   };
 
-  async createOrUpdateModalOpen(params: any) {
+  createOrUpdateModalOpen = async (params: any) =>{
     if (params.id && params.id.length > 0) {
       await this.props.serverStore.get(params.id);
     } else {
@@ -99,21 +98,27 @@ export default class Servers extends Component<IServerProps> {
         await this.props.serverStore.create(server);
       }
       this.toggleModal(async () => {
-        await this.props.serverStore.getAll();
+        await this.props.serverStore.getServerListByPaging(this.props.serverStore.pagingObj);
       });
     }
   };
 
-  async handleSearch(value: string) {
+  handleSearch = async (value: string) => {
     let filter: GetListServerFilter = {
       filterKey: value,
     };
-    await this.props.serverStore.getListServerByFilter(filter);
+    this.setState({filterString: filter.filterKey});
+    this.props.serverStore.pagingObj = {
+      ...this.props.serverStore.pagingObj,
+      page: 0,
+      filterBy: filter.filterKey
+    }
+    await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
   }
 
-  async handleExport(e: any) {
-    axios
-      .post('http://localhost:5000/api/server/export-csv', {
+  handleExport = (e: any) => {
+    http
+      .post('api/server/export-csv', {
         fromDate: this.state.fromDate,
         toDate: this.state.toDate,
         guids: [],
@@ -167,7 +172,8 @@ export default class Servers extends Component<IServerProps> {
           </div>
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
-        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
+
+        <ResultTable filterString = {this.state.filterString} serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
 
         <CreateOrUpdateModal
           ref={this.modalRef}

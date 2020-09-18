@@ -104,9 +104,11 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       <>
         <Modal
           visible={visible}
+          transitionName='fade'
           title={modalType === 'edit' ? 'Edit Server' : 'Create a new Server'}
           onOk={this.handleOk}
           onCancel={onCancel}
+          maskClosable={false}
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save

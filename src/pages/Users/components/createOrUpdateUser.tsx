@@ -110,7 +110,8 @@ class CreateOrUpdateUser extends React.Component<ICreateOrUpdateUserProps> {
 
 
     return (
-      <Modal 
+      <Modal
+        maskClosable={false}
         transitionName="fade"
         visible={visible}
         cancelText={L('Cancel')}

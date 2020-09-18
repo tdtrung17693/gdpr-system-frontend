@@ -7,6 +7,7 @@ import customerStore from './customerStore';
 import CommentStore from './commentStore';
 import NotificationStore from './notificationStore';
 import RequestStore from './requestStore';
+import HistoryLogStore from './historyLogStore';
 
 interface RootStore  {
   authenticationStore?: AuthenticationStore;
@@ -18,6 +19,7 @@ interface RootStore  {
   commentStore?: CommentStore;
   notificationStore?: NotificationStore;
   requestStore?: RequestStore;
+  historyLogStore? : HistoryLogStore;
 }
 export let stores:RootStore = {};
 
@@ -32,7 +34,8 @@ export default async function  initializeStores() {
     customerStore: new customerStore(),
     commentStore: new CommentStore(),
     notificationStore: new NotificationStore(),
-    requestStore: new RequestStore()
+    requestStore: new RequestStore(),
+    historyLogStore: new HistoryLogStore(),
   };
 
   await stores.authenticationStore?.init();

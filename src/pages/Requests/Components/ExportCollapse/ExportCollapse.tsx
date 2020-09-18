@@ -65,7 +65,7 @@ export default class ExportCollapse extends Component<any, any> {
         this.setState({
           datas: requests.data,
         });
-        console.log((this.state.datas) ? this.state.datas : "Null :(")
+        console.log((this.state.datas) ? this.state.datas : "No data")
       })
       .catch((error) => {
         console.log(error);

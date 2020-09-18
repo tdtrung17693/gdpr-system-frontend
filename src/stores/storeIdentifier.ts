@@ -9,4 +9,5 @@ export default class Stores {
   static CommentStore: string = 'commentStore';
   static NotificationStore: string = 'notificationStore';
   static RequestStore: string = 'requestStore';
+  static HistoryLogStore: string = 'historyLogStore';
 }

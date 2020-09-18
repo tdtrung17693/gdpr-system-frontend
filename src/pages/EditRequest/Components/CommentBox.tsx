@@ -135,7 +135,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   }
 
   componentWillUnmount() {
-    console.log('Unmount');
     this.leaveGroup(this.props.requestId);
     signalRService.off('commentCreated');
     signalRService.off('commentDeleted');

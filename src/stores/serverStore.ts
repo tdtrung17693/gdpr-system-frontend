@@ -4,25 +4,53 @@ import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 import { GetServerInput } from '../services/server/dto/GetServerInput';
 import serverService from '../services/server/serverServices';
 import { BulkServerStatus } from '../services/server/dto/BulkServerStatus';
-import { PagedResultDtoServer } from '../services/server/dto/pagedResultDto';
-import { GetListServerFilter } from '../services/server/dto/GetListServerFilter';
+//import { PagedResultDtoServer } from '../services/server/dto/pagedResultDto';
+//import { GetListServerFilter } from '../services/server/dto/GetListServerFilter';
 
 import moment from 'moment';
+import { PagedResultDto } from '../services/dto/pagedResultDto';
 //import { UpdateServerInput } from '../services/server/dto/UpdateServerInput';
 
+export interface PagingObject {
+  page : number | undefined,
+  pageSize: number | undefined,
+  filterBy: string,
+  sortedBy: string,
+  sortOrder: boolean,
+}
 class ServerStore {
-  @observable servers: PagedResultDtoServer<GetServerOutput> = {
-    totalCount: 0,
+  @observable servers: PagedResultDto<GetServerOutput> = {
+    totalItems: 0,
+    totalPages: 0,
+    page: 1,
     items: [],
   };
+
+  @observable pagingObj: PagingObject = {
+    page : 1,
+    pageSize : 10,
+    filterBy : '',
+    sortedBy : 'ServerName',
+    sortOrder : true,
+  };
+
   @observable editServer!: GetServerInput;
+  @observable loading: boolean = false;
 
   @action
-  async getAll() {
-    let result = await serverService.getAll();
-    this.servers.items = result.items;
-    this.servers.totalCount = result.totalCount;
+  public async getServerListByPaging(pagingObj: any) {
+    this.loading = true;
+    let result = await serverService.getServerListByPaging(pagingObj);
+    this.servers = result;
+    this.loading = false;
   }
+
+  // @action
+  // async getAll() {
+  //   let result = await serverService.getAll();
+  //   this.serverList.items = result.items;
+  //   this.serverList.totalCount = result.totalCount;
+  // }
 
   @action
   async create(server: GetServerInput) {
@@ -54,9 +82,9 @@ class ServerStore {
     this.servers.items[index].key = '' + index;
     this.servers.items[index].Index = index + 1;
     this.servers.items[index].IsActive = this.servers.items[index].status ? 'active' : 'inactive';
-    this.servers.items[index].startDate = this.servers.items[index].startDate? moment(this.servers.items[index].startDate).format("YYYY-MM-DD"): '';
-    this.servers.items[index].endDate = this.servers.items[index].endDate? moment(this.servers.items[index].endDate).format("YYYY-MM-DD") : '';
-    this.servers.items[index].cusName = this.servers.items[index].cusName? this.servers.items[index].cusName : '';
+    this.servers.items[index].startDate = this.servers.items[index].startDate ? moment(this.servers.items[index].startDate).format('YYYY-MM-DD') : '';
+    this.servers.items[index].endDate = this.servers.items[index].endDate ? moment(this.servers.items[index].endDate).format('YYYY-MM-DD') : '';
+    this.servers.items[index].cusName = this.servers.items[index].cusName ? this.servers.items[index].cusName : '';
   }
 
   @action
@@ -95,14 +123,13 @@ class ServerStore {
   }
 
   @action
-  public async getListServerByFilter(filter: GetListServerFilter) {
-    if (filter.filterKey.length !== 0) {
-      let listServerByFilter = await serverService.getListServerByFilter(filter);
-      this.servers.items = listServerByFilter;
-      this.servers.totalCount = listServerByFilter.length;
-    }
-    else{
-      this.getAll();
+  public async getListServerByFilter(filter: PagingObject) {
+    if (filter.filterBy.length !== 0) {
+      let listServerByFilter = await serverService.getServerListByPaging(filter);
+      this.servers = listServerByFilter;
+    } else {
+      this.pagingObj.filterBy = "";
+      this.getServerListByPaging({...this.pagingObj});
     }
   }
 }

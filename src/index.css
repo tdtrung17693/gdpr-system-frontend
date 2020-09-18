@@ -16,6 +16,16 @@ body {
     justify-content: center;
 }
 
+.ant-table-tbody {
+    background-color: #ffffff;
+}
+
+ .ant-tag-green {
+     display: inline-block;
+     overflow: hidden;
+     text-overflow: ellipsis;
+ }
+
 .blinking-text {
     display: block;
     margin-top: 1rem;

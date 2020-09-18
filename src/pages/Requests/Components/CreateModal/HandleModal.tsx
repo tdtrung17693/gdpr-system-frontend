@@ -8,12 +8,14 @@ import TextArea from 'antd/lib/input/TextArea';
 import { Select } from 'antd';
 import RequestStore from '../../../../stores/requestStore';
 import { CreateRequestInput } from '../../../../services/request/dto/createRequestInput';
+import AuthenticationStore from '../../../../stores/authenticationStore';
 
 const { Option } = Select;
 
 
 interface RequestsProps {
   requestStore: RequestStore;
+  authenticationStore: AuthenticationStore;
   visible: boolean;
   onCancel: () => void;
   modalType: string;
@@ -25,7 +27,7 @@ interface RequestStates {
   handleModalOpen: boolean;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore)
 @observer
 export default class HandleModal extends Component<RequestsProps, RequestStates> {
   formRef = React.createRef<FormInstance>();
@@ -67,7 +69,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
         let valuesUpdate: any = {
           ...values,
 
-          createdBy: 'B2039BE6-AD14-4B07-A4B1-C605E293571A',  
+          createdBy: this.props.authenticationStore.user?.id,  
           title: values.title,
           startDate: values.startDate.format('YYYY-MM-DD HH:mm:ss'),
           endDate: values.endDate.format('YYYY-MM-DD HH:mm:ss'),
@@ -75,10 +77,19 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           description: (values.description) ? values.description : ''
         };
         console.log(valuesUpdate);
-        if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+        if (this.props.modalType=='update'){
+          if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Update fail. StartDate must before EndDate")}
+          else{
+          this.props.onSave(valuesUpdate, null);
+          message.info("Update successfully");
+          }
+        }
         else{
-        this.props.onSave(valuesUpdate, null);
-        message.info("Create successfully");
+          if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+          else{
+          this.props.onSave(valuesUpdate, null);
+          message.info("Create successfully");
+          }
         }
       })
       .catch((errors) => {
@@ -114,9 +125,6 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
   render() {
     const { loading } = this.state;
     const { visible, onCancel} = this.props;
-
-    
-
     return (
       <>
         <Modal
@@ -124,6 +132,8 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           title={'Create a new Request'}
           onOk={this.handleOk}
           onCancel={onCancel}
+          maskClosable={false}
+          transitionName='fade'
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
@@ -134,16 +144,16 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           ]}
         >
           <Form {...this.layout} ref= {this.formRef} name="nest-messages" /*onFinish={this.onFinish}*/ validateMessages={this.validateMessages}>
-            <Form.Item name={'title'} label="Title" rules={[{ required: true }]} >
+            <Form.Item name={'title'} label="Title" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
               <Input />
             </Form.Item>
-            <Form.Item name={'startDate'} label="From Date" rules={[{ required: true }]} >
+            <Form.Item name={'startDate'} label="From Date" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
             <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
             <Form.Item name={'endDate'} label="To Date"  >
             <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
             </Form.Item>
-            <Form.Item name={'serverId'} label="Server" rules={[{ required: true }]} >
+            <Form.Item name={'serverId'} label="Server" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
             <Select
                 showSearch
                 style={{ width: 315 }}
