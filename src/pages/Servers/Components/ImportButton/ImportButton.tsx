@@ -89,7 +89,7 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   render() {
     return (
       <>
-        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange}>
+        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange} showUploadList = {false}>
           <Button type="link" icon={<UploadOutlined />}>
             Import .CSV
           </Button>

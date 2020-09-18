@@ -79,7 +79,7 @@ export default class Customers extends React.Component<ICustomerProps> {
       dataIndex: 'contractEndDate',
       sortDirection: ['descend', 'ascend'],
       sorter: (a: any, b: any) => moment(a.contractEndDate).unix() - moment(b.contractEndDate).unix(),
-      render: (contractEndDate: any) => (<>{contractEndDate != null && moment(contractEndDate).format('DD/MM/YYYY').toString()}</>),
+      render: (contractEndDate: any) => (<>{contractEndDate != null && moment.utc(contractEndDate).format('DD/MM/YYYY').toString()}</>),
     },
     {
       title: 'Description',

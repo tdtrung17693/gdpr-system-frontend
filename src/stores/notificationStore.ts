@@ -23,6 +23,12 @@ class NotificationStore {
     return this.currentPage  < this.totalPages
   }
 
+  @action
+  public async refreshNotificationList() {
+    let result = await notificationService.refreshNotificationList(this.currentPage);
+    this.notifications = result;
+  }
+
   @action setTotalUnread(totalUnread: number) {
     this.totalUnreadNotifications = totalUnread;
   }
@@ -68,7 +74,9 @@ class NotificationStore {
   @action
   public async delete(notificationId: string) {
     await notificationService.delete(notificationId);
-    this.notifications = this.notifications.filter(n => n.id != notificationId);
+    let notification = this.notifications.find(n => n.id === notificationId);
+    if (notification && !notification.isRead) this.setTotalUnread(this.totalUnreadNotifications - 1);
+    this.refreshNotificationList();
   }
 
   @action

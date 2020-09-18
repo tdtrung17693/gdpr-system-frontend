@@ -187,7 +187,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
               />
             </Card>: null}
 
-            <Card title="Request Detail" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }}>
+            <Card title="Request Detail" bordered={true} headStyle={{ backgroundColor: '#1a5792', color: 'white' }} style={{marginTop: '1rem'}}>
               <Form style={{ marginBottom: 17 }}>
                 <Row>
                   <Col span={6}>
@@ -289,7 +289,9 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
 
           <Col span={12}>
             <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
-            <LogBox requestId = {this.props.match.params.id}/>
+            <div style={{marginTop: '1rem'}}>
+              <LogBox requestId = {this.props.match.params.id} />
+            </div>
           </Col>
         </Row>
       </>

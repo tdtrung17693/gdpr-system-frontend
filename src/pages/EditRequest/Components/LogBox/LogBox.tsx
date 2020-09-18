@@ -24,19 +24,26 @@ export class LogBox extends React.Component<LogProps, LogState> {
     console.log(this.props.historyLogStore?.historyLog.items);
   }
 
+  renderLogItem = (log: any) => {
+    if (log.updatedField === 'RequestStatus') {
+      if (log.updatedState === 'Open') {
+        return <p>{log.message} has accepted the request</p>
+      } else if (log.updatedState === "Close" && log.previousState === "New") {
+        return <p>{log.message} has rejected the request</p>
+      } else if (log.updatedState === 'New') {
+        return <p>{log.message} has created the request</p>
+      }
+    }
+
+    return <p>{log.message} has updated the field {log.updatedField}: {log.previousState} {'->'} {log.updatedState}</p>
+  }
+
   render() {
     let logData = this.props.historyLogStore?.historyLog.items.map((log: any) => {
       return {
         author:log.message,
         content: (
-          log.updatedState === 'Created'?
-          <p>
-            <strong>{log.message}</strong> <i>created request</i>  
-          </p>
-          :
-          <p>
-            <strong>{log.message}</strong> <i>changed request status to</i> <strong>{log.updatedState}</strong> 
-          </p>
+          this.renderLogItem(log)
         ),
         datetime: (
           <Tooltip title={moment(log.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
@@ -45,38 +52,6 @@ export class LogBox extends React.Component<LogProps, LogState> {
         ),
       };
     });
-    //console.log(logData);
-
-    // const data = [
-    //   {
-    //     author: 'Han Solo',
-    //     content: (
-    //       <p>
-    //         We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create
-    //         their product prototypes beautifully and efficiently.
-    //       </p>
-    //     ),
-    //     datetime: (
-    //       <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-    //         <span>{moment().subtract(1, 'days').fromNow()}</span>
-    //       </Tooltip>
-    //     ),
-    //   },
-    //   {
-    //     author: 'Han Solo',
-    //     content: (
-    //       <p>
-    //         We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create
-    //         their product prototypes beautifully and efficiently.
-    //       </p>
-    //     ),
-    //     datetime: (
-    //       <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-    //         <span>{moment().subtract(2, 'days').fromNow()}</span>
-    //       </Tooltip>
-    //     ),
-    //   },
-    // ];
 
     return (
       <Card bordered={true} style={{ marginBottom: 10 }}>

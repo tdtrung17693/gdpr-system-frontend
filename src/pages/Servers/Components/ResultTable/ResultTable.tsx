@@ -165,7 +165,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           { text: 'inactive', value: 'inactive' },
         ],
         filteredValue: filteredInfo.IsActive || null,
-        onFilter: (value: any, record: any) => record.IsActive.includes(value),
       },
       {
         title: '',

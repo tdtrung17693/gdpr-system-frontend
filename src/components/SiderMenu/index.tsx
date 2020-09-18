@@ -49,7 +49,7 @@ const SiderMenu = inject(Stores.AuthenticationStore)(observer((props: ISiderMenu
         {appRouters
           .filter((item: any) => !item.isLayout && item.showInMenu)
           .map((route: any, index: number) => {
-            console.log(route.permission, props.authenticationStore?.user)
+            console.log(route.path,route.permission, props.authenticationStore?.user, props.authenticationStore?.isGranted(route.permission))
             if (route.permission && !props.authenticationStore?.isGranted(route.permission)) return null;
 
             return (

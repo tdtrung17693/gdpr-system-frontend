@@ -12,6 +12,10 @@ export interface INotification {
 }
 
 class NotificationService {
+    public async refreshNotificationList(currentPage: number) {
+        let result = await http.get(`api/Notifications/refresh?page=${currentPage}`);
+        return result.data;
+    }
     public async markAllAsRead() {
         let result = await http.put('api/Notifications/mark-read-all')
         return result.data;

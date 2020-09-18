@@ -101,7 +101,7 @@ class AuthenticationStore {
   }
 
   isGranted(permission: string) {
-    return this.isAuthenticated &&  this.user!.permissions?.indexOf(permission) > 0;
+    return this.isAuthenticated && [...this.user!.permissions].indexOf(permission) >= 0;
   }
 }
 export default AuthenticationStore;
