@@ -179,6 +179,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
               
                 <ApproveRequestForm
                 authenticationStore={this.props.authenticationStore}
+                historyLogStore={this.props.historyLogStore}
                 requestStore={this.props.requestStore}
                 requestId={this.props.match.params.id}
                 IsApproved={{ ...this.props.requestStore.editRequest }.status == 'Open' ? true : false}
@@ -264,7 +265,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                       <Input disabled={isClosed} defaultValue={{ ...this.props.requestStore.editRequest }.description} />
                     </Form.Item>
                     <Form.Item >
-                    {isEmployee == false ? (
+                    {isEmployee == true ? (
                       <Button
                       style = {{marginLeft:150}}
                       disabled={isClosed}

@@ -32,7 +32,7 @@ interface INotificationState {
 class NotificationList extends React.Component<INotificationProps> {
     state: INotificationState = {
         loading: false,
-        hasMore: this.props.notificationStore?.currentPage! < this.props.notificationStore?.totalPages!,
+        hasMore: this.props.notificationStore?.hasMore!,
         currentPage: 1,
         currentContextMenuId: ""
     }

@@ -7,6 +7,7 @@ import Stores from '../../../../stores/storeIdentifier';
 import RequestStore from '../../../../stores/requestStore';
 //import { stores } from '../../../../stores/storeInitializer';
 import AuthenticationStore from '../../../../stores/authenticationStore';
+import HistoryLogStore from '../../../../stores/historyLogStore';
 
 //import { ApproveRequestInput } from '../../../../services/request/dto/ApproveRequestInput';
 
@@ -17,6 +18,7 @@ interface RequestsProps {
   requestId: string,
   IsApproved: boolean;
   IsClosed: boolean;
+  historyLogStore?: HistoryLogStore;
 }
 
 interface RequestStates {
@@ -25,7 +27,7 @@ interface RequestStates {
   //formRef: any;
 }
 
-@inject(Stores.RequestStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.AuthenticationStore, Stores.HistoryLogStore)
 @observer
 export default class ApproveRequestForm extends Component<RequestsProps,RequestStates> {
   formRef = React.createRef<FormInstance>();
@@ -44,7 +46,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
   onApprove = () => {
     this.formRef.current
       ?.validateFields()
-      .then((values: any) => {
+      .then(async (values: any) => {
         console.log(values);
         let valuesUpdate: any = {
           answer: ({...values}.answer != undefined)?{...values}.answer:'The request has been accepted',
@@ -53,8 +55,9 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
           requestId: this.props.requestId
         };
         console.log(this.props.authenticationStore.user?.id);
-        this.props.requestStore.manage(valuesUpdate)
-        this.props.requestStore.updateAcceptDecline("Open",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
+        await this.props.requestStore.manage(valuesUpdate)
+        await this.props.requestStore.updateAcceptDecline("Open",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
+        await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
         message.info("Approve Request Successfully");
       })
   }
@@ -76,6 +79,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         console.log(valuesUpdate);
         this.props.requestStore.manage(valuesUpdate)
         this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
+        this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
         message.info("Cancel Request Successfully");
       })
   }
@@ -94,6 +98,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         console.log(valuesUpdate);
         this.props.requestStore.manage(valuesUpdate)
         this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
+        this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
         message.info("Decline Request Successfully");
       })
   }

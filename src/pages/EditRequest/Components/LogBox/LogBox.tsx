@@ -11,6 +11,7 @@ interface LogProps {
 }
 
 interface LogState {}
+
 @inject(Stores.HistoryLogStore)
 @observer
 export class LogBox extends React.Component<LogProps, LogState> {
