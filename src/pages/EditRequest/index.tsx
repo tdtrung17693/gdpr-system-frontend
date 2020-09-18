@@ -4,12 +4,9 @@ import { Col, Card, Row, Button, Form, Input, Tag, Collapse, message, Select, Da
 import LogBox from "./Components/LogBox/LogBox";
 import Stores from '../../stores/storeIdentifier';
 import { inject, observer } from 'mobx-react';
-//import { FormInstance } from 'antd/lib/form';
 import HandleModal from '../Requests/Components/CreateModal/HandleModal';
 import { Store } from 'antd/lib/form/interface';
-//import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import { CreateRequestInput } from '../../services/request/dto/createRequestInput';
-//import qs from 'qs';
 import RequestStore from '../../stores/requestStore';
 import NotificationStore from '../../stores/notificationStore';
 import CommentBox from './Components/CommentBox';
@@ -19,6 +16,7 @@ import ApproveRequestForm from './Components/ApproveRequestForm/ApproveRequestFo
 import './index.less';
 import { FormInstance } from 'antd/lib/form';
 import moment from 'moment';
+import HistoryLogStore from '../../stores/historyLogStore';
 
 interface IRequests {
   key: string;
@@ -39,6 +37,7 @@ interface IRequestProps {
   match: { params: any };
   notificationStore: NotificationStore;
   authenticationStore: AuthenticationStore;
+  historyLogStore: HistoryLogStore;
   location: any;
   onSave: (user: CreateRequestInput | null, errors: any) => void;
 }
@@ -49,7 +48,7 @@ interface IRequestStates {
   loading: boolean;
 }
 
-@inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.NotificationStore, Stores.AuthenticationStore, Stores.HistoryLogStore)
 @observer
 export default class EditRequest extends Component<IRequestProps, IRequestStates> {
   modalRef = React.createRef<HandleModal>();
@@ -277,9 +276,8 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           </Col>
 
           <Col span={12}>
-            <CommentBox authenticationStore={this.props.authenticationStore} requestId={this.props.match.params.id.toLowerCase()} />
-            <span>Log Box</span>
-            <LogBox />
+            <CommentBox authenticationStore = {this.props.authenticationStore}  requestId={this.props.match.params.id.toLowerCase()}/>
+            <LogBox requestId = {this.props.match.params.id} historyLogStore = {this.props.historyLogStore} />
           </Col>
         </Row>
       </>

@@ -62,6 +62,7 @@ export default class Servers extends Component<IServerProps> {
     fromDate: Date(),
     toDate: Date(),
     guids: [],
+    filterString: '',
   };
 
   createOrUpdateModalOpen = async (params: any) =>{
@@ -97,7 +98,7 @@ export default class Servers extends Component<IServerProps> {
         await this.props.serverStore.create(server);
       }
       this.toggleModal(async () => {
-        await this.props.serverStore.getAll();
+        await this.props.serverStore.getServerListByPaging(this.props.serverStore.pagingObj);
       });
     }
   };
@@ -106,7 +107,13 @@ export default class Servers extends Component<IServerProps> {
     let filter: GetListServerFilter = {
       filterKey: value,
     };
-    await this.props.serverStore.getListServerByFilter(filter);
+    this.setState({filterString: filter.filterKey});
+    this.props.serverStore.pagingObj = {
+      ...this.props.serverStore.pagingObj,
+      page: 0,
+      filterBy: filter.filterKey
+    }
+    await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
   }
 
   handleExport = (e: any) => {
@@ -165,7 +172,8 @@ export default class Servers extends Component<IServerProps> {
           </div>
           <Search style={{ width: '400px' }} placeholder="input search text" enterButton="Search" size="large" onSearch={this.handleSearch} />
         </div>
-        <ResultTable serverStore={this.props.serverStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
+
+        <ResultTable filterString = {this.state.filterString} serverStore={this.props.serverStore} authenticationStore = {this.props.authenticationStore} createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
 
         <CreateOrUpdateModal
           ref={this.modalRef}

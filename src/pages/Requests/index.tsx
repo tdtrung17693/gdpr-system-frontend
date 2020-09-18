@@ -15,13 +15,19 @@ import { CreateRequestInput } from '../../services/request/dto/createRequestInpu
 import ExportCollapse from './Components/ExportCollapse/ExportCollapse';
 import ProtectedComponent from '../../components/ProtectedComponent';
 import AuthenticationStore from '../../stores/authenticationStore';
+import HistoryLogStore from '../../stores/historyLogStore';
+//import ModalToggle from './Components/CreateOrEditRequestModal/ModalToggle';
+//import CollectionCreateOrEditForm from './Components/CreateOrEditRequestModal/CollectionCreateOrEditForm';
+
+//const { Panel } = Collapse;
 
 interface IRequestProps {
   authenticationStore: AuthenticationStore;
   requestStore: RequestStore;
+  historyLogStore: HistoryLogStore;
 }
 
-@inject(Stores.RequestStore, Stores.AuthenticationStore)
+@inject(Stores.RequestStore, Stores.HistoryLogStore, Stores.AuthenticationStore)
 @observer
 export default class Requests extends Component<IRequestProps> {
   modalRef = React.createRef<HandleModal>();
@@ -93,7 +99,7 @@ export default class Requests extends Component<IRequestProps> {
             onSearch={(value) => this.props.requestStore.getSearch(value)}
           />
         </div>
-        <ResultTable requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
+        <ResultTable historyLogStore = {this.props.historyLogStore} requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} />
 
         <HandleModal
           ref={this.modalRef}
