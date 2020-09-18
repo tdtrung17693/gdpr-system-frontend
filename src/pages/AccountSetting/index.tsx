@@ -11,6 +11,7 @@ import ImgCrop from 'antd-img-crop';
 //import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { PictureOutlined } from '@ant-design/icons';
 import http from '../../services/httpService';
+//import Axios from 'axios';
 
 const { Title } = Typography;
 const FormItem = Form.Item;
@@ -55,10 +56,10 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
     await http.get('api/users/avatar/id=' + this.props.authenticationStore.user!.id, /*{headers : header}*/)
     .then( (response) =>{
       this.setState({imageUrl: 'data:image/png;base64,' + response.data.content, currentAvatarId: response.data.id});
-      console.log(response.data)
+      // /console.log(response.data)
     })
     .catch(function (error) {
-      console.log(error);
+      throw message.error({ content: "You haven't set an avatar yet" });
     });
   }
 
@@ -88,7 +89,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
               content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
             }).then((response) =>{
               this.setState({currentAvatarId: response.data.id})
-              console.log(response);
+              //console.log(response);
             })
             .catch(function (error) {
               console.log(error);
