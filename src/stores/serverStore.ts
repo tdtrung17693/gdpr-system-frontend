@@ -16,12 +16,15 @@ class ServerStore {
     items: [],
   };
   @observable editServer!: GetServerInput;
+  @observable loading: boolean = false;
 
   @action
   async getAll() {
+    this.loading = true;
     let result = await serverService.getAll();
     this.servers.items = result.items;
     this.servers.totalCount = result.totalCount;
+    this.loading = false;
   }
 
   @action

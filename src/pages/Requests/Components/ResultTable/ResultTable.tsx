@@ -7,9 +7,6 @@ import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-//import { Link } from 'react-router-dom';
-//import { IdcardFilled } from '@ant-design/icons';
-//import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
 
 interface IRequests {
   key: string;
@@ -188,12 +185,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
+        <div style={{ overflowX: 'auto' }}>
         <Table
           rowKey={record => record.Id}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
         />
+        </div>
       </div>
     );
   }

@@ -21,7 +21,7 @@ import AuthenticationStore from '../../stores/authenticationStore';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 
-import axios from 'axios';
+import http from '../../services/httpService';
 
 const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const fileExtension = '.xlsx';
@@ -55,8 +55,6 @@ export default class Servers extends Component<IServerProps> {
   constructor(props: IServerProps) {
     super(props);
     this.createOrUpdateModalOpen = this.createOrUpdateModalOpen.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleExport = this.handleExport.bind(this);
   }
   state = {
     modalVisible: false,
@@ -66,7 +64,7 @@ export default class Servers extends Component<IServerProps> {
     guids: [],
   };
 
-  async createOrUpdateModalOpen(params: any) {
+  createOrUpdateModalOpen = async (params: any) =>{
     if (params.id && params.id.length > 0) {
       await this.props.serverStore.get(params.id);
     } else {
@@ -104,16 +102,16 @@ export default class Servers extends Component<IServerProps> {
     }
   };
 
-  async handleSearch(value: string) {
+  handleSearch = async (value: string) => {
     let filter: GetListServerFilter = {
       filterKey: value,
     };
     await this.props.serverStore.getListServerByFilter(filter);
   }
 
-  async handleExport(e: any) {
-    axios
-      .post('http://localhost:5000/api/server/export-csv', {
+  handleExport = (e: any) => {
+    http
+      .post('api/server/export-csv', {
         fromDate: this.state.fromDate,
         toDate: this.state.toDate,
         guids: [],

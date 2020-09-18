@@ -6,6 +6,7 @@ import ServerStore from '../../../../stores/serverStore';
 import Stores from '../../../../stores/storeIdentifier';
 import { BulkServerStatus } from '../../../../services/server/dto/BulkServerStatus';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+
 //import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
 
 interface ServersProps {
@@ -16,7 +17,7 @@ interface ServersProps {
 interface ServerStates {
   selectedRowKeys: any;
   loading: boolean;
-  filteredInfo:any;
+  filteredInfo: any;
   processing: boolean;
 }
 
@@ -29,7 +30,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       selectedRowKeys: [],
       loading: false,
       filteredInfo: null,
-      processing: false
+      processing: false,
     };
   }
 
@@ -38,14 +39,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   }
 
   async getAllServers() {
-    this.setState({
-      loading: true
-    }, async () => {
-      await this.props.serverStore.getAll();
-      this.setState({
-        loading: false
-      })
-    })
+    await this.props.serverStore.getAll();
   }
 
   start = async () => {
@@ -75,7 +69,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   render() {
-    let { filteredInfo, loading, processing, selectedRowKeys } = this.state;
+    let { filteredInfo, processing, selectedRowKeys } = this.state;
+    let { loading } = this.props.serverStore;
     filteredInfo = filteredInfo || {};
     let columns = [
       {
@@ -88,7 +83,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         dataIndex: 'name',
         key: 'name',
         sorter: (a: any, b: any) => a.name.length - b.name.length,
-        ellipsis: true,
       },
       {
         title: 'Ip Address',
@@ -106,7 +100,6 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         title: 'Owner',
         dataIndex: 'cusName',
         sorter: (a: any, b: any) => a?.cusName.length - b?.cusName.length,
-        ellipsis: true,
       },
       {
         title: 'Status',
@@ -114,11 +107,13 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         dataIndex: 'IsActive',
         render: (IsActive: string) => {
           return IsActive === 'active' ? (
-            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green" key={IsActive}>
+            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green"
+                 key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           ) : (
-            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue" key={IsActive}>
+            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue"
+                 key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           );
@@ -128,7 +123,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           { text: 'inactive', value: 'inactive' },
         ],
         filteredValue: filteredInfo.IsActive || null,
-        onFilter: (value:any, record:any) => record.IsActive.includes(value),
+        onFilter: (value: any, record: any) => record.IsActive.includes(value),
 
       },
       {
@@ -159,12 +154,15 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <Table
-          loading={loading}
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
-        />
+        <div style={{overflowX: 'auto'}}>
+          <Table
+            rowKey={record => record.id}
+            loading={loading}
+            rowSelection={rowSelection}
+            columns={columns}
+            dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
+          />
+        </div>
       </div>
     );
   }

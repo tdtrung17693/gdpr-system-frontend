@@ -45,43 +45,23 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
   //api fetch call 
   getAllServer = async () => {
-    await http.get('api/customer/server/', /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      //console.log(error);
-    });
+    let response = await http.get('api/customer/server/');
+    this.setState({data: response.data});
   }
 
   filterData = async (keyword: any) => {
-    await http.get('api/customer/server/' + keyword, /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      //console.log(error);
-    });
+    let response = await http.get('api/customer/server/' + keyword)
+    this.setState({data: response.data});
   }
 
   getOwnedServer = async (id: any) => {
-    await http.get('api/customer/server/id=' + id, /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      //console.log(error);
-    });
+    let response = await http.get('api/customer/server/id=' + id)
+    this.setState({data: response.data});
   }
 
   getAvailableServer= async () => {
-    await http.get('api/customer/server/available', /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      //console.log(error);
-    });
+    let response = await http.get('api/customer/server/available')
+    this.setState({data: response.data});
   }
 
   //infinite load on scroller
@@ -205,8 +185,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
           visible={visible}
           key = {modalKey.key}
           maskClosable = {false}
-          title={"Manage Server of: "  + modalKey.name} 
-          // onOk={this.handleSubmit}
+          title={"Manage Server of: "  + modalKey.name}
+          transitionName='fade'
           onCancel={() => {this.handleCancel()}}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>

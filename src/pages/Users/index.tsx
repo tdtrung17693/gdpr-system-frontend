@@ -303,6 +303,7 @@ export class Users extends React.Component<IUserProps> {
             lg={{ span: 24, offset: 0 }}
             xl={{ span: 24, offset: 0 }}
             xxl={{ span: 24, offset: 0 }}
+            style={{overflowX: "auto"}}
           >
             <Table<User>
               rowKey={record => String(record.id)}

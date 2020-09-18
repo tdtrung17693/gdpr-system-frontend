@@ -132,6 +132,8 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           title={'Create a new Request'}
           onOk={this.handleOk}
           onCancel={onCancel}
+          maskClosable={false}
+          transitionName='fade'
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save
