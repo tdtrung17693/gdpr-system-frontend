@@ -38,14 +38,17 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
 
   public setFieldsValues = (server: any) => {
     //
+    console.log(server?.EndDate);
+    console.log(this.props.modalType)
+    //console.log( (new Date(0)).getFullYear() < (new Date(server?.EndDate)).getFullYear());
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,
         IpAddress: server?.IpAddress,
         StartDate:
-          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.startDate).getFullYear() ? moment(server?.startDate).format("DD/MM/YYYY") : null,
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.StartDate).getFullYear() ? moment(server?.StartDate) : null,
         EndDate:
-          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.endDate).getFullYear() ? moment(server?.endDate).format("DD/MM/YYYY") : null,
+          this.props.modalType === 'edit' && new Date(0).getFullYear() < new Date(server?.EndDate).getFullYear() ? moment(server?.EndDate) : null,
         status: server?.Status,
       });
     });
@@ -58,10 +61,10 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
         let id = this.props.authenticationStore.user?.id;
         let valuesUpdate: any = {
           ...values,
-          StartDate: values.StartDate ? values.StartDate.format('DD/MM/YYYY') : null,
-          EndDate: values.EndDate ? values.EndDate.format('DD/MM/YYYY') : null,
-          UpdatedBy: id ? id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
-          CreatedBy: id ? id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
+          StartDate: values.StartDate ? values.StartDate.format('YYYY-MM-DD') : null,
+          EndDate: values.EndDate ? values.EndDate.format('YYYY-MM-DD') : null,
+          UpdatedBy: id ? id : null,
+          CreatedBy: id ? id : null,
         };
 
         //
@@ -126,10 +129,10 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
               <Input />
             </Form.Item>
             <Form.Item name="StartDate" label="Start Date">
-              <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
             </Form.Item>
             <Form.Item name="EndDate" label="End Date">
-              <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY"/>
+              <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY"/>
             </Form.Item>
             {this.props.modalType === 'edit' ? (
               <Form.Item name="status" label="Status">

@@ -325,6 +325,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           rowSelection={rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
+          bordered = {true}
         />
         </div>
       </div>
