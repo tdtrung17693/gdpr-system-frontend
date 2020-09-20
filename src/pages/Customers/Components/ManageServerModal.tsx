@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Modal, Button, Card, List, Spin, Radio, Checkbox} from 'antd';
+import { Modal, Button, Card, List, Spin, Radio, Checkbox, message} from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 
-import axios from 'axios'
+//import axios from 'axios'
 import Search from 'antd/lib/input/Search';
 
 import '../index.css';
@@ -45,43 +45,23 @@ export default class ManageServerModal extends Component<IManageServerModalProps
 
   //api fetch call 
   getAllServer = async () => {
-    await axios.get('http://localhost:5000/api/customer/server/', /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    let response = await http.get('api/customer/server/');
+    this.setState({data: response.data});
   }
 
   filterData = async (keyword: any) => {
-    await axios.get('http://localhost:5000/api/customer/server/' + keyword, /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    let response = await http.get('api/customer/server/' + keyword)
+    this.setState({data: response.data});
   }
 
   getOwnedServer = async (id: any) => {
-    await axios.get('http://localhost:5000/api/customer/server/id=' + id, /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    let response = await http.get('api/customer/server/id=' + id)
+    this.setState({data: response.data});
   }
 
   getAvailableServer= async () => {
-    await axios.get('http://localhost:5000/api/customer/server/available', /*{headers : header}*/)
-    .then( (response) =>{
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    let response = await http.get('api/customer/server/available')
+    this.setState({data: response.data});
   }
 
   //infinite load on scroller
@@ -121,7 +101,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
       this.getAllServer();
     }
     else if (e.target.value == 'owned'){
-      console.log(this.props.modalKey.key);
+      //
       this.getOwnedServer(this.props.modalKey.key);
     }
     else{
@@ -149,8 +129,8 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         this.setState({unassignedServers: this.state.unassignedServers.concat(e.target.value.id)});
       }
     }
-    // console.log(this.state.assignedServers)
-    // console.log(this.state.unassignedServers)
+    // 
+    // 
   }
 
   //Search
@@ -161,21 +141,30 @@ export default class ManageServerModal extends Component<IManageServerModalProps
   //Submmit
   handleSubmit = async () => {
     if (this.state.assignedServers.length != 0){
-      await http.post('http://localhost:5000/api/customer/server', {
+      await http.post('api/customer/server', {
         customerId: this.props.modalKey.key,
         serverIds: this.state.assignedServers,
         action: true,
-      })
+      }).then((response) => {
+        message.success(`Successfully update servers of ${this.props.modalKey.name}`)
+      }).catch((error) => {
+        message.error(`Update servers of ${this.props.modalKey.name} failed`)
+      });
       this.setState({assignedServers: []});
     }
     if (this.state.unassignedServers.length != 0){
-      await http.delete('http://localhost:5000/api/customer/server', {data: {
+      await http.delete('api/customer/server', {data: {
         customerId: this.props.modalKey.key,
         serverIds: this.state.unassignedServers,
         action: false,
-      }})
+      }}).then((response) => {
+        message.success(`Successfully update servers of ${this.props.modalKey.name}`)
+      }).catch((error) => {
+        message.error(`Update servers of ${this.props.modalKey.name} failed`)
+      });
       this.setState({unassignedServers: []});
     }
+    
     this.handleCancel();
   };
 
@@ -183,7 +172,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
     this.props.onCancel();
     this.setState({optionValue: 'all'}); 
     this.getAllServer(); 
-    //console.log(this.state.optionValue);
+    //
   }
 
   render() {
@@ -195,8 +184,9 @@ export default class ManageServerModal extends Component<IManageServerModalProps
         <Modal
           visible={visible}
           key = {modalKey.key}
-          title={"Manage Server of: "  + modalKey.name} 
-          // onOk={this.handleSubmit}
+          maskClosable = {false}
+          title={"Manage Server of: "  + modalKey.name}
+          transitionName='fade'
           onCancel={() => {this.handleCancel()}}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
@@ -241,7 +231,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
                       disabled={item.ownedBy.length != 0 && item.customerid[0] != modalKey.key}>
                         {item.name}
                       </Checkbox>}
-                      description={<><i>{item.customerid[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
+                      description={<><i>{item.ownedBy[0]}</i><p>IP Address: &nbsp; {item.ipAddress}</p></>}
                       
                     />
                   </List.Item>

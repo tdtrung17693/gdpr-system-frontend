@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, TimePicker } from 'antd';
 import { inject, observer } from 'mobx-react';
+import TextArea from 'antd/lib/input/TextArea';
+import { Modal, Button, Input, Form, DatePicker, TimePicker } from 'antd';
+
 import Stores from '../../../../stores/storeIdentifier';
 import RequestStore from '../../../../stores/requestStore';
-import TextArea from 'antd/lib/input/TextArea';
-//import { CreateRequestInput } from '../../../../services/request/dto/CreateRequestInput';
-//import { UpdateRequestInput } from '../../../../services/request/dto/UpdateRequestInput';
 
 interface RequestsProps {
   requestData: any;
@@ -44,7 +43,6 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
   };
 
   handleOk = () => {
-    //console.log(values);
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, visible: false});
@@ -89,7 +87,8 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
           visible={visible}
           title={'Create a new requests'}
           onOk={this.handleOk}
-          //onCancel={this.handleCancel}
+          onCancel={this.handleCancel}
+          transitionName='fade'
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save

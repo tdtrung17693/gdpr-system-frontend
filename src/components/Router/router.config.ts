@@ -42,7 +42,7 @@ export const appRouters: any = [
     name: 'customers',
     permission: Permissions.VIEW_CUSTOMER,
     title: 'Customers',
-    icon: 'home',
+    icon: 'contacts',
     showInMenu: true,
     component: LoadableComponent(() => import('../../pages/Customers')),
   },

@@ -45,7 +45,7 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
   };
 
   handleOk = () => {
-    //console.log(values);
+    //
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, visible: false});
@@ -76,35 +76,8 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
     },
   };
 
-  // onFinish = async (fieldsValue: any) => {
-  //   // if (this.props.isCreate) {
-  //   //   const values: CreateServerInput = {
-  //   //     ...fieldsValue,
-  //   //     startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-  //   //     endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-  //   //     createdBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-  //   //   };
-  //   //   //await this.props.serverStore.create(values);
-  //   //   //await this.props.serverStore.getAll();
-  //   //   this.state.formRef.current.resetFields();
-  //   // } else {
-  //   //   if (fieldsValue.radiogroup === undefined){
-  //   //     fieldsValue.radiogroup = this.props.serverData.isActive;
-  //   //   }
-  //   //   const values: UpdateServerInput = {
-  //   //     ...fieldsValue,
-  //   //     startDate: fieldsValue.startDate.format('YYYY-MM-DD HH:mm:ss'),
-  //   //     endDate: fieldsValue.endDate.format('YYYY-MM-DD HH:mm:ss'),
-  //   //     updatedBy: 'B461CC44-92A8-4CC4-92AD-8AB884EB1895',
-  //   //     status: fieldsValue.radiogroup,
-  //   //   };
-  //   //   this.state.formRef.current.resetFields();
-  //   //   console.log(values);
-  //   // }
-  // };
-
   render() {
-    console.log("i am rendering");
+    
     const { visible, loading } = this.state;
     const config: any = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],
@@ -122,9 +95,11 @@ export default class CreateOrEditServerModal extends Component<ServersProps, Ser
         )}
         <Modal
           visible={visible}
+          transitionName='fade'
           title={this.props.isCreate ? 'Create a new servers' : 'Edit server'}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
+          maskClosable={false}
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
               Save

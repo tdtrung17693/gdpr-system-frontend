@@ -8,6 +8,12 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { CreateRequestInput } from '../services/request/dto/createRequestInput';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 import {ManageAcceptDeclineInput} from '../services/request/dto/manageAcceptDeclineInput';
+
+export interface PagingObject {
+  pageNo : number,
+  pageSize: number
+}
+
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalItems: 0,
@@ -16,19 +22,29 @@ class RequestStore {
   @observable editRequest!: GetRequestOutput;
   @observable serversList: GetServerOutput[] = [];
   @observable currentId!: string;
+  @observable pagingObj: PagingObject = {
+    pageNo : 1,
+    pageSize : 10,
+    
+  };
 
   @action
   async getAll() {
     let result = await requestService.getAll();
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
-    console.log()
+    
+  }
+  
+  async getRowsCount() {
+    let result = (await requestService.getRowsCount());
+    return result.data;
   }
 
-  @action updateAcceptDecline(nStatus: string, updatedby: string, updateat: string){
+  @action updateAcceptDecline(nStatus: string, updatedby: string, updatedat: string){
     this.editRequest.status = nStatus;
     this.editRequest.updatedBy = updatedby;
-    this.editRequest.updatedDate = updateat;
+    this.editRequest.updatedDate = updatedat;
   }
 
   @action updateData(status: string, 
@@ -66,8 +82,8 @@ class RequestStore {
 
   @action
   async manage(request: ManageAcceptDeclineInput) {
-    let result = await requestService.manage(request);
-    console.log(result)
+    await requestService.manage(request);
+    
   }
 
 
@@ -105,7 +121,7 @@ class RequestStore {
   @action
   async get(requestId: string) {
     let result = await requestService.get(requestId);
-    console.log(result);
+    
     this.editRequest = {
       Id: result.RequestDetails.Id,
       status: result.RequestDetails.RequestStatus,
@@ -122,7 +138,7 @@ class RequestStore {
       RoleName: result.RequestDetails.RoleName,
       key: result.RequestDetails.Id
     };
-    console.log(this.editRequest)
+    
   }
 
   

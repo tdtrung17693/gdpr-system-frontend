@@ -9,7 +9,7 @@ class CommentStore {
   @action
   public async getCommentsOfRequest(requestId: string, order: string) {
     const comments = await commentService.getAllCommentsOfRequest(requestId.toLowerCase(), order);
-    //console.log(comments)
+    //
     this.comments = comments;
   }
 
@@ -31,8 +31,8 @@ class CommentStore {
   public async deletedComment(obj: CommentDeleted) {
     let newList: Comment[] = [];
     newList = this.comments.filter((comment) => comment.id != obj.id);
-    console.log(this.comments);
-    console.log(newList);
+    
+    
     this.comments = [...newList]
   }
 

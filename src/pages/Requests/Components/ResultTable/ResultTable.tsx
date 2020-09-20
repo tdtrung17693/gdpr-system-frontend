@@ -7,12 +7,11 @@ import { ColumnProps } from 'antd/lib/table/Column';
 import { GetRequestOutput } from '../../../../services/request/dto/getRequestOutput';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import HistoryLogStore from '../../../../stores/historyLogStore';
 import FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import http from '../../../../services/httpService';
-//import { Link } from 'react-router-dom';
-//import { IdcardFilled } from '@ant-design/icons';
-//import CreateOrEditRequestModal from '../CreateOrEditRequestModal/CreateOrEditRequestModal';
+//import { TablePaginationConfig } from 'antd/lib/table';
 
 interface IRequests {
   key: string;
@@ -31,6 +30,7 @@ interface IRequests {
 
 interface RequestsProps {
   requestStore: RequestStore;
+  historyLogStore: HistoryLogStore;
   handleModalOpen: any;
 }
 
@@ -39,9 +39,12 @@ interface RequestStates {
   selectedRowKeys: any;
   loading: boolean;
   data: any[];
+  pageSize: number | undefined;
+  pageNo: number | undefined;
+  totalRows: number;
 }
 
-@inject(Stores.RequestStore)
+@inject(Stores.RequestStore, Stores.HistoryLogStore)
 @observer
 export default class ResultTable extends React.Component<RequestsProps, RequestStates> {
   constructor(props: any) {
@@ -51,6 +54,9 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       selectedRowKeys: [],
       loading: false,
       data: [],
+      pageSize: 10,
+      pageNo: 1,
+      totalRows: 10
     };
     this.handleBulkExportClick = this.handleBulkExportClick.bind(this)
   }
@@ -72,11 +78,11 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         this.setState({
           data: requests.data,
         });
-        console.log(this.state.data)
+        
         this.exportToCSV(this.state.data, 'excel')
       })
       .catch((error) => {
-        console.log(error);
+        
       });
 
 
@@ -98,6 +104,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         loading: false,
       });
     }, 1000);
+    
     http.post(`api/Request/exportRequest`, {
       guids: this.state.selectedRowKeys
     })
@@ -105,25 +112,29 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         this.setState({
           data: requests.data,
         });
-        console.log(this.state.data)
+        
         this.exportToCSV(this.state.data, 'excel')
       })
       .catch((error) => {
-        console.log(error);
+        
       });
 
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    
     this.setState({ selectedRowKeys });
   };
 
   
+
+
+  
   render() {
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
+    
     this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
-    console.log({...this.props.requestStore.requests.items})
+    
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
 
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
@@ -148,11 +159,9 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         ],
         onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
-          <>            
                 <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
                   {requestStatus}
                 </Tag>
-          </>
         ),
       },
       {
@@ -259,10 +268,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         sortDirections: ['descend', 'ascend']
       },
       {
-        title: 'Create By',
-        dataIndex: 'CreatedByNameEmail',
-        key: 'createdAt',
-        //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        title: 'Update Date',
+        dataIndex: 'UpdatedAt',
+        key: 'updatedAt',
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -324,12 +333,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
+        <div style={{ overflowX: 'auto' }}>
         <Table
           rowKey={record => record.Id}
           rowSelection={rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
+          
+          
         />
+        </div>
       </div>
     );
   }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, Select } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, Select, message, Switch } from 'antd';
 
-import axios from 'axios'
+//import axios from 'axios'
 import http from '../../../services/httpService';
 import { FormInstance } from 'antd/lib/form';
 import { L } from '../../../lib/abpUtility';
 import moment from 'moment';
+import CustomerStore from '../../../stores/customerStore';
 //import moment from 'moment';
 
 const { Option } = Select;
@@ -14,6 +15,7 @@ export interface ICreateCustomerProps {
   modalKey: any;
   visible: boolean;
   onCancel: () => void;
+  customerStore: CustomerStore;
 }
 
 export default class CreateCustomerModal extends Component<ICreateCustomerProps> {
@@ -27,7 +29,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     data: [],
     loading: false,
     visible: false,
-    status: true,
+    status: null,
     customerName: '',
     contractBeginDate: null,
     contractEndDate: null,
@@ -36,19 +38,12 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
     statusText: 'Active',
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.fetchData();
   }
 
   fetchData = async () => {
-    await axios.get('http://localhost:5000/api/customer/contact-point', /*{headers : header}*/)
-    .then( (response) =>{
-      //console.log(response.data);
-      this.setState({data: response.data});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    await this.props.customerStore.getContactPoint();
   }
 
   handleOk = () => {
@@ -59,7 +54,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   };
 
   triggerStatus = (e: any) => {
-    if (this.state.status){
+    if (this.formRef.current?.getFieldValue('status')){
       this.setState({
         status: false,
         statusText: 'Inactive',
@@ -71,7 +66,7 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         statusText: 'Active',
       })
     };
-    console.log(e.target.value)
+    //
   }
   
   layout = {
@@ -92,7 +87,8 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
 
   //Submmit
   handleSubmit = async (e: any) => {
-    e.preventDefault();
+    this.formRef.current?.validateFields().then(async (values) => {
+      e.preventDefault();
     if (this.props.modalKey.name == undefined){
       await http.post('api/Customer',{
         contractBeginDate:  this.formRef.current?.getFieldValue('contractBeginDate'),
@@ -103,10 +99,12 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         customerName: this.formRef.current?.getFieldValue('name'),
       })
         .then((response) =>{
-          console.log(response);
+          //
+          message.success(`Created successfully`);
         })
         .catch(function (error) {
-          console.log(error);
+          //
+          message.error(`Created failed`);
         });
       this.handleCancel();
     }
@@ -116,20 +114,24 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
         contractEndDate: this.formRef.current?.getFieldValue('contractEndDate'),
         contactPoint: this.formRef.current?.getFieldValue('contactPoint'),
         description: this.formRef.current?.getFieldValue('description'),
-        status: this.state.status,
+        status: this.formRef.current?.getFieldValue('status'),
         customerName: this.formRef.current?.getFieldValue('name'),
         id: this.props.modalKey.key
       })
         .then((response) =>{
-          console.log(response);
+          //
+          message.success(`Edited successfully`);
         })
         .catch(function (error) {
-          console.log(error);
+          //
+          message.error(`Edited failed`);
         });
       
       this.handleCancel();
     }
-    console.log(e);
+    })
+    
+    //
   };
 
   handleCancel = () => {
@@ -138,8 +140,9 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
   }
 
   render() {
-    const { loading, data } = this.state;
+    const { loading } = this.state;
     const { visible, modalKey } = this.props;
+    const contactPoints = this.props.customerStore.contactPoints
     
     return (
       <>
@@ -147,7 +150,8 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
           visible={visible}
           title={modalKey.name == undefined? "Create new Customer" : "Edit Customer: " + modalKey.name}
           key = {modalKey.key}
-          // onOk={this.handleSubmit}
+          maskClosable = {false}
+          transitionName='fade'
           onCancel={this.handleCancel}
           footer={[
             <Button key="submit" htmlType="submit" type="primary" loading={loading} onClick={(e:any) => this.handleSubmit(e)}>
@@ -165,25 +169,25 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
             <Input.Group compact>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractBeginDate) : null} name='contractBeginDate' 
                 label="Contract Begin Date" rules={[{ required: true }]}  style={{ width: '50%' }}>
-                    <DatePicker onChange={value => this.setState({contractBeginDate: value})}  style={{ width: '100%' }} />
+                    <DatePicker disabledDate={value => this.formRef.current?.getFieldValue('contractEndDate') != null && value > this.formRef.current?.getFieldValue('contractEndDate')} onChange={(value: any) => this.setState({contractBeginDate: moment(value)})}  style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractEndDate) : null} name='contractEndDate' 
                 label="Contract End Date" style={{ width: '50%' }}>
-                    <DatePicker onChange={value => this.setState({contractEndDate: value})}  style={{ width: '100%' }} />
+                    <DatePicker disabledDate={value => value <= this.formRef.current?.getFieldValue('contractBeginDate')} onChange={(value: any) => this.setState({contractEndDate: moment(value)})}  style={{ width: '100%' }} />
                 </Form.Item>
             </Input.Group>
             <Form.Item initialValue={modalKey.contactPointID} name='contactPoint' label="Contact Point" rules={[{ required: true, message: L('ThisFieldIsRequired') }]}>
               <Select onChange={value => this.setState({contactPoint: value})} style={{ width: '100%' }}>
-                {data.map((d: any) => (
+                {contactPoints.map((d: any) => (
                   <Option key={d.id} value={d.id}>{d.email}</Option>
                 ))}
               </Select>
             </Form.Item>
             <Form.Item initialValue={modalKey.description} name='description' label="Description">
-              <Input defaultValue={modalKey.description} onChange={e => {console.log(e.target.value); this.setState({description: e.target.value})}}  />
+              <Input defaultValue={modalKey.description} onChange={e => {this.setState({description: e.target.value})}}  />
             </Form.Item>
             <Form.Item initialValue={modalKey.status} name='status' label="Status">
-              <Button onClick={(e: any) => this.triggerStatus(e)}>{this.state.status ? 'Active' : 'Inactive'}</Button>
+              <Switch defaultChecked={modalKey.status} onChange={(checked: any) => {this.setState({status: checked})}} />
             </Form.Item>
           </Form>
         </Modal>

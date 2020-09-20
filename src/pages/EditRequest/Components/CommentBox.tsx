@@ -93,7 +93,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
         this.props.commentStore?.deletedComment({ id: comment.id });
       });
       signalRService.on('commentCreated', (comment) => {
-        //console.log(comment);
+        //
         if (!this.buttonRef.current.state.checked) {
           this.props.commentStore?.addCommentToStoreAfter({
             author: {
@@ -135,14 +135,13 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   }
 
   componentWillUnmount() {
-    console.log('Unmount');
     this.leaveGroup(this.props.requestId);
     signalRService.off('commentCreated');
     signalRService.off('commentDeleted');
   }
 
   joinGroup = (id: string) => {
-    console.log(id);
+    
     return new Promise((resolve, reject) => {
       signalRService
         .joinGroup(`conversation:${id}`)
@@ -173,7 +172,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
 
   handleDelete = (comment: IComment) => {
     this.props.commentStore?.deleteCommentofRequest(comment, this.props.requestId).then((res) => {
-      console.log(res);
+      
       if (res.status === 200) {
         //this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order);
       } else {
