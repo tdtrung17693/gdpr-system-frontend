@@ -47,7 +47,7 @@ http.interceptors.response.use(
         content: error.response.data.error.description,
       });
     } else if (error.response && error.response.status === 401) {
-      window.location.pathname = "/logout"
+      window.location.pathname = "/user/logout"
     } else  {
       Modal.error({ content: "Unknown Error. Please try again later." });
     } 

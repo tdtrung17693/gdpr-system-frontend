@@ -22,7 +22,22 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3df2b14-b094-4087-ab09-42e064553241" name="Default Changelist" comment="" />
+    <list default="true" id="f3df2b14-b094-4087-ab09-42e064553241" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Footer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Logout/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Logout/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Router/router.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Router/router.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login/index.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.less" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login/index.validation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.validation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Requests/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Requests/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Users/components/createOrUpdateUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Users/components/createOrUpdateUser.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/account/accountService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/account/accountService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/httpService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/httpService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/signalRService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/signalRService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stores/authenticationStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/stores/authenticationStore.ts" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +67,6 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -60,7 +74,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
-    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager" selected="JavaScript Debug.Debug ">
@@ -94,6 +108,7 @@
       <workItem from="1600350751873" duration="22000" />
       <workItem from="1600350784325" duration="3157000" />
       <workItem from="1600354648914" duration="1003000" />
+      <workItem from="1600441906426" duration="12487000" />
     </task>
     <servers />
   </component>
@@ -197,13 +212,17 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="759" y="428" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1080@0.0.1920.1080" timestamp="1600441822620" />
-    <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1600354674877">
+    <state x="669" y="148" width="581" height="810" key="find.popup" timestamp="1600569984904">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600354674877" />
-    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup" timestamp="1600354745701">
+    <state x="669" y="148" width="581" height="810" key="find.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600569984904" />
+    <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1600444090433">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600354745701" />
+    <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600444090433" />
+    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup" timestamp="1600569980024">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600569980024" />
   </component>
 </project>

@@ -103,5 +103,9 @@ class AuthenticationStore {
   isGranted(permission: string) {
     return this.isAuthenticated && [...this.user!.permissions].indexOf(permission) >= 0;
   }
+
+  async resetPassword(email: string) {
+    await accountService.resetPassword(email);
+  }
 }
 export default AuthenticationStore;

@@ -17,7 +17,7 @@ async function start() {
     } catch (err) {
         setTimeout(() => start(), 5000);
     }
-};
+}
 
 start();
 

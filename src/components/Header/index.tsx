@@ -14,6 +14,7 @@ import { inject, observer } from 'mobx-react';
 import Stores from '../../stores/storeIdentifier';
 import NotificationStore from '../../stores/notificationStore';
 import NotificationList from '../NotificationList';
+import { userRouter } from '../Router/router.config';
 
 export interface IHeaderProps {
   collapsed?: any;
@@ -25,7 +26,7 @@ export interface IHeaderProps {
 const userDropdownMenu = (
   <Menu>
     <Menu.Item key="2">
-      <Link to="/logout">
+      <Link to={{pathname: userRouter.find((r:any) => r.name === 'logout').path}}>
         <LogoutOutlined />
         <span> {L('Logout')}</span>
       </Link>

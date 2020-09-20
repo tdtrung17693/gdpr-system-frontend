@@ -94,7 +94,7 @@ export default class Requests extends Component<IRequestProps> {
             style={{ width: '400px' }}
             placeholder="Search on GDPR Request"
             enterButton="Search"
-            size="large"
+            size="middle"
             onSearch={(value) => this.props.requestStore.getSearch(value)}
           />
         </div>

@@ -18,11 +18,13 @@ export const userRouter: any = [
     showInMenu: false,
   },
   {
-    path: '/user/test/:id',
-    name: 'test',
-    title: 'Test',
-    component: LoadableComponent(() => import('../../pages/RequestDetails'))
-  }
+    path: '/user/logout',
+    title: 'Logout',
+    name: 'logout',
+    icon: 'info-circle',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../components/Logout')),
+  },
 ];
 
 export const appRouters: any = [
@@ -100,15 +102,6 @@ export const appRouters: any = [
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/AccountSetting')),
   },
-  {
-    path: '/logout',
-    title: 'Logout',
-    name: 'logout',
-    icon: 'info-circle',
-    showInMenu: false,
-    component: LoadableComponent(() => import('../../components/Logout')),
-  },
-  
   {
     path: '/exception?:type',
     permission: '',
