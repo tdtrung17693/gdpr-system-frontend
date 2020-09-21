@@ -27,7 +27,7 @@ class ServerStore {
   };
 
   @observable pagingObj: PagingObject = {
-    page : 1,
+    page : 0,
     pageSize : 10,
     filterBy : '',
     sortedBy : 'ServerName',
