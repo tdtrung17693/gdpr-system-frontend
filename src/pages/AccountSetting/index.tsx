@@ -11,6 +11,7 @@ import ImgCrop from 'antd-img-crop';
 //import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { PictureOutlined } from '@ant-design/icons';
 import http from '../../services/httpService';
+//import Axios from 'axios';
 
 const { Title } = Typography;
 const FormItem = Form.Item;
@@ -61,7 +62,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
         
       })
       .catch(function (error) {
-        
+        throw message.error({ content: "You haven't set an avatar yet" });
       });
   }
 
@@ -112,7 +113,6 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
       );
     }
   };
-
 
   waitForProcess = async (processingFn: Function, successMsg: string, errorMsg: string) => {
     this.setState(

@@ -73,7 +73,7 @@ export default function ImportButton(this: any) {
       <Upload onRemove={() => {
         setImportData([]); 
         setFileList([]);     
-      }}fileList={fileList} accept=".csv" {...props}>
+      }} fileList={fileList} accept=".csv" {...props}>
         <Button disabled={fileList.length == 1} type="link" icon={<UploadOutlined />}>
             Import customer from .CSV
         </Button>

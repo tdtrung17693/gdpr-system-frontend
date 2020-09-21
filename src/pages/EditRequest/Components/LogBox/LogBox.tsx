@@ -62,7 +62,7 @@ export class LogBox extends React.Component<LogProps, LogState> {
           dataSource={logData}
           renderItem={(item: any) => (
             <li>
-              <Comment author={item.author} content={item.content} datetime={moment.utc(item.datetime).fromNow()} />
+              <Comment author={item.author} content={item.content} datetime={item.datetime} />
             </li>
           )}
         />

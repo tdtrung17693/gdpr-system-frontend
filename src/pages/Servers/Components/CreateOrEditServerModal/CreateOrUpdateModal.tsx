@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, Input, Form, DatePicker, Radio } from 'antd';
+import { Modal, Button, Input, Form, DatePicker, Radio, message } from 'antd';
 import { inject, observer } from 'mobx-react';
 import Stores from '../../../../stores/storeIdentifier';
 //import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
@@ -59,12 +59,12 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
           let ds: Date = new Date(values.StartDate.format('YYYY-MM-DD'));
           let de: Date = new Date(values.EndDate.format('YYYY-MM-DD'));
           if (Number(ds.getTime()) >= Number(de.getTime())) {
-            alert('End date is invalid!');
+            message.error('End date is invalid!');
             return;
           }
         }
         if(!values.IpAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
-          alert("Ip Address is invalid!");
+          message.error("Ip Address is invalid!");
           return;
         }
         let id = this.props.authenticationStore.user?.id;

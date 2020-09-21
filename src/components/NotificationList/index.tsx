@@ -109,6 +109,36 @@ class NotificationList extends React.Component<INotificationProps> {
           </div>
         </Menu.Item>
       );
+    } else if (notificationType === 'request-accept-reject') {
+      return (
+        <Menu.Item
+          className={classNames({ 'notifications__item': true, 'notifications__item--unread': !notification.isRead })}
+          key={notification.id}>
+          <div className="notification">
+            <Link to={`/requests/editrequest/${notificationData.RequestId.toLowerCase()}?_fromNotification=${id}`}
+                  style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+              <div className="notification-icon">
+                <FileAddTwoTone style={{ fontSize: '2rem', marginRight: '1rem' }} />
+              </div>
+              <div className="notification-content">
+                <Space direction="vertical" size={1}>
+                  <Text>Your request <strong>{notificationData.RequestTitle}</strong> has been {notificationData.NewStatus === 'closed' ? 'rejected' : 'approved'}</Text>
+                  <Text className="notifications__item-time" type="secondary"
+                        style={{ fontSize: '0.725rem' }}>{moment.utc(createdAt).fromNow()}</Text>
+                </Space>
+              </div>
+              {!notification.isRead ? <div className="notifications__unread-notificator" /> : ''}
+            </Link>
+            <Dropdown onVisibleChange={(visible) => {
+              this.setState({ currentContextMenuId: visible ? notification.id : '' });
+            }} visible={this.state.currentContextMenuId == notification.id}
+                      overlay={this.reanderContextMenu(notification.id)} trigger={['click']}>
+              <EllipsisOutlined className="notifications__item-action-menu"
+                                style={this.state.currentContextMenuId == notification.id ? { opacity: 1 } : {}} />
+            </Dropdown>
+          </div>
+        </Menu.Item>
+      );
     }
     return '';
   };

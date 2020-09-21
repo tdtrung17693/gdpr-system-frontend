@@ -23,6 +23,7 @@ import * as XLSX from 'xlsx';
 
 import http from '../../services/httpService';
 import ProtectedComponent from '../../components/ProtectedComponent';
+import moment from 'antd/node_modules/moment';
 
 const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const fileExtension = '.xlsx';
@@ -128,7 +129,15 @@ export default class Servers extends Component<IServerProps> {
         guids: [],
       })
       .then((response) => {
-        console.log(response);
+        if(response.data.responsedRequest){
+          response.data.responsedRequest.forEach((r:any) => {
+            r[0] = {
+              ...r[0],
+              startDate : moment(r[0].startDate).format("DD/MM/YYYY").toString(),
+              endDate : moment(r[0].endDate).format("DD/MM/YYYY").toString(),
+            }
+          });
+        }
         exportToCSV(response.data.responsedRequest, 'Server List');
       })
 

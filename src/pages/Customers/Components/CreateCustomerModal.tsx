@@ -87,8 +87,11 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
 
   //Submmit
   handleSubmit = async (e: any) => {
-    this.formRef.current?.validateFields().then(async (values) => {
+    this.formRef.current
+    ?.validateFields()
+    .then(async () => {
       e.preventDefault();
+    
     if (this.props.modalKey.name == undefined){
       await http.post('api/Customer',{
         contractBeginDate:  this.formRef.current?.getFieldValue('contractBeginDate'),
@@ -169,11 +172,11 @@ export default class CreateCustomerModal extends Component<ICreateCustomerProps>
             <Input.Group compact>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractBeginDate) : null} name='contractBeginDate' 
                 label="Contract Begin Date" rules={[{ required: true }]}  style={{ width: '50%' }}>
-                    <DatePicker disabledDate={value => this.formRef.current?.getFieldValue('contractEndDate') != null && value > this.formRef.current?.getFieldValue('contractEndDate')} onChange={(value: any) => this.setState({contractBeginDate: moment(value)})}  style={{ width: '100%' }} />
+                    <DatePicker disabledDate={value => this.formRef.current?.getFieldValue('contractEndDate') != null && value > this.formRef.current?.getFieldValue('contractEndDate')} onChange={value => this.setState({contractBeginDate: moment(value)})}  style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item initialValue = {modalKey.key != undefined ? moment(modalKey.contractEndDate) : null} name='contractEndDate' 
                 label="Contract End Date" style={{ width: '50%' }}>
-                    <DatePicker disabledDate={value => value <= this.formRef.current?.getFieldValue('contractBeginDate')} onChange={(value: any) => this.setState({contractEndDate: moment(value)})}  style={{ width: '100%' }} />
+                    <DatePicker disabledDate={value => value <= this.formRef.current?.getFieldValue('contractBeginDate')} onChange={value => this.setState({contractEndDate: moment(value)})}  style={{ width: '100%' }} />
                 </Form.Item>
             </Input.Group>
             <Form.Item initialValue={modalKey.contactPointID} name='contactPoint' label="Contact Point" rules={[{ required: true, message: L('ThisFieldIsRequired') }]}>
