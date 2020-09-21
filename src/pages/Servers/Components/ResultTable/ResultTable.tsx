@@ -110,12 +110,13 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.setState({pageSize : pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, filterBy: this.props.filterString }, async () => {
       this.props.serverStore.pagingObj = {
         pageSize: this.state.pageSize,
-        page: this.state.page,
+        page: this.state.page? this.state.page - 1 : 0,
         filterBy: this.props.filterString,
         sortOrder: this.state.sortOrder,
         sortedBy: this.state.sortedBy
       }
-      await this.getAllServers()
+      console.log(this.props.serverStore.pagingObj)
+      await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
     });
 
   }
