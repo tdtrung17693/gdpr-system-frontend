@@ -20,7 +20,6 @@ interface ReplyEditorProps {
   onValidated: Function;
 }
 
-
 const { TextArea } = Input;
 const { Title } = Typography;
 
@@ -71,7 +70,6 @@ interface CommentBoxState {
   chronoOrder: ChronoOrder;
   order: string;
 }
-
 
 @inject(Stores.AuthenticationStore, Stores.CommentStore)
 @observer
@@ -141,7 +139,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   }
 
   joinGroup = (id: string) => {
-    
     return new Promise((resolve, reject) => {
       signalRService
         .joinGroup(`conversation:${id}`)
@@ -160,8 +157,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
   };
 
   leaveGroup = (id: string) => {
-    return signalRService
-        .leaveGroup(`conversation:${id}`)
+    return signalRService.leaveGroup(`conversation:${id}`);
   };
 
   handleReply = (comment: IComment) => {
@@ -172,7 +168,6 @@ class CommentBox extends React.Component<IConversationBoxProps> {
 
   handleDelete = (comment: IComment) => {
     this.props.commentStore?.deleteCommentofRequest(comment, this.props.requestId).then((res) => {
-      
       if (res.status === 200) {
         //this.props.commentStore?.getCommentsOfRequest(this.props.requestId, this.state.order);
       } else {
@@ -194,9 +189,11 @@ class CommentBox extends React.Component<IConversationBoxProps> {
                   Delete
                 </span>,
               ]
-            : [<span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
+            : [
+                <span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
                   Delete
-                </span>]
+                </span>,
+              ]
         }
         content={
           <div className="comment">
@@ -234,8 +231,12 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    if (values.content.length <= 0) {
-                      alert('You have not enter message');
+                    if (!values.content) {
+                      alert('You have not entered message');
+                      return;
+                    } else if (values.content && values.content.trim().length <= 0) {
+                      alert('Message is invalid');
+                      return;
                     } else {
                       this.props.commentStore?.createNewComment({
                         content: values.content,
@@ -294,8 +295,12 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    if (values.content.length <= 0) {
-                      alert('You have not enter message');
+                    if (!values.content) {
+                      alert('You have not entered message');
+                      return;
+                    } else if (values.content && values.content.trim().length <= 0) {
+                      alert('Message is invalid');
+                      return;
                     } else {
                       await this.props.commentStore?.createNewComment({
                         content: values.content,
@@ -314,7 +319,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               className="comment-list"
               rowKey="id"
               itemLayout="horizontal"
-              locale={{emptyText: 'No comments yet'}}
+              locale={{ emptyText: 'No comments yet' }}
               dataSource={comments.filter((c) => !c.parentId || c.parentId === '')}
               renderItem={(comment: IComment) => {
                 const reply = comments.filter((c) => c.parentId == comment.id);

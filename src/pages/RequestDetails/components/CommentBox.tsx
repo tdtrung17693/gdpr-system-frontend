@@ -237,7 +237,11 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    if (values.content.length <= 0) {
+                    if(values){
+                      alert('You have not enter message');
+                      return;
+                    }
+                    else if (values.content.length <= 0) {
                       alert('You have not enter message');
                     } else {
                       this.props.commentStore?.createNewComment({
@@ -297,7 +301,12 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    if (values.content.length <= 0) {
+                    console.log(values);
+                    if(values){
+                      alert('You have not enter message');
+                      return;
+                    }
+                    else  if (values  && values.content.length <= 0) {
                       alert('You have not enter message');
                     } else {
                       await this.props.commentStore?.createNewComment({
