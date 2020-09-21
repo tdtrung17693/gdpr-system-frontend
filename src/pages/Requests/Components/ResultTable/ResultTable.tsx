@@ -184,11 +184,12 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         ),
       },
       {
-        title: 'Create Date',
+        title: 'Created Date',
         dataIndex: 'CreatedAt',
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm")}</div>
       },
       {
         title: 'Create By',
