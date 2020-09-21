@@ -91,7 +91,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
             content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
           }).then((response) => {
             this.setState({ currentAvatarId: response.data.id })
-            
+            this.props.authenticationStore.setCurrentUserAvatar(imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")) 
           })
             .catch(function (error) {
               
@@ -104,7 +104,9 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
             fileExtension: info.file.name.split('.').pop(),
             content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
             fileId: this.state.currentAvatarId,
-          });
+          }).then(() => {
+            this.props.authenticationStore.setCurrentUserAvatar(imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")) 
+          })
         }
       },
       );

@@ -271,11 +271,8 @@ export class Users extends React.Component<IUserProps> {
 
       </Space>
       <Card>
-        <Row>
-          <Col sm={{ span: 10, offset: 0 }}>
-            <Search placeholder="Search users" onSearch={this.handleSearch} />
-          </Col>
-          <Col sm={{ span: 10 }} style={{ marginLeft: "1rem" }}>
+        <Row gutter={0}>
+          <Col sm={{ span: 12 }}>
             {
               selectedRowKeys.length > 0 ?
                 <Dropdown
@@ -291,7 +288,15 @@ export class Users extends React.Component<IUserProps> {
                   <Button type="primary" >Bulk Actions</Button>
                 </Dropdown>
                 : ""}
-
+          </Col>
+          <Col sm={{ span: 12 }} style={{textAlign: 'right'}}>
+            <Search
+              style={{ width: '400px' }}
+              placeholder="Search users"
+              enterButton="Search"
+              size="middle"
+              onSearch={this.handleSearch}
+            />
           </Col>
         </Row>
         <Row style={{ marginTop: 20 }}>

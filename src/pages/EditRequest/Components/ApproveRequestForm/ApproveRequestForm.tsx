@@ -103,8 +103,6 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
       })
   }
 
-  
-
   render() {
     return (
       <>

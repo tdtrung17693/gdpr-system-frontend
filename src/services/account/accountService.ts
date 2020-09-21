@@ -24,6 +24,11 @@ class AccountService {
     let result = await http.put('api/accounts/profile/password', values);
     return result.data
   }
+
+  public async resetPassword(email: string) {
+    let result = await http.post('api/accounts/reset-password', {email})
+    return result.data
+  }
 }
 
 export default new AccountService();

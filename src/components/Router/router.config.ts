@@ -13,16 +13,18 @@ export const userRouter: any = [
   {
     path: '/user/login',
     name: 'login',
-    title: 'LogIn',
+    title: 'Log In',
     component: LoadableComponent(() => import('../../pages/Login')),
     showInMenu: false,
   },
   {
-    path: '/user/test/:id',
-    name: 'test',
-    title: 'Test',
-    component: LoadableComponent(() => import('../../pages/RequestDetails'))
-  }
+    path: '/user/logout',
+    title: 'Logout',
+    name: 'logout',
+    icon: 'info-circle',
+    showInMenu: false,
+    component: LoadableComponent(() => import('../../components/Logout')),
+  },
 ];
 
 export const appRouters: any = [
@@ -92,23 +94,14 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Users')),
   },
   {
-    path: '/accountsetting',
-    name: 'accountsetting',
+    path: '/accountsettings',
+    name: 'accountsettings',
     permission: '',
-    title: 'Setting',
+    title: 'Account Settings',
     icon: 'setting',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/AccountSetting')),
   },
-  {
-    path: '/logout',
-    title: 'Logout',
-    name: 'logout',
-    icon: 'info-circle',
-    showInMenu: false,
-    component: LoadableComponent(() => import('../../components/Logout')),
-  },
-  
   {
     path: '/exception?:type',
     permission: '',
