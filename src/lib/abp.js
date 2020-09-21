@@ -169,7 +169,7 @@ var abp = abp || {};
         return true;
     };
 
-    abp.auth.tokenCookieName = 'Abp.AuthToken';
+    abp.auth.tokenCookieName = 'AuthToken';
 
     abp.auth.setToken = function (authToken, expireDate) {
         abp.utils.setCookieValue(abp.auth.tokenCookieName, authToken, expireDate, abp.appPath, abp.domain);
@@ -183,7 +183,7 @@ var abp = abp || {};
         abp.auth.setToken();
     };
 
-    abp.auth.refreshTokenCookieName = 'Abp.AuthRefreshToken';
+    abp.auth.refreshTokenCookieName = 'AuthRefreshToken';
 
     abp.auth.setRefreshToken = function (refreshToken, expireDate) {
         abp.utils.setCookieValue(abp.auth.refreshTokenCookieName, refreshToken, expireDate, abp.appPath, abp.domain);
@@ -357,7 +357,7 @@ var abp = abp || {};
             return;
         }
 
-        console.log(logObject);
+        
     };
 
     abp.log.debug = function (logObject) {

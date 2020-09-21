@@ -1,17 +1,59 @@
 import RoleStore from './roleStore';
-import TenantStore from './tenantStore';
 import UserStore from './userStore';
 import SessionStore from './sessionStore';
-import AuthenticationStore from './authenticationStore';
-import AccountStore from './accountStore';
+import AuthenticationStore, { AppUser } from './authenticationStore';
+import ServerStore from './serverStore';
+import customerStore from './customerStore';
+import CommentStore from './commentStore';
+import NotificationStore from './notificationStore';
+import RequestStore from './requestStore';
+import HistoryLogStore from './historyLogStore';
+import signalRService from '../services/signalRService';
 
-export default function initializeStores() {
-  return {
+interface RootStore  {
+  authenticationStore?: AuthenticationStore;
+  roleStore?: RoleStore;
+  userStore?: UserStore;
+  sessionStore?: SessionStore;
+  serverStore?: ServerStore;
+  customerStore?: customerStore;
+  commentStore?: CommentStore;
+  notificationStore?: NotificationStore;
+  requestStore?: RequestStore;
+  historyLogStore? : HistoryLogStore;
+}
+export let stores:RootStore = {};
+
+export default async function  initializeStores() {
+
+  stores = {
     authenticationStore: new AuthenticationStore(),
     roleStore: new RoleStore(),
-    tenantStore: new TenantStore(),
     userStore: new UserStore(),
     sessionStore: new SessionStore(),
-    accountStore: new AccountStore(),
+    serverStore: new ServerStore(),
+    customerStore: new customerStore(),
+    commentStore: new CommentStore(),
+    notificationStore: new NotificationStore(),
+    requestStore: new RequestStore(),
+    historyLogStore: new HistoryLogStore(),
   };
-}
+
+  stores.authenticationStore?.onLoggedIn((user: AppUser) => {
+    stores.notificationStore?.listenNotifications(String(user.id));
+    stores.notificationStore?.setNotifications(user.notifications);
+    stores.notificationStore?.setTotalUnread(user.totalUnreadNotifications);
+    stores.roleStore?.init();
+    signalRService.start();
+  })
+
+  stores.authenticationStore?.onLoggedOut(async (user: AppUser) => {
+    if (!user) return;
+    signalRService.stop();
+    await stores.notificationStore?.stopListeningNotifications(String(user.id));
+  })
+
+  await stores.authenticationStore?.init();
+
+  return stores
+};

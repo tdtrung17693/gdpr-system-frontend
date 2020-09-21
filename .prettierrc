@@ -7,5 +7,6 @@
         "options": {
             "parser": "json"
         }
-    }]
+    }],
+    "tabWidth": 2
 }

@@ -2,40 +2,48 @@ import './index.css';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as moment from 'moment';
 
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 import Utils from './utils/utils';
-import abpUserConfigurationService from './services/abpUserConfigurationService';
 import initializeStores from './stores/storeInitializer';
 import registerServiceWorker from './registerServiceWorker';
-
-declare var abp: any;
+import { Spin } from 'antd';
+import Text from 'antd/lib/typography/Text';
 
 Utils.setLocalization();
 
-abpUserConfigurationService.getAll().then(data => {
-  Utils.extend(true, abp, data.data.result);
-  abp.clock.provider = Utils.getCurrentClockProvider(data.data.result.clock.provider);
 
-  moment.locale(abp.localization.currentLanguage.name);
-
-  if (abp.clock.provider.supportsMultipleTimezone) {
-    moment.tz.setDefault(abp.timing.timeZoneInfo.iana.timeZoneId);
+class LoadingScreenWrapper extends React.Component {
+  state = { isInitialized: false, stores: {} }
+  async componentDidMount() {
+    const stores = await initializeStores()
+    this.setState({isInitialized: true, stores})
   }
 
-  const stores = initializeStores();
+  render() {
+    const {stores} = this.state
+    return (<>
+    {
+      !this.state.isInitialized ?
+        <div className="loading-screen">
+          <Spin size="large" style={{transform: 'scale(2)'}}/>
+          <div><Text type="secondary" className="blinking-text">Loading...</Text></div>
+        </div> :
+        <Provider {...stores}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </Provider>
+    }
+    </>)
+  }
+}
 
-  ReactDOM.render(
-    <Provider {...stores}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </Provider>,
-    document.getElementById('root') as HTMLElement
-  );
+ReactDOM.render(
+  <LoadingScreenWrapper />,
+  document.getElementById('root') as HTMLElement
+);
 
-  registerServiceWorker();
-});
+registerServiceWorker();

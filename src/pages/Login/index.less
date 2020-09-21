@@ -1,0 +1,65 @@
+@import '~antd/lib/style/themes/default.less';
+
+.main {
+  width: 368px;
+  margin: 0 auto;
+  @media screen and (max-width: @screen-sm) {
+    width: 95%;
+  }
+
+  .icon {
+    font-size: 24px;
+    color: rgba(0, 0, 0, 0.2);
+    margin-left: 16px;
+    vertical-align: middle;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+
+  .other {
+    text-align: left;
+    margin-top: 24px;
+    line-height: 22px;
+
+    .register {
+      float: right;
+    }
+  }
+}
+
+.login .ant-form-item:nth-child(3) {
+  margin-bottom: 0 !important;
+}
+
+.login .ant-card {
+  transition: 0.2s all;
+
+  .ant-card-body {
+    transition: 0.2s all;
+  }
+  @media screen and (max-width: @screen-xs-max) {
+    background: none;
+
+    .ant-card-body {
+      padding-top: 0;
+    }
+  }
+}
+
+.btn-forget-wrap {
+  button {padding-left: 0; margin: 0.5rem 0;}
+}
+
+@media screen and (min-width: @screen-md-min) {
+  .btn-login-wrap {
+    margin-top: 0;
+    text-align: right;
+  }
+  .btn-forget-wrap {
+    text-align: left;
+  }
+}

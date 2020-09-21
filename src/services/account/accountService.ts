@@ -3,6 +3,8 @@ import { RegisterInput } from './dto/registerInput';
 import IsTenantAvaibleOutput from './dto/isTenantAvailableOutput';
 import { RegisterOutput } from './dto/registerOutput';
 import http from '../httpService';
+import { UpdateProfileInfoInput } from './dto/updateProfileInfoInput';
+import { ChangePasswordInput } from './dto/changePasswordInput';
 
 class AccountService {
   public async isTenantAvailable(isTenantAvaibleInput: IsTenantAvaibleInput): Promise<IsTenantAvaibleOutput> {
@@ -13,6 +15,19 @@ class AccountService {
   public async register(registerInput: RegisterInput): Promise<RegisterOutput> {
     let result = await http.post('api/services/app/Account/Register', registerInput);
     return result.data.result;
+  }
+  public async updateInfo(updateInfo: UpdateProfileInfoInput) {
+    let result = await http.put('api/accounts/profile/info', updateInfo);
+    return result.data;
+  }
+  public async changePassword(values: ChangePasswordInput) {
+    let result = await http.put('api/accounts/profile/password', values);
+    return result.data
+  }
+
+  public async resetPassword(email: string) {
+    let result = await http.post('api/accounts/reset-password', {email})
+    return result.data
   }
 }
 

@@ -1,12 +1,11 @@
 import { CreateRoleInput } from './dto/createRoleInput';
 import { CreateRoleOutput } from './dto/createRoleOutput';
 import { EntityDto } from '../dto/entityDto';
-import { GetAllRoleOutput } from './dto/getAllRoleOutput';
+import { Role } from './dto/Role';
 import { GetRoleAsyncInput } from './dto/getRolesAsyncInput';
 import GetRoleAsyncOutput from './dto/getRoleAsyncOutput';
 import { GetRoleForEditOutput } from './dto/getRoleForEditOutput';
 import { PagedResultDto } from '../dto/pagedResultDto';
-import { PagedRoleResultRequestDto } from './dto/PagedRoleResultRequestDto';
 import { UpdateRoleInput } from './dto/updateRoleInput';
 import { UpdateRoleOutput } from './dto/updateRoleOutput';
 import http from '../httpService';
@@ -47,9 +46,9 @@ class RoleService {
     return result.data;
   }
 
-  public async getAll(pagedFilterAndSortedRequest: PagedRoleResultRequestDto): Promise<PagedResultDto<GetAllRoleOutput>> {
-    let result = await http.get('api/services/app/Role/GetAll', { params: pagedFilterAndSortedRequest });
-    return result.data.result;
+  public async getAll(): Promise<Role[]> {
+    let result = await http.get('api/auth/Role/GetAll');
+    return result.data;
   }
 }
 

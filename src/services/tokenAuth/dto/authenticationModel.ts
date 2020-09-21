@@ -1,5 +1,5 @@
 export interface AuthenticationModel {
-  userNameOrEmailAddress: string;
+  username: string;
   password: string;
   rememberClient: boolean;
 }

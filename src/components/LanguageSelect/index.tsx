@@ -3,7 +3,8 @@ import 'famfamfam-flags/dist/sprite/famfamfam-flags.css';
 
 import * as React from 'react';
 
-import { Dropdown, Icon, Menu } from 'antd';
+import { Dropdown, Menu } from 'antd';
+import {Icon} from '@ant-design/compatible';
 
 import { L } from '../../lib/abpUtility';
 import Stores from '../../stores/storeIdentifier';
