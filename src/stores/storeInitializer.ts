@@ -39,18 +39,18 @@ export default async function  initializeStores() {
     historyLogStore: new HistoryLogStore(),
   };
 
-  stores.authenticationStore?.onLoggedIn((user: AppUser) => {
+  stores.authenticationStore?.onLoggedIn(async (user: AppUser) => {
     stores.notificationStore?.listenNotifications(String(user.id));
     stores.notificationStore?.setNotifications(user.notifications);
     stores.notificationStore?.setTotalUnread(user.totalUnreadNotifications);
     stores.roleStore?.init();
-    signalRService.start();
+    await signalRService.start();
   })
 
   stores.authenticationStore?.onLoggedOut(async (user: AppUser) => {
     if (!user) return;
-    signalRService.stop();
     await stores.notificationStore?.stopListeningNotifications(String(user.id));
+    signalRService.stop();
   })
 
   await stores.authenticationStore?.init();
