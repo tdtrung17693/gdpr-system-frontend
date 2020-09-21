@@ -10,6 +10,7 @@ let connection = new SignalR.HubConnectionBuilder()
   .build();
 
 async function start() {
+  if (connection.state === HubConnectionState.Connected) return;
   try {
     await connection.start();
   } catch (err) {
