@@ -46,8 +46,8 @@ export class LogBox extends React.Component<LogProps, LogState> {
           this.renderLogItem(log)
         ),
         datetime: (
-          <Tooltip title={moment(log.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-            <span>{moment(log.createdAt).fromNow()}</span>
+          <Tooltip title={moment.utc(log.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
+            <span>{moment.utc(log.createdAt).fromNow()}</span>
           </Tooltip>
         ),
       };

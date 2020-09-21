@@ -249,7 +249,7 @@ export default class Customers extends React.Component<ICustomerProps> {
               <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
             </div>
             <div style={{ overflowX: 'auto' }}>
-              <Table loading={loading} rowSelection={rowSelection} columns={this.columns} dataSource={customers} />
+              <Table loading={loading} rowSelection={rowSelection} columns={this.columns} dataSource={customers} bordered = {true}/>
             </div>
           </div>
         </div>

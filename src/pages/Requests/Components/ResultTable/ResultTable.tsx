@@ -147,7 +147,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         ],
         onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
-                <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
+                <Tag style={{ width: '100%', textAlign: 'center' }} color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
                   {requestStatus}
                 </Tag>
         ),
@@ -327,6 +327,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           rowSelection={rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
+          bordered = {true}
         />
         </div>
       </div>
