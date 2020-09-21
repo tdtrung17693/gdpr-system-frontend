@@ -13,7 +13,7 @@ export const userRouter: any = [
   {
     path: '/user/login',
     name: 'login',
-    title: 'LogIn',
+    title: 'Log In',
     component: LoadableComponent(() => import('../../pages/Login')),
     showInMenu: false,
   },
@@ -94,10 +94,10 @@ export const appRouters: any = [
     component: LoadableComponent(() => import('../../pages/Users')),
   },
   {
-    path: '/accountsetting',
-    name: 'accountsetting',
+    path: '/accountsettings',
+    name: 'accountsettings',
     permission: '',
-    title: 'Setting',
+    title: 'Account Settings',
     icon: 'setting',
     showInMenu: false,
     component: LoadableComponent(() => import('../../pages/AccountSetting')),

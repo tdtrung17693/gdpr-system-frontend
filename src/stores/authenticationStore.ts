@@ -5,7 +5,6 @@ import tokenAuthService from '../services/tokenAuth/tokenAuthService';
 import { ls } from '../services/localStorage';
 import { AuthConfig } from '../config/auth';
 import userService, { User } from '../services/user/userService';
-import {stores as rootStore, stores} from '../stores/storeInitializer';
 import signalRService from '../services/signalRService';
 import { UpdateProfileInfoInput } from '../services/account/dto/updateProfileInfoInput';
 import accountService from '../services/account/accountService';
@@ -13,7 +12,7 @@ import { ChangePasswordInput } from '../services/account/dto/changePasswordInput
 import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { INotification } from '../services/notification/notificationService';
 
-interface AppUser extends User {
+export interface AppUser extends User {
   totalUnreadNotifications: number;
   permissions: string[];
   notifications: PagedResultDto<INotification>;
@@ -23,6 +22,17 @@ class AuthenticationStore {
   @observable loginModel: LoginModel = new LoginModel();
   @observable loggedIn: boolean = false;
   @observable user: AppUser | null = null;
+
+  _loggedInListeners: Function[] = [];
+  _loggedOutListeners: Function[] = [];
+  public onLoggedIn(cb: Function) {
+    this._loggedInListeners.push(cb);
+  }
+
+  public onLoggedOut(cb: Function) {
+    this._loggedOutListeners.push(cb);
+  }
+
   public async init() {
     if (ls.get(AuthConfig.TOKEN_NAME)) {
       try {
@@ -54,9 +64,7 @@ class AuthenticationStore {
   public setCurrentUser(user: AppUser) {
     this.loggedIn = true;
     this.user = user;
-    stores.notificationStore?.listenNotifications(String(user.id));
-    rootStore.notificationStore?.setNotifications(user.notifications);
-    rootStore.notificationStore?.setTotalUnread(user.totalUnreadNotifications);
+    this._loggedInListeners.forEach(cb => cb(user));
   }
 
   protected async checkTokenValidity() {
@@ -90,14 +98,15 @@ class AuthenticationStore {
     let currentUser = await userService.getCurrentUser();
     await signalRService.start()
     this.setCurrentUser(currentUser);
-    rootStore.notificationStore?.setNotifications(currentUser.notifications);
   }
 
   @action
   logout() {
     ls.remove(AuthConfig.TOKEN_NAME);
+    const willLogOutUser = this.user;
     this.user = null;
     this.loggedIn = false;
+    this._loggedOutListeners.forEach(cb => cb(willLogOutUser));
   }
 
   isGranted(permission: string) {

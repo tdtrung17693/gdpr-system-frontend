@@ -77,13 +77,13 @@ class Login extends React.Component<ILoginProps> {
           <Row justify="center" >
             <Avatar  shape="square" style={{ display: "block", height: 80, width: 80, margin: "1rem" }} src={GdprLogo} />
           </Row>
+          <div style={{ textAlign: 'center' }}>
+            <h3>Welcome</h3>
+          </div>
           <Form className="" onFinish={this.onFinish}>
             <Row style={{ marginTop: 10 }}>
               <Col xs={{span: 20}}  sm={{span: 15}} lg={{span: 10}} xl={{span: 7}} style={{margin: '0 auto'}}>
                 <Card>
-                  <div style={{ textAlign: 'center' }}>
-                    <h3>Log In</h3>
-                  </div>
                   <FormItem name="username" rules={rules.username}>
                     <Input placeholder="Username..." prefix={<UserOutlined type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                   </FormItem>

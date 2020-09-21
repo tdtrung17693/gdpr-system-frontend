@@ -23,20 +23,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3df2b14-b094-4087-ab09-42e064553241" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Footer/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Footer/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/index.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/index.less" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Logout/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Logout/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/NotificationList/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/NotificationList/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Router/router.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Router/router.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Customers/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Customers/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Customers/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Customers/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/EditRequest/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/EditRequest/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Login/index.less" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.less" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Login/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Login/index.validation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Login/index.validation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Requests/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Requests/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Requests/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Requests/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Users/components/createOrUpdateUser.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Users/components/createOrUpdateUser.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/account/accountService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/account/accountService.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/httpService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/httpService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Servers/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Servers/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Servers/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Servers/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Users/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Users/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/signalRService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/signalRService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stores/authenticationStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/stores/authenticationStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stores/storeInitializer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/stores/storeInitializer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +55,12 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
   </component>
   <component name="JsbtTreeLayoutManager">
     <layout place="tools.popupnpm">
@@ -67,13 +83,21 @@
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="js.linters.configure.manually.selectedeslint" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="$USER_HOME$/.config/yarn/global/node_modules/eslint" />
+    <property name="node.js.selected.package.standard" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
+    <property name="settings.editor.selected.configurable" value="template.copyright.formatting" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -108,7 +132,7 @@
       <workItem from="1600350751873" duration="22000" />
       <workItem from="1600350784325" duration="3157000" />
       <workItem from="1600354648914" duration="1003000" />
-      <workItem from="1600441906426" duration="12487000" />
+      <workItem from="1600441906426" duration="28149000" />
     </task>
     <servers />
   </component>
@@ -132,26 +156,26 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="748" y="125" width="1086" height="711" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1600355021045" />
-    <state x="738" y="270" width="430" height="478" key="FileChooserDialogImpl" timestamp="1600441901256">
+    <state x="984" y="327" width="430" height="478" key="FileChooserDialogImpl" timestamp="1600576803511">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="738" y="270" width="430" height="478" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1600441901256" />
-    <state width="1877" height="338" key="GridCell.Tab.0.bottom" timestamp="1600355651199">
+    <state x="984" y="327" width="430" height="478" key="FileChooserDialogImpl/0.0.1920.1080@0.0.1920.1080" timestamp="1600576803511" />
+    <state width="1877" height="274" key="GridCell.Tab.0.bottom" timestamp="1600586626031">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="338" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1600355651199" />
-    <state width="1877" height="338" key="GridCell.Tab.0.center" timestamp="1600355651199">
+    <state width="1877" height="274" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1600586626031" />
+    <state width="1877" height="274" key="GridCell.Tab.0.center" timestamp="1600586626031">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="338" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1600355651199" />
-    <state width="1877" height="338" key="GridCell.Tab.0.left" timestamp="1600355651199">
+    <state width="1877" height="274" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1600586626031" />
+    <state width="1877" height="274" key="GridCell.Tab.0.left" timestamp="1600586626030">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="338" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1600355651199" />
-    <state width="1877" height="338" key="GridCell.Tab.0.right" timestamp="1600355651199">
+    <state width="1877" height="274" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1600586626030" />
+    <state width="1877" height="274" key="GridCell.Tab.0.right" timestamp="1600586626031">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state width="1877" height="338" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1600355651199" />
+    <state width="1877" height="274" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1600586626031" />
     <state width="1877" height="338" key="GridCell.Tab.1.bottom" timestamp="1600355651200">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
@@ -200,29 +224,29 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state width="1877" height="338" key="GridCell.Tab.3.right/0.0.1920.1080@0.0.1920.1080" timestamp="1600355651201" />
-    <state x="399" y="127" key="SettingsEditor" timestamp="1600352783484">
+    <state x="303" y="229" key="SettingsEditor" timestamp="1600605758794">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="399" y="127" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1600352783484" />
-    <state x="614" y="225" width="682" height="609" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1600351039333">
+    <state x="303" y="229" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1600605758794" />
+    <state x="602" y="105" width="682" height="609" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1600645837641">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="614" y="225" width="682" height="609" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1080@0.0.1920.1080" timestamp="1600351039333" />
+    <state x="602" y="105" width="682" height="609" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1080@0.0.1920.1080" timestamp="1600645837641" />
     <state x="759" y="428" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1600441822620">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="759" y="428" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1080@0.0.1920.1080" timestamp="1600441822620" />
-    <state x="669" y="148" width="581" height="810" key="find.popup" timestamp="1600569984904">
+    <state x="669" y="148" width="581" height="810" key="find.popup" timestamp="1600614704583">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="669" y="148" width="581" height="810" key="find.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600569984904" />
+    <state x="669" y="148" width="581" height="810" key="find.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600614704583" />
     <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup" timestamp="1600444090433">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="757" y="409" width="400" height="292" key="jetbrains.javascript.buildTools.run-task-popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600444090433" />
-    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup" timestamp="1600569980024">
+    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup" timestamp="1600645419780">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600569980024" />
+    <state x="623" y="263" width="672" height="678" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1600645419780" />
   </component>
 </project>
