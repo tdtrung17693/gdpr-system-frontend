@@ -37,9 +37,6 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
   }
 
   public setFieldsValues = (server: any) => {
-    //
-    console.log(server?.EndDate);
-    console.log(this.props.modalType)
     //console.log( (new Date(0)).getFullYear() < (new Date(server?.EndDate)).getFullYear());
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
@@ -58,6 +55,18 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
+        if (values.StartDate && values.EndDate) {
+          let ds: Date = new Date(values.StartDate.format('YYYY-MM-DD'));
+          let de: Date = new Date(values.EndDate.format('YYYY-MM-DD'));
+          if (Number(ds.getTime()) >= Number(de.getTime())) {
+            alert('End date is invalid!');
+            return;
+          }
+        }
+        if(!values.IpAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
+          alert("Ip Address is invalid!");
+          return;
+        }
         let id = this.props.authenticationStore.user?.id;
         let valuesUpdate: any = {
           ...values,
@@ -107,7 +116,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
       <>
         <Modal
           visible={visible}
-          transitionName='fade'
+          transitionName="fade"
           title={modalType === 'edit' ? 'Edit Server' : 'Create a new Server'}
           onOk={this.handleOk}
           onCancel={onCancel}
@@ -132,7 +141,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
               <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
             </Form.Item>
             <Form.Item name="EndDate" label="End Date">
-              <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY"/>
+              <DatePicker style={{ width: '100%' }} format="DD-MM-YYYY" />
             </Form.Item>
             {this.props.modalType === 'edit' ? (
               <Form.Item name="status" label="Status">

@@ -124,7 +124,8 @@ export default class Servers extends Component<IServerProps> {
         guids: [],
       })
       .then((response) => {
-        exportToCSV(response.data.responsedRequest, 'xfilename');
+        console.log(response);
+        exportToCSV(response.data.responsedRequest, 'Server List');
       })
 
   }

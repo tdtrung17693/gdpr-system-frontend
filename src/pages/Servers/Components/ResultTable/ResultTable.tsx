@@ -68,6 +68,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[Number(e)].id);
     });
+    console.log(listId);
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -96,7 +97,15 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     //let filterString = "";
     if (!Array.isArray(sorter)) {
       sortOrder = sorter.order === 'ascend' ? true : false;
-      sortedBy = String(sorter.columnKey);
+      if(String(sorter.columnKey) === "ipAddress"){
+        sortedBy = "Ip";
+      } 
+      else if(String(sorter.columnKey) === "cusName"){
+        sortedBy = "CustomerName";
+      }
+      else{
+        sortedBy = "ServerName";
+      }
     }
     this.setState({pageSize : pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, filterBy: this.props.filterString }, async () => {
       this.props.serverStore.pagingObj = {
@@ -126,7 +135,8 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: 'Ip Address',
         dataIndex: 'ipAddress',
-        key : 'ipAddress'
+        key : 'ipAddress',
+        sorter: (a: any, b: any) => a?.ipAddress.length - b?.ipAddress.length,
       },
       {
         title: 'StartDate',
