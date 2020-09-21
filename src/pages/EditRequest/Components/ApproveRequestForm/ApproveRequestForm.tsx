@@ -117,13 +117,13 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
             {!this.props.IsApproved && !this.props.IsClosed ? (
               <Col span={4}>
                 <Form.Item>
-                  <Button onClick={this.onApprove}>
+                  <Button onClick={this.onApprove} style={{marginBottom: 10}}>
                     {/* New -> open */}
-                    Approve Request
+                    Approve 
                   </Button>
-                  <Button onClick={this.onDecline}>
+                  <Button danger onClick={this.onDecline}>
                     {/* New -> close */}
-                    Decline Request
+                    Decline 
                   </Button>
                 </Form.Item>
               </Col>

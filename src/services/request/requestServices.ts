@@ -28,6 +28,31 @@ class RequestService {
     return resultList;
   }
 
+  public async getRequestPaging(pagingObj: any) {
+    let result = await http.get(`api/request/totalRows`,{
+    params: {
+      searchKey: (pagingObj.filterBy)?pagingObj.filterBy:''
+    }}
+    );
+    console.log(result);
+    let result1 = await http.get(`api/request`, {
+      params: {
+        _pageNo: pagingObj.page,
+        _pageSize: pagingObj.pageSize,
+        keyword: (pagingObj.filterBy)?pagingObj.filterBy:''
+      }
+    }
+    );
+    let pagingList: PagedResultDto<GetRequestOutput> = {
+      totalItems: result.data[0].column1 - pagingObj.pageSize,
+      totalPages: Math.floor(result.data[0].column1 / pagingObj.pageSize) === 0 ? 1 : Math.floor(result.data[0].column1 / pagingObj.pageSize),
+      page: pagingObj.page,
+      items: result1.data,
+    };
+    console.log(pagingList)
+    return pagingList;
+  }
+
   public async getRowsCount(){
     let result = await http.get(`api/request/totalRows`, {
       headers: { 'Access-Control-Allow-Origin': '*' },

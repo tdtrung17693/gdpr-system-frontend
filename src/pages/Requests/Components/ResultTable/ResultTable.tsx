@@ -11,6 +11,7 @@ import HistoryLogStore from '../../../../stores/historyLogStore';
 import FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import http from '../../../../services/httpService';
+import { TablePaginationConfig } from 'antd/lib/table';
 //import { TablePaginationConfig } from 'antd/lib/table';
 
 interface IRequests {
@@ -32,6 +33,7 @@ interface RequestsProps {
   requestStore: RequestStore;
   historyLogStore: HistoryLogStore;
   handleModalOpen: any;
+  filterString: string;
 }
 
 interface RequestStates {
@@ -40,8 +42,8 @@ interface RequestStates {
   loading: boolean;
   data: any[];
   pageSize: number | undefined;
-  pageNo: number | undefined;
-  totalRows: number;
+  page: number | undefined;
+  filterBy: string;
 }
 
 @inject(Stores.RequestStore, Stores.HistoryLogStore)
@@ -55,8 +57,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       loading: false,
       data: [],
       pageSize: 10,
-      pageNo: 1,
-      totalRows: 10
+      page: 1,
+      filterBy: '',
     };
     this.handleBulkExportClick = this.handleBulkExportClick.bind(this)
   }
@@ -88,15 +90,31 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
 
   }
 
+
+  handleTableChange = (pagination: TablePaginationConfig) => {
+    
+    this.setState({pageSize : pagination.pageSize, page: pagination.current, filterBy: this.props.filterString }, async () => {
+      this.props.requestStore.pagingObj = {
+        pageSize: this.state.pageSize,
+        page: this.state.page,
+        filterBy: this.props.filterString,
+      }
+      await this.getAllRequests()
+    });
+
+  }
+
   componentDidMount() {
     this.getAllRequests();
   }
 
   async getAllRequests() {
-    await this.props.requestStore.getAll();
+    //await this.props.requestStore.getAll();
+    const {  pageSize, page, filterBy} = this.state;
+    await this.props.requestStore.getRequestPaging({  page, pageSize, filterBy})
   }
 
-  start = () => {
+  start = async() => {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({
@@ -118,6 +136,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       .catch((error) => {
         
       });
+      await this.props.requestStore.getRequestPaging(this.props.requestStore.pagingObj);
 
   };
 
@@ -134,7 +153,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
     
     this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
-    
+    const { page, pageSize} = this.state;
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
 
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
@@ -339,8 +358,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           rowSelection={rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
-          
-          
+          onChange = {this.handleTableChange}
+          pagination={{ pageSize, total: this.props.requestStore.requests === undefined ? 0 : this.props.requestStore.requests.totalItems, current: page, defaultCurrent: 1 }}
         />
         </div>
       </div>
