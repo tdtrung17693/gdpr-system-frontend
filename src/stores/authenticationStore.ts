@@ -16,6 +16,7 @@ export interface AppUser extends User {
   totalUnreadNotifications: number;
   permissions: string[];
   notifications: PagedResultDto<INotification>;
+  avatar: {content:string};
 }
 
 class AuthenticationStore {
@@ -41,6 +42,12 @@ class AuthenticationStore {
         this.logout();
       }
     }
+  }
+  
+  @action
+  public setCurrentUserAvatar(base64Image: string) {
+    this.user = this.user ? {...this.user, avatar: {content: base64Image}} : null
+    console.log(this.user)
   }
 
   get isAuthenticated(): boolean {

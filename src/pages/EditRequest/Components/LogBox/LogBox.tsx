@@ -28,7 +28,7 @@ export class LogBox extends React.Component<LogProps, LogState> {
     if (log.updatedField === 'RequestStatus') {
       if (log.updatedState === 'Open') {
         return <p>{log.message} has accepted the request</p>
-      } else if (log.updatedState === "Close" && log.previousState === "New") {
+      } else if (log.updatedState === "Closed" && log.previousState === "New") {
         return <p>{log.message} has rejected the request</p>
       } else if (log.updatedState === 'New') {
         return <p>{log.message} has created the request</p>
@@ -62,7 +62,7 @@ export class LogBox extends React.Component<LogProps, LogState> {
           dataSource={logData}
           renderItem={(item: any) => (
             <li>
-              <Comment author={item.author} content={item.content} datetime={item.datetime} />
+              <Comment author={item.author} content={item.content} datetime={moment.utc(item.datetime).fromNow()} />
             </li>
           )}
         />

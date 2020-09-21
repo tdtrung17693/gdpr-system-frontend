@@ -99,6 +99,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
             author: {
               firstName: String(comment.author.firstName),
               lastName: String(comment.author.lastName),
+              avatar: String(comment.author.avatar)
             },
             content: comment.content,
             createdAt: comment.createdAt,
@@ -111,6 +112,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
             author: {
               firstName: String(comment.author.firstName),
               lastName: String(comment.author.lastName),
+              avatar: String(comment.author.avatar)
             },
             content: comment.content,
             createdAt: comment.createdAt,

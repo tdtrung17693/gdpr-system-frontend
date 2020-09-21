@@ -46,7 +46,7 @@ const userDropdownMenu = (
 @observer
 export class Header extends React.Component<IHeaderProps> {
   render() {
-    const currentUser = this.props.authenticationStore!.user;
+    const currentUser = this.props.authenticationStore?.user;
     const totalUnread = this.props.notificationStore?.totalUnreadNotifications;
     const MenuIcon = this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined;
     return (
@@ -66,7 +66,11 @@ export class Header extends React.Component<IHeaderProps> {
                 <div>
                   <Space>
                     <span style={{ fontWeight: 700 }}>{currentUser?.firstName} {currentUser?.lastName}</span>
-                    <Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={profilePicture} />
+                    {
+                      currentUser?.avatar ?
+                      <Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={`data:image/png;base64,${currentUser?.avatar.content}`} />
+                      :<Avatar style={{ height: 24, width: 24 }} shape="circle" alt={'profile'} src={profilePicture} />
+                    }
                   </Space>
                 </div>
               </Dropdown>
