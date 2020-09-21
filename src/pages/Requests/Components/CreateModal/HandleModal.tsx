@@ -9,6 +9,7 @@ import { Select } from 'antd';
 import RequestStore from '../../../../stores/requestStore';
 import { CreateRequestInput } from '../../../../services/request/dto/createRequestInput';
 import AuthenticationStore from '../../../../stores/authenticationStore';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -65,7 +66,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
     this.formRef.current
       ?.validateFields()
       .then((values: any) => {
-        
+        if (moment(values.startDate) < moment(moment.now())) {message.info("Start Date must after the current Date Time!"); return;}
         let valuesUpdate: any = {
           ...values,
 
@@ -85,7 +86,7 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
           }
         }
         else{
-          if (valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
+          if ((valuesUpdate.endDate) && valuesUpdate.startDate > valuesUpdate.endDate) {message.info("Create fail. StartDate must before EndDate")}
           else{
           this.props.onSave(valuesUpdate, null);
           message.info("Create successfully");
@@ -148,10 +149,10 @@ export default class HandleModal extends Component<RequestsProps, RequestStates>
               <Input />
             </Form.Item>
             <Form.Item name={'startDate'} label="From Date" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
-            <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
+            <DatePicker style={{ width: 315}} showTime format="DD-MM-YYYY HH:mm:ss" />
             </Form.Item>
-            <Form.Item name={'endDate'} label="To Date"  >
-            <DatePicker style={{ width: 315}} showTime format="YYYY-MM-DD HH:mm:ss" />
+            <Form.Item name={'endDate'} label="To Date"  rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
+            <DatePicker style={{ width: 315}} showTime format="DD-MM-YYYY HH:mm:ss"  />
             </Form.Item>
             <Form.Item name={'serverId'} label="Server" rules={(this.props.modalType=='create')?[{ required: true }]:[]} >
             <Select

@@ -39,6 +39,7 @@ export default class Requests extends Component<IRequestProps> {
   state = {
     modalVisible: false,
     editingRequestId: '',
+    filterString: '',
   };
 
   async handleModalOpen(params: any) {
@@ -62,6 +63,17 @@ export default class Requests extends Component<IRequestProps> {
       cb();
     });
   };
+
+  handleSearch = async (value: string) => {
+    let filterKey = value;
+    this.setState({filterString: filterKey});
+    this.props.requestStore.pagingObj = {
+      ...this.props.requestStore.pagingObj,
+      page: 1,
+      filterBy: filterKey
+    }
+    await this.props.requestStore.getRequestPaging(this.props.requestStore.pagingObj);
+  }
 
   handleSave = async (request: CreateRequestInput | null, validatingErrors: Store) => {
     if (request) {
@@ -99,9 +111,9 @@ export default class Requests extends Component<IRequestProps> {
               onSearch={(value) => this.props.requestStore.getSearch(value)}
             />
           </div>
-          <ResultTable historyLogStore={this.props.historyLogStore} requestStore={this.props.requestStore}
-                       handleModalOpen={this.handleModalOpen} />
+          <ResultTable historyLogStore = {this.props.historyLogStore} requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} filterString = {this.state.filterString}/>
         </Card>
+
         <HandleModal
           ref={this.modalRef}
           visible={this.state.modalVisible}

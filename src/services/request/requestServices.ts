@@ -6,6 +6,7 @@ import http from '../httpService';
 import serverServices from '../server/serverServices';
 import {ManageAcceptDeclineInput} from './dto/manageAcceptDeclineInput';
 import {BulkRequestExport} from './dto/bulkRequestExport';
+//import { result } from 'lodash';
 class RequestService {
   public async create(createRequestInput: CreateRequestInput){
       let result = await http.post('api/request/create', createRequestInput);
@@ -15,6 +16,9 @@ class RequestService {
   public async getAll():Promise<PagedResultDto<GetRequestOutput>> {  // Promise<PagedResultDto<GetRequestOutput>>
     let result = await http.get(`api/request`, {
       headers: { 'Access-Control-Allow-Origin': '*' },
+      // params: {
+      //   _pageNo: pageNo,
+      // }
     });
 
     let resultList : PagedResultDto<GetRequestOutput> = {
@@ -22,6 +26,38 @@ class RequestService {
       totalItems: result.data.length,
     };
     return resultList;
+  }
+
+  public async getRequestPaging(pagingObj: any) {
+    let result = await http.get(`api/request/totalRows`,{
+    params: {
+      searchKey: (pagingObj.filterBy)?pagingObj.filterBy:''
+    }}
+    );
+    console.log(result);
+    let result1 = await http.get(`api/request`, {
+      params: {
+        _pageNo: pagingObj.page,
+        _pageSize: pagingObj.pageSize,
+        keyword: (pagingObj.filterBy)?pagingObj.filterBy:''
+      }
+    }
+    );
+    let pagingList: PagedResultDto<GetRequestOutput> = {
+      totalItems: result.data[0].column1 - pagingObj.pageSize,
+      totalPages: Math.floor(result.data[0].column1 / pagingObj.pageSize) === 0 ? 1 : Math.floor(result.data[0].column1 / pagingObj.pageSize),
+      page: pagingObj.page,
+      items: result1.data,
+    };
+    console.log(pagingList)
+    return pagingList;
+  }
+
+  public async getRowsCount(){
+    let result = await http.get(`api/request/totalRows`, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
+    return result;
   }
 
   public async getSearch(keywordInput: string):Promise<PagedResultDto<GetRequestOutput>> {  // Promise<PagedResultDto<GetRequestOutput>>

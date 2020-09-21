@@ -87,6 +87,7 @@ export default class CreateOrEditRequestModal extends Component<RequestsProps, R
           visible={visible}
           title={'Create a new requests'}
           onOk={this.handleOk}
+          onCancel={this.handleCancel}
           transitionName='fade'
           footer={[
             <Button form="form" key="submit" htmlType="submit" type="primary" loading={loading} onClick={this.handleOk}>
