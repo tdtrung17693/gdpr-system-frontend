@@ -1,13 +1,14 @@
 import RoleStore from './roleStore';
 import UserStore from './userStore';
 import SessionStore from './sessionStore';
-import AuthenticationStore from './authenticationStore';
+import AuthenticationStore, { AppUser } from './authenticationStore';
 import ServerStore from './serverStore';
 import customerStore from './customerStore';
 import CommentStore from './commentStore';
 import NotificationStore from './notificationStore';
 import RequestStore from './requestStore';
 import HistoryLogStore from './historyLogStore';
+import signalRService from '../services/signalRService';
 
 interface RootStore  {
   authenticationStore?: AuthenticationStore;
@@ -38,8 +39,21 @@ export default async function  initializeStores() {
     historyLogStore: new HistoryLogStore(),
   };
 
+  stores.authenticationStore?.onLoggedIn((user: AppUser) => {
+    stores.notificationStore?.listenNotifications(String(user.id));
+    stores.notificationStore?.setNotifications(user.notifications);
+    stores.notificationStore?.setTotalUnread(user.totalUnreadNotifications);
+    stores.roleStore?.init();
+    signalRService.start();
+  })
+
+  stores.authenticationStore?.onLoggedOut(async (user: AppUser) => {
+    if (!user) return;
+    signalRService.stop();
+    await stores.notificationStore?.stopListeningNotifications(String(user.id));
+  })
+
   await stores.authenticationStore?.init();
-  await stores.roleStore?.init();
 
   return stores
 };

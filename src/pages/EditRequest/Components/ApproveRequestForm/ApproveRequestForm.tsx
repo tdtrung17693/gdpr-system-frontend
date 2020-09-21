@@ -56,8 +56,10 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         
         await this.props.requestStore.manage(valuesUpdate)
-        await this.props.requestStore.updateAcceptDecline("Open",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
-        await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        await this.props.requestStore.updateAcceptDecline("Open",this.props.authenticationStore.user?.firstName + ' ' + this.props.authenticationStore.user?.lastName,new Date().toLocaleString())
+        setTimeout(async () => {
+          await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        },1000)
         message.info("Approve Request Successfully");
       })
   }
@@ -78,8 +80,10 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         
         this.props.requestStore.manage(valuesUpdate)
-        this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
-        this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        this.props.requestStore.updateAcceptDecline("Closed",this.props.authenticationStore.user?.firstName + ' ' + this.props.authenticationStore.user?.lastName,new Date().toLocaleString())
+        setTimeout(async () => {
+          await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        },1000)
         message.info("Cancel Request Successfully");
       })
   }
@@ -97,13 +101,13 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
         };
         
         this.props.requestStore.manage(valuesUpdate)
-        this.props.requestStore.updateAcceptDecline("Closed",/*{ ...this.props.requestStore.editRequest }.updatedBy*/ "John the Admin - john@admin.com",new Date().toLocaleString())
-        this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        this.props.requestStore.updateAcceptDecline("Closed",this.props.authenticationStore.user?.firstName + ' ' + this.props.authenticationStore.user?.lastName,new Date().toLocaleString())
+        setTimeout(async () => {
+          await this.props.historyLogStore?.getLogOfRequest(this.props.requestId)
+        },1000)
         message.info("Decline Request Successfully");
       })
   }
-
-  
 
   render() {
     return (
@@ -117,13 +121,13 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
             {!this.props.IsApproved && !this.props.IsClosed ? (
               <Col span={4}>
                 <Form.Item>
-                  <Button onClick={this.onApprove}>
+                  <Button onClick={this.onApprove} style={{marginBottom: 10}}>
                     {/* New -> open */}
-                    Approve Request
+                    Approve 
                   </Button>
-                  <Button onClick={this.onDecline}>
+                  <Button danger onClick={this.onDecline}>
                     {/* New -> close */}
-                    Decline Request
+                    Decline 
                   </Button>
                 </Form.Item>
               </Col>
@@ -131,7 +135,7 @@ export default class ApproveRequestForm extends Component<RequestsProps,RequestS
               <Col span={4}>
                 <Form.Item>
                   <Button type="link" onClick={this.onCancel}>
-                    {/* Open -> close */}
+                    {/* Open -> Close */}
                     Cancel Request
                   </Button>
                 </Form.Item>

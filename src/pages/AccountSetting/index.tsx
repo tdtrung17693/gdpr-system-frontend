@@ -11,6 +11,7 @@ import ImgCrop from 'antd-img-crop';
 //import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { PictureOutlined } from '@ant-design/icons';
 import http from '../../services/httpService';
+//import Axios from 'axios';
 
 const { Title } = Typography;
 const FormItem = Form.Item;
@@ -61,7 +62,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
         
       })
       .catch(function (error) {
-        
+        throw message.error({ content: "You haven't set an avatar yet" });
       });
   }
 
@@ -91,7 +92,7 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
             content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
           }).then((response) => {
             this.setState({ currentAvatarId: response.data.id })
-            
+            this.props.authenticationStore.setCurrentUserAvatar(imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")) 
           })
             .catch(function (error) {
               
@@ -104,13 +105,14 @@ export class AccountSetting extends React.Component<IAccountSettingsProps> {
             fileExtension: info.file.name.split('.').pop(),
             content: imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
             fileId: this.state.currentAvatarId,
-          });
+          }).then(() => {
+            this.props.authenticationStore.setCurrentUserAvatar(imageUrl.replace(/^data:image\/(png|jpg|jpeg);base64,/, "")) 
+          })
         }
       },
       );
     }
   };
-
 
   waitForProcess = async (processingFn: Function, successMsg: string, errorMsg: string) => {
     this.setState(

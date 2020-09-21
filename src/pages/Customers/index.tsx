@@ -14,6 +14,7 @@ import ImportButton from './Components/ImportButton';
 import CustomerStore from '../../stores/customerStore';
 import ManageServerModal from './Components/ManageServerModal';
 import CreateCustomerModal from './Components/CreateCustomerModal';
+import ProtectedComponent from '../../components/ProtectedComponent';
 
 const { Panel } = Collapse;
 
@@ -120,8 +121,8 @@ export default class Customers extends React.Component<ICustomerProps> {
     await this.props.customerStore.getFilteredCustomerList(keyword);
   };
 
-  handleSearch = (keyword: any) => {
-    this.filterData(keyword);
+  handleSearch = async (keyword: any) => {
+    await this.filterData(keyword);
   };
 
   start = () => {
@@ -135,14 +136,14 @@ export default class Customers extends React.Component<ICustomerProps> {
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    this.setState({ selectedRowKeys });     
+    this.setState({ selectedRowKeys });
   };
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData().then(r => r);
   }
 
-  handleExport = async (e: any) => {
+  handleExport = async () => {
     let response = await http.post('api/Customer/export-csv', {
       fromDate: this.state.fromDate,
       toDate: this.state.toDate,
@@ -166,33 +167,36 @@ export default class Customers extends React.Component<ICustomerProps> {
     return (
       <div>
         <h2>Customers Management</h2>
-        <Collapse defaultActiveKey={['1']}>
-          <Panel header="Export Requests By Customers" key='0'>
-            <div className="site-card-wrapper">
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Card hoverable={true} title="FromDate:" bordered={false}>
-                    <Input.Group compact>
-                      <EditOutlined />
-                      <DatePicker onChange={(value: any) => this.setState({ fromDate: value })}
-                                  style={{ width: '100%' }} />
-                    </Input.Group>
-                  </Card>
-                </Col>
-                <Col span={12}>
-                  <Card hoverable={true} title="ToDate:" bordered={false}>
-                    <Input.Group compact>
-                      <EditOutlined />
-                      <DatePicker onChange={(value: any) => this.setState({ toDate: value })}
-                                  style={{ width: '100%' }} />
-                    </Input.Group>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-            <Button type="primary" onClick={this.handleExport}>Process Data</Button>
-          </Panel>
-        </Collapse>
+        <ProtectedComponent requiredPermission="data:export">
+          <Collapse defaultActiveKey={['1']}>
+            <Panel header="Export Requests By Customers" key='0'>
+              <div className="site-card-wrapper">
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Card hoverable={true} title="FromDate:" bordered={false}>
+                      <Input.Group compact>
+                        <EditOutlined />
+                        <DatePicker onChange={(value: any) => this.setState({ fromDate: value })}
+                                    style={{ width: '100%' }} />
+                      </Input.Group>
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card hoverable={true} title="ToDate:" bordered={false}>
+                      <Input.Group compact>
+                        <EditOutlined />
+                        <DatePicker onChange={(value: any) => this.setState({ toDate: value })}
+                                    style={{ width: '100%' }} />
+                      </Input.Group>
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
+              <Button type="primary" onClick={this.handleExport}>Process Data</Button>
+            </Panel>
+          </Collapse>
+        </ProtectedComponent>
+        <Card style={{marginTop: '1rem'}}>
         <div>
           <div className="create-filter">
             <div>
@@ -230,13 +234,15 @@ export default class Customers extends React.Component<ICustomerProps> {
                 }
                 {...this.props}
               />
-              <ImportButton />
+              <ProtectedComponent requiredPermission="data:import">
+                <ImportButton />
+              </ProtectedComponent>
             </div>
             <Search
               style={{ width: '400px' }}
               placeholder="Search Keyword"
               enterButton="Search"
-              size="large"
+              size="middle"
               onSearch={(value: string) => this.handleSearch(value)}
             />
           </div>
@@ -249,10 +255,11 @@ export default class Customers extends React.Component<ICustomerProps> {
               <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
             </div>
             <div style={{ overflowX: 'auto' }}>
-              <Table loading={loading} rowSelection={rowSelection} columns={this.columns} dataSource={customers} />
+              <Table loading={loading} rowSelection={rowSelection} columns={this.columns} dataSource={customers} bordered = {true}/>
             </div>
           </div>
         </div>
+        </Card>
       </div>
     );
   }

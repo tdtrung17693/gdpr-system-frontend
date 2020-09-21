@@ -1,5 +1,5 @@
 .create-filter {
-  margin: 2vh;
+  margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
 }

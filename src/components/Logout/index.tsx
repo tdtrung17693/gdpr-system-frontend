@@ -15,13 +15,11 @@ export interface ILogoutProps {
 @inject(Stores.AuthenticationStore, Stores.NotificationStore)
 class Logout extends React.Component<ILogoutProps> {
   async componentDidMount() {
-    let currentUser = this.props.authenticationStore?.user;
-    await this.props.notificationStore?.stopListeningNotifications(String(currentUser?.id));
     await this.props.authenticationStore!.logout();
     signalRService.stop();
   }
   render() {
-    return <Redirect to="/user/login"></Redirect>
+    return <Redirect to="/user/login"/>
   }
 }
 

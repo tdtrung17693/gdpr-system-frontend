@@ -22,7 +22,7 @@
     "lodash": "^4.17.15",
     "mobx": "^5.15.0",
     "mobx-react": "^6.1.4",
-    "moment": "^2.24.0",
+    "moment": "^2.26.0",
     "moment-timezone": "^0.5.27",
     "qs": "^6.9.4",
     "query-string": "^6.9.0",
@@ -81,6 +81,20 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": ["react-app", "shared-config"],
+    "rules": {
+      "additional-rule": "warn"
+    },
+    "overrides": [
+      {
+        "files": ["**/*.ts?(x)"],
+        "rules": {
+          "additional-typescript-only-rule": "warn"
+        }
+      }
     ]
   }
 }

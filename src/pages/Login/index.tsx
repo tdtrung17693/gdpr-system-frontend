@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { Button, Card, Form, Col, Input, Row, Avatar } from 'antd';
+import { Button, Card, Form, Col, Input, Row, Avatar, Modal, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { inject, observer } from 'mobx-react';
 
@@ -14,6 +14,7 @@ import Stores from '../../stores/storeIdentifier';
 import rules from './index.validation';
 
 import GdprLogo from '../../images/gdpr.svg';
+import { FormInstance } from 'antd/lib/form';
 
 const FormItem = Form.Item;
 
@@ -27,8 +28,11 @@ export interface ILoginProps extends FormComponentProps {
 @inject(Stores.AuthenticationStore, Stores.SessionStore)
 @observer
 class Login extends React.Component<ILoginProps> {
+  formRef = React.createRef<FormInstance>()
   state = {
-    isLoggingIn: false
+    isLoggingIn: false,
+    modalVisible: false,
+    processing: false
   }
   onFinish = async (values: any) => {
     this.setState({ isLoggingIn: true })
@@ -43,6 +47,25 @@ class Login extends React.Component<ILoginProps> {
     }
   };
 
+  handleResetPassword = () => {
+    this.waitForProcess(async () => {
+      const values = await this.formRef.current?.validateFields()
+
+      await this.props.authenticationStore!.resetPassword(values!.email)
+    }, "Your password has been successfully resetted. Please check your email for the new password.", "Your password cannot be resetted. Please check if you have input the right email.")
+  }
+
+  waitForProcess = async (processingFn: Function, successMsg: string, errorMsg: string) => {
+    message.loading({ content: 'Processing...', key: 'user:process', duration: 0});
+    try {
+      await processingFn();
+      message.success({ content: successMsg, key: 'user:process', duration: 5 });
+    } catch (e) {
+      message.error({ content: errorMsg, key: 'user:process', duration: 5 });
+      throw e;
+    }
+  }
+
   public render() {
     let { from } = this.props.location.state || { from: { pathname: '/' } };
     if (this.props.authenticationStore!.isAuthenticated) return <Redirect to={from} />;
@@ -50,17 +73,17 @@ class Login extends React.Component<ILoginProps> {
     // const { loginModel } = this.props.authenticationStore!;
     return (
       <>
-        <Col className="name">
+        <Col className="login">
           <Row justify="center" >
             <Avatar  shape="square" style={{ display: "block", height: 80, width: 80, margin: "1rem" }} src={GdprLogo} />
           </Row>
+          <div style={{ textAlign: 'center' }}>
+            <h3>Welcome</h3>
+          </div>
           <Form className="" onFinish={this.onFinish}>
             <Row style={{ marginTop: 10 }}>
-              <Col span={8} offset={8}>
+              <Col xs={{span: 20}}  sm={{span: 15}} lg={{span: 10}} xl={{span: 7}} style={{margin: '0 auto'}}>
                 <Card>
-                  <div style={{ textAlign: 'center' }}>
-                    <h3>Log In</h3>
-                  </div>
                   <FormItem name="username" rules={rules.username}>
                     <Input placeholder="Username..." prefix={<UserOutlined type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} size="large" />
                   </FormItem>
@@ -74,15 +97,12 @@ class Login extends React.Component<ILoginProps> {
                     />
                   </FormItem>
                   <Row>
-                    <Col span={12} offset={0}>
-                      {/* <Checkbox checked={loginModel.rememberMe} onChange={loginModel.toggleRememberMe} style={{ paddingRight: 8 }} />
-                    {L('RememberMe')}
-                    <br /> */}
-                      <button>Forgot Password</button>
+                    <Col xs={{span: 24}} sm={{span: 24}} className={"btn-forget-wrap"}>
+                      <Button onClick={() => this.setState({modalVisible: true})} type="link" size="small">Forgot Password?</Button>
                     </Col>
 
-                    <Col style={{ textAlign: "right" }} span={8} offset={4}>
-                      <Button style={{}} htmlType={'submit'} type="primary" loading={this.state.isLoggingIn}>
+                    <Col xs={{span: 24, offset:0}} sm={{span: 24}} className="btn-login-wrap" >
+                      <Button size="large" block={true} htmlType={'submit'} type="primary" loading={this.state.isLoggingIn}>
                         Log In
                       </Button>
                     </Col>
@@ -93,6 +113,23 @@ class Login extends React.Component<ILoginProps> {
 
           </Form>
         </Col>
+        <Modal
+          maskClosable={false}
+          transitionName="fade"
+          visible={this.state.modalVisible}
+          cancelText="Cancel"
+          okText="Ok"
+          onCancel={() => {this.setState({modalVisible: false})}}
+          onOk={this.handleResetPassword}
+          okButtonProps={{disabled: this.state.processing}}
+          title="Reset Password">
+          <Form ref={this.formRef}>
+            <FormItem label="Email" name="email" rules={[{required: true, message: "Email is required."}]}>
+              <Input />
+            </FormItem>
+            <Button htmlType="submit" type="primary">Reset My Password</Button>
+          </Form>
+        </Modal>
       </>
     );
   }

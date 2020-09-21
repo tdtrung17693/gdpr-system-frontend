@@ -11,6 +11,8 @@ import HistoryLogStore from '../../../../stores/historyLogStore';
 import FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import http from '../../../../services/httpService';
+import { TablePaginationConfig } from 'antd/lib/table';
+//import { TablePaginationConfig } from 'antd/lib/table';
 
 interface IRequests {
   key: string;
@@ -31,6 +33,7 @@ interface RequestsProps {
   requestStore: RequestStore;
   historyLogStore: HistoryLogStore;
   handleModalOpen: any;
+  filterString: string;
 }
 
 interface RequestStates {
@@ -38,6 +41,9 @@ interface RequestStates {
   selectedRowKeys: any;
   loading: boolean;
   data: any[];
+  pageSize: number | undefined;
+  page: number | undefined;
+  filterBy: string;
 }
 
 @inject(Stores.RequestStore, Stores.HistoryLogStore)
@@ -50,7 +56,11 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       selectedRowKeys: [],
       loading: false,
       data: [],
+      pageSize: 10,
+      page: 1,
+      filterBy: '',
     };
+    this.handleBulkExportClick = this.handleBulkExportClick.bind(this)
   }
 
   exportToCSV = (csvData: unknown[], fileName: string) => {
@@ -61,9 +71,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     FileSaver.saveAs(data, fileName + '.xlsx');
   }
 
-  handleExportClick = () => {
-    http.post(`api/Request/exportRequest`, {
-      guids: this.state.selectedRowKeys
+  handleBulkExportClick = () => {
+    console.log(this.state.selectedRowKeys.toString())
+    http.post(`api/Request/bulkExport`, {
+      idList: this.state.selectedRowKeys.toString()
     })
       .then((requests) => {
         this.setState({
@@ -76,6 +87,20 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         
       });
 
+
+  }
+
+
+  handleTableChange = (pagination: TablePaginationConfig) => {
+    
+    this.setState({pageSize : pagination.pageSize, page: pagination.current, filterBy: this.props.filterString }, async () => {
+      this.props.requestStore.pagingObj = {
+        pageSize: this.state.pageSize,
+        page: this.state.page,
+        filterBy: this.props.filterString,
+      }
+      await this.getAllRequests()
+    });
 
   }
 
@@ -84,10 +109,12 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   }
 
   async getAllRequests() {
-    await this.props.requestStore.getAll();
+    //await this.props.requestStore.getAll();
+    const {  pageSize, page, filterBy} = this.state;
+    await this.props.requestStore.getRequestPaging({  page, pageSize, filterBy})
   }
 
-  start = () => {
+  start = async() => {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({
@@ -95,6 +122,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         loading: false,
       });
     }, 1000);
+    
     http.post(`api/Request/exportRequest`, {
       guids: this.state.selectedRowKeys
     })
@@ -108,6 +136,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       .catch((error) => {
         
       });
+      await this.props.requestStore.getRequestPaging(this.props.requestStore.pagingObj);
 
   };
 
@@ -117,10 +146,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   };
 
   
+
+
+  
   render() {
     //const sorter = (a: string, b: string) => (a == null && b == null ? (a || '').localeCompare(b || '') : a - b);
-    this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
     
+    this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
+    const { page, pageSize} = this.state;
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
 
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
@@ -145,17 +178,18 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         ],
         onFilter: (value: any, record: any) => record.RequestStatus.indexOf(value) === 0,
         render: (requestStatus: string) => (
-                <Tag color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
+                <Tag style={{ width: '100%', textAlign: 'center' }} color={requestStatus === 'New' ? 'blue' : (requestStatus === 'Open' ? 'green' : 'red')} key={requestStatus}>
                   {requestStatus}
                 </Tag>
         ),
       },
       {
-        title: 'Create Date',
+        title: 'Created Date',
         dataIndex: 'CreatedAt',
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm")}</div>
       },
       {
         title: 'Create By',
@@ -254,10 +288,10 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         sortDirections: ['descend', 'ascend']
       },
       {
-        title: 'Create By',
-        dataIndex: 'CreatedByNameEmail',
-        key: 'createdAt',
-        //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
+        title: 'Update Date',
+        dataIndex: 'UpdatedAt',
+        key: 'updatedAt',
+        sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
@@ -314,8 +348,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading} >
-            Reload
+          <Button type="primary" onClick={this.handleBulkExportClick} disabled={!hasSelected} loading={loading} >
+            Export
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
@@ -325,6 +359,9 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
           rowSelection={rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
+          bordered = {true}
+          onChange = {this.handleTableChange}
+          pagination={{ pageSize, total: this.props.requestStore.requests === undefined ? 0 : this.props.requestStore.requests.totalItems, current: page, defaultCurrent: 1 }}
         />
         </div>
       </div>

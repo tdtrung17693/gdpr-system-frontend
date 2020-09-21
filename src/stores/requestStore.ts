@@ -8,14 +8,28 @@ import { PagedResultDto } from '../services/dto/pagedResultDto';
 import { CreateRequestInput } from '../services/request/dto/createRequestInput';
 import { GetServerOutput } from '../services/server/dto/GetServerOutput';
 import {ManageAcceptDeclineInput} from '../services/request/dto/manageAcceptDeclineInput';
+
+export interface PagingObject {
+  page : number|undefined,
+  pageSize: number|undefined,
+  filterBy: string,
+}
+
 class RequestStore {
   @observable requests: PagedResultDto<GetRequestOutput> = {
     totalItems: 0,
+    totalPages: 0,
+    page: 1,
     items: [],
   };
   @observable editRequest!: GetRequestOutput;
   @observable serversList: GetServerOutput[] = [];
   @observable currentId!: string;
+  @observable pagingObj: PagingObject = {
+    page: 1,
+    pageSize : 10,
+    filterBy: '',
+  };
 
   @action
   async getAll() {
@@ -25,10 +39,23 @@ class RequestStore {
     
   }
 
-  @action updateAcceptDecline(nStatus: string, updatedby: string, updateat: string){
+  @action
+  public async getRequestPaging(pagingObj: any) {
+    let result = await requestService.getRequestPaging(pagingObj);
+    this.requests = result;
+    this.requests.items = [...result.items];
+    this.requests.totalItems = result.totalItems;
+  }
+  
+  async getRowsCount() {
+    let result = (await requestService.getRowsCount());
+    return result.data;
+  }
+
+  @action updateAcceptDecline(nStatus: string, updatedby: string, updatedat: string){
     this.editRequest.status = nStatus;
     this.editRequest.updatedBy = updatedby;
-    this.editRequest.updatedDate = updateat;
+    this.editRequest.updatedDate = updatedat;
   }
 
   @action updateData(status: string, 
@@ -56,6 +83,11 @@ class RequestStore {
     let result = await requestService.getFilter(filterStatus);
     this.requests.items = [...result.items];
     this.requests.totalItems = result.totalItems;
+  }
+
+  @action
+  public async getRequestFilter(filter: PagingObject) {
+      this.getRequestPaging({...this.pagingObj});
   }
 
   @action

@@ -28,7 +28,7 @@ export class LogBox extends React.Component<LogProps, LogState> {
     if (log.updatedField === 'RequestStatus') {
       if (log.updatedState === 'Open') {
         return <p>{log.message} has accepted the request</p>
-      } else if (log.updatedState === "Close" && log.previousState === "New") {
+      } else if (log.updatedState === "Closed" && log.previousState === "New") {
         return <p>{log.message} has rejected the request</p>
       } else if (log.updatedState === 'New') {
         return <p>{log.message} has created the request</p>
@@ -46,8 +46,8 @@ export class LogBox extends React.Component<LogProps, LogState> {
           this.renderLogItem(log)
         ),
         datetime: (
-          <Tooltip title={moment(log.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-            <span>{moment(log.createdAt).fromNow()}</span>
+          <Tooltip title={moment.utc(log.createdAt).local().format('YYYY-MM-DD HH:mm:ss')}>
+            <span>{moment.utc(log.createdAt).fromNow()}</span>
           </Tooltip>
         ),
       };

@@ -17,6 +17,7 @@ export type CommentDeleted = {
 export type CommentAuthor = {
   firstName: string;
   lastName: string;
+  avatar: string;
 }
 
 class CommentService {
