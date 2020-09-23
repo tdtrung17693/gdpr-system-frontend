@@ -209,7 +209,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   <Col span={6}>
                     <strong>Created Date: </strong>
                   </Col>
-                  <Col>{moment(editRequest.createdDate).format('DD-MM-YYYY HH:mm:ss')}</Col>
+                  <Col>{moment(editRequest.createdDate, "DD.MM.YY HH:mm:ss").format('DD-MM-YYYY HH:mm')}</Col>
                 </Row>
                 {!isEmployee ? (<Row>
                   <Col span={6}>
@@ -228,7 +228,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   <Col span={6}>
                     <strong>Update Date </strong>
                   </Col>
-                  <Col>{moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss')}</Col>
+                  <Col>{moment(editRequest.updatedDate, "DD.MM.YY HH:mm:ss").format('DD-MM-YYYY HH:mm')}</Col>
                 </Row>
               </Form>
               <Collapse defaultActiveKey={['1']}>

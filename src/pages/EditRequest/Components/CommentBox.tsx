@@ -92,6 +92,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
       });
       signalRService.on('commentCreated', (comment) => {
         //
+        console.log(comment)
         if (!this.buttonRef.current.state.checked) {
           this.props.commentStore?.addCommentToStoreAfter({
             author: {
@@ -203,7 +204,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
           </div>
         }
         avatar={
-                comment.author.avatar ?
+                comment.author.avatar != null && comment.author.avatar !== 'null'?
                 <Image
                   width="100%"
                   src={`data:image/png;base64,${comment.author.avatar}`}

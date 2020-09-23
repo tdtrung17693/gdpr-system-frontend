@@ -189,24 +189,25 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend'],
-        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm")}</div>
+        render: (createdAt: Date) => <div>{moment.utc(createdAt, "DD.MM.YY HH:mm:ss").local().format("DD-MM-YYYY HH:mm")}</div>
       },
       {
-        title: 'Create By',
+        title: 'Created By',
         dataIndex: 'CreatedByNameEmail',
         key: 'createdAt',
         //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
-        title: 'Update Date',
+        title: 'Updated Date',
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
-        sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.UpdatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sorter: (a: any, b: any) => moment(a.UpdatedAt, "DD.MM.YY HH:mm:ss").unix() - moment(b.UpdatedAt, "DD.MM.YY HH:mm:ss").unix(),
+        sortDirections: ['descend', 'ascend'],
+        render: (updatedAt: Date) => <div>{updatedAt ? moment.utc(updatedAt, "DD.MM.YY HH:mm:ss").local().format("DD-MM-YYYY HH:mm") : ''}</div>
       },
       {
-        title: 'Update By',
+        title: 'Updated By',
         dataIndex: 'UpdatedByNameEmail',
         key: 'updatedAt',
         //sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
@@ -230,14 +231,14 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       {
         title: 'Request From',
         dataIndex: 'StartDate',
-        sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
+        sorter: (a: any, b: any) => moment(a.StartDate, "DD.MM.YY HH:mm:ss").unix() - moment(b.StartDate, "DD.MM.YY HH:mm:ss").unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
-        sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
+        sorter: (a: any, b: any) => moment(a.EndDate, "DD.MM.YY HH:mm:ss").unix() - moment(b.EndDate, "DD.MM.YY HH:mm:ss").unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
