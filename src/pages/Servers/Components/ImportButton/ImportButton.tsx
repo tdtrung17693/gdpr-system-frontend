@@ -51,19 +51,26 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
         let data = e.target.result;
         let wordbook = XLSX.read(data, { type: 'binary' });
         let ListNewServer: any = [];
+        let errorRow = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
-          rowObject.forEach((row: any) => {
-            ListNewServer.push({
-              Name: row.Name.toString(),
-              IpAddress: row.IpAddress.toString(),
-              StartDate: row.StartDate ? row.StartDate.toString() : null,
-              EndDate: row.EndDate ? row.EndDate.toString() : null,
-              CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : 'F58D65ED-E442-4D6D-B3FC-CE234E470550',
-            });
+          rowObject.forEach((row: any, index:number) => {
+            if(!row.IpAddress.toString().match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
+              errorRow.push(index);
+            }
+            else{
+              ListNewServer.push({
+                Name: row.Name.toString(),
+                IpAddress: row.IpAddress.toString(),
+                StartDate: row.StartDate ? row.StartDate.toString() : null,
+                EndDate: row.EndDate ? row.EndDate.toString() : null,
+                CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : null,
+              });
+            }
           });
         });
         await this.props.serverStore.importFileServer(ListNewServer);
+        if(errorRow.length > 0) message.error("Some Ip in file is wrong!")
       };
     }
     if (info.file.status === 'done') {
