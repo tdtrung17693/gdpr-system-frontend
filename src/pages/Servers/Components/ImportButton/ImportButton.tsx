@@ -44,6 +44,7 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   }
 
   async onChange(info: any) {
+    let errorRow = [];
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
       reader.readAsBinaryString(info.file.originFileObj);
@@ -51,30 +52,34 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
         let data = e.target.result;
         let wordbook = XLSX.read(data, { type: 'binary' });
         let ListNewServer: any = [];
-        let errorRow = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
           rowObject.forEach((row: any, index:number) => {
-            if(!row.IpAddress.toString().match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
-              errorRow.push(index);
+            if(row.IpAddress && row.Name && row.StartDate && row.EndDate){
+              if(!row.IpAddress.toString().match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
+                errorRow.push(index);
+              }
+              else{
+                ListNewServer.push({
+                  Name: row.Name.toString(),
+                  IpAddress: row.IpAddress.toString(),
+                  StartDate: row.StartDate ? row.StartDate.toString() : null,
+                  EndDate: row.EndDate ? row.EndDate.toString() : null,
+                  CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : null,
+                });
+              }
             }
             else{
-              ListNewServer.push({
-                Name: row.Name.toString(),
-                IpAddress: row.IpAddress.toString(),
-                StartDate: row.StartDate ? row.StartDate.toString() : null,
-                EndDate: row.EndDate ? row.EndDate.toString() : null,
-                CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : null,
-              });
+              errorRow.push("Wrong format");
             }
           });
         });
         await this.props.serverStore.importFileServer(ListNewServer);
-        if(errorRow.length > 0) message.error("Some Ip in file is wrong!")
       };
     }
     if (info.file.status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully`);
+      if(errorRow.length > 0) message.error("Some Ip in file is wrong!");
+      else message.success(`${info.file.name} file uploaded successfully`);
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} file upload failed.`);
     }

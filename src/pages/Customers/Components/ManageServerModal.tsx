@@ -189,7 +189,7 @@ export default class ManageServerModal extends Component<IManageServerModalProps
           transitionName='fade'
           onCancel={() => {this.handleCancel()}}
           footer={[
-            <Button key="submit" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
+            <Button key="subm     it" htmlType="submit" type="primary" loading={btnloading} onClick={this.handleSubmit}>
               Save
             </Button>,
             <Button key="back" onClick={() => this.handleCancel()} >
