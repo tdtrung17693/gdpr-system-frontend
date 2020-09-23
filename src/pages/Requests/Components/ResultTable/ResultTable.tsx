@@ -189,7 +189,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend'],
-        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm")}</div>
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Create By',
@@ -203,7 +203,8 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
         sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.UpdatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (updatedAt: Date) => (updatedAt)?<div>{moment.utc(updatedAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>:<div>-</div>
       },
       {
         title: 'Update By',
@@ -231,14 +232,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Request From',
         dataIndex: 'StartDate',
         sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (startDate: Date) => <div>{moment.utc(startDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
         sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (endDate: Date) => <div>{moment.utc(endDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Action',
@@ -285,14 +288,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         dataIndex: 'CreatedAt',
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Update Date',
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (updatedAt: Date) => (updatedAt)?<div>{moment.utc(updatedAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>:<div>-</div>
       },
       {
         title: 'Server',
@@ -313,14 +318,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Request From',
         dataIndex: 'StartDate',
         sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (startDate: Date) => <div>{moment.utc(startDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
         sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (endDate: Date) => <div>{moment.utc(endDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Action',
