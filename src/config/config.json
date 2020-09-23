@@ -1,0 +1,6 @@
+{
+    "app": {
+        "appBaseUrl": "http://gdpr.web.local/",
+        "remoteServiceBaseUrl": "http://gdpr.local/"
+    }
+}
