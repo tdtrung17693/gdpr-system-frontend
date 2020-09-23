@@ -47,7 +47,7 @@ class AuthenticationStore {
   @action
   public setCurrentUserAvatar(base64Image: string) {
     this.user = this.user ? {...this.user, avatar: {content: base64Image}} : null
-    console.log(this.user)
+    
   }
 
   get isAuthenticated(): boolean {

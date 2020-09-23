@@ -37,7 +37,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
   }
 
   public setFieldsValues = (server: any) => {
-    //console.log( (new Date(0)).getFullYear() < (new Date(server?.EndDate)).getFullYear());
+    //
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,

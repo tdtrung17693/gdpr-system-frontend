@@ -65,7 +65,7 @@ export default class Requests extends Component<IRequestProps> {
   };
 
   handleSearch = async (value: string) => {
-    console.log({...this.props.requestStore.pagingObj})
+    
     let filterKey = value;
     this.setState({filterString: filterKey});
     this.props.requestStore.pagingObj = {

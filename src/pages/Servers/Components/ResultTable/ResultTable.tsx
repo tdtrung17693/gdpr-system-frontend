@@ -68,7 +68,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[Number(e)].id);
     });
-    console.log(listId);
+    
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -115,7 +115,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         sortOrder: this.state.sortOrder,
         sortedBy: this.state.sortedBy
       }
-      console.log(this.props.serverStore.pagingObj)
+      
       await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
     });
 

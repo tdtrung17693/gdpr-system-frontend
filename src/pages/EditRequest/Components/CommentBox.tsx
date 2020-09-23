@@ -92,7 +92,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
       });
       signalRService.on('commentCreated', (comment) => {
         //
-        console.log(comment)
+        
         if (!this.buttonRef.current.state.checked) {
           this.props.commentStore?.addCommentToStoreAfter({
             author: {

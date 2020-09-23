@@ -87,7 +87,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       match: { params },
     } = this.props;
     const { id } = params;
-    console.log(params)
+    
     if (id === prevProps.match.params.id) return;
 
     this.getServer()
@@ -120,7 +120,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       .then((values: any) => {
         
         if (!(values.title) && !(values.startDate) && !(values.endDate) && !(values.serverId) && !(values.description)){message.info("No information changed !"); return;}
-        console.log(values)
+        
         let valuesUpdate: any = {
           ...values,
 
@@ -131,9 +131,9 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           serverId: (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
           description: (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''),
         };
-        console.log(moment(valuesUpdate.startDate));
-            console.log(moment(valuesUpdate.endDate));
-            console.log(valuesUpdate)
+        
+            
+            
           if (moment(valuesUpdate.startDate) > moment(valuesUpdate.endDate)) 
           {
             message.info("Update fail. StartDate must before EndDate"); 

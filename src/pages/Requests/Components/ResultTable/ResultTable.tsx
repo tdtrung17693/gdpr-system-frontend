@@ -72,7 +72,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   }
 
   handleBulkExportClick = () => {
-    console.log(this.state.selectedRowKeys.toString())
+    
     http.post(`api/Request/bulkExport`, {
       idList: this.state.selectedRowKeys.toString()
     })
@@ -155,7 +155,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
     const { page, pageSize} = this.state;
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
-    //console.log(this.props.requestStore.requests.totalItems)
+    //
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
       
       {

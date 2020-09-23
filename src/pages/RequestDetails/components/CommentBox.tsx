@@ -303,7 +303,7 @@ class CommentBox extends React.Component<IConversationBoxProps> {
               content={
                 <ReplyEditor
                   onValidated={async (values: any) => {
-                    console.log(values);
+                    
                     if(values){
                       alert('You have not enter message');
                       return;
