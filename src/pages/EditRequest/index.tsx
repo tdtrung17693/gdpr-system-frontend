@@ -228,7 +228,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   <Col span={6}>
                     <strong>Update Date </strong>
                   </Col>
-                  <Col>{moment(editRequest.updatedDate, "DD.MM.YY HH:mm:ss").format('DD-MM-YYYY HH:mm')}</Col>
+                  <Col>{(editRequest.updatedDate)?moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss'):'-'}</Col>
                 </Row>
               </Form>
               <Collapse defaultActiveKey={['1']}>

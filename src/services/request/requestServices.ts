@@ -44,7 +44,7 @@ class RequestService {
     }
     );
     let pagingList: PagedResultDto<GetRequestOutput> = {
-      totalItems: result.data[0].column1 - pagingObj.pageSize,
+      totalItems: result.data[0].column1/* - pagingObj.pageSize*/,
       totalPages: Math.floor(result.data[0].column1 / pagingObj.pageSize) === 0 ? 1 : Math.floor(result.data[0].column1 / pagingObj.pageSize),
       page: pagingObj.page,
       items: result1.data,

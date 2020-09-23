@@ -44,6 +44,7 @@ class RequestStore {
     let result = await requestService.getRequestPaging(pagingObj);
     this.requests = result;
     this.requests.items = [...result.items];
+    console.log(this.requests.items)
     this.requests.totalItems = result.totalItems;
   }
   
