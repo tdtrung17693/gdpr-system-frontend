@@ -9,6 +9,7 @@ import ServerStore from '../../../../stores/serverStore';
 import * as XLSX from 'xlsx';
 import AuthenticationStore from '../../../../stores/authenticationStore';
 //import { GetServerInput } from '../../../../services/server/dto/GetServerInput';
+import moment from "moment";
 
 interface ImportProps {
   serverStore: ServerStore;
@@ -40,26 +41,39 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
 
   async handleImport() {
     // await this.props.serverStore.importFileServer(this.state.file);
-    
   }
 
   async onChange(info: any) {
-    let errorRow = [];
+    let errorRow: any = [];
+    let ListNewServer: any = [];
     if (info.file.status !== 'uploading') {
       let reader = new FileReader();
       reader.readAsBinaryString(info.file.originFileObj);
       reader.onload = async (e: any) => {
         let data = e.target.result;
         let wordbook = XLSX.read(data, { type: 'binary' });
-        let ListNewServer: any = [];
         wordbook.SheetNames.forEach((sheet: any) => {
           let rowObject = XLSX.utils.sheet_to_json(wordbook.Sheets[sheet]);
-          rowObject.forEach((row: any, index:number) => {
-            if(row.IpAddress && row.Name && row.StartDate && row.EndDate){
-              if(!row.IpAddress.toString().match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
+          rowObject.forEach((row: any, index: number) => {
+            if (row.IpAddress && row.Name) {
+              if (!row.IpAddress.toString().match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)) {
                 errorRow.push(index);
-              }
-              else{
+              } else if (row.StartDate && row.EndDate) {
+                let ds: Date = new Date(moment(row.StartDate).format('YYYY-MM-DD'));
+                let de: Date = new Date(moment(row.EndDate).format('YYYY-MM-DD'));
+                if (Number(ds.getTime()) >= Number(de.getTime())) {
+                  errorRow.push(index);
+                }
+                else{
+                  ListNewServer.push({
+                    Name: row.Name.toString(),
+                    IpAddress: row.IpAddress.toString(),
+                    StartDate: row.StartDate ? row.StartDate.toString() : null,
+                    EndDate: row.EndDate ? row.EndDate.toString() : null,
+                    CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : null,
+                  });
+                }
+              } else {
                 ListNewServer.push({
                   Name: row.Name.toString(),
                   IpAddress: row.IpAddress.toString(),
@@ -68,20 +82,21 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
                   CreatedBy: this.props.authenticationStore.user?.id ? this.props.authenticationStore.user?.id : null,
                 });
               }
-            }
-            else{
-              errorRow.push("Wrong format");
+            } else {
+              errorRow.push(index);
             }
           });
         });
-        await this.props.serverStore.importFileServer(ListNewServer);
+        if (ListNewServer.length > 0 && errorRow.length <= 0) {
+          await this.props.serverStore.importFileServer(ListNewServer);
+          message.success(`${info.file.name} file uploaded successfully`);
+        } else if (ListNewServer.length > 0 && errorRow.length > 0) {
+          await this.props.serverStore.importFileServer(ListNewServer);
+          message.error(`Some IPs or end date is invalid.`);
+        } else {
+          message.error(`${info.file.name} file upload failed.`);
+        }
       };
-    }
-    if (info.file.status === 'done') {
-      if(errorRow.length > 0) message.error("Some Ip in file is wrong!");
-      else message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
     }
   }
 
@@ -95,10 +110,9 @@ export default class ImportButton extends Component<ImportProps, ImportStates> {
   };
 
   render() {
-    
     return (
       <>
-        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange} showUploadList = {false}>
+        <Upload accept=".xlsx" {...this.importProps} onChange={this.onChange} showUploadList={false}>
           <Button type="link" icon={<UploadOutlined />}>
             Import .CSV
           </Button>
