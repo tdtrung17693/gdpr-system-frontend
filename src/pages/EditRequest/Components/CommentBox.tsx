@@ -8,6 +8,7 @@ import Stores from '../../../stores/storeIdentifier';
 import AuthenticationStore from '../../../stores/authenticationStore';
 import CommentStore from '../../../stores/commentStore';
 import { FormInstance } from 'antd/lib/form';
+import ProtectedComponent from '../../../components/ProtectedComponent';
 
 interface IConversationBoxProps {
   requestId: string;
@@ -188,14 +189,18 @@ class CommentBox extends React.Component<IConversationBoxProps> {
                 <span key="comment-nested-reply-to" onClick={() => this.handleReply(comment)}>
                   Reply
                 </span>,
-                <span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
-                  Delete
-                </span>,
+                <ProtectedComponent requiredPermission="comment:delete">
+                  <span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
+                    Delete
+                  </span>
+                </ProtectedComponent>
               ]
             : [
+              <ProtectedComponent requiredPermission="comment:delete">
                 <span key="comment-nested-reply-to" onClick={() => this.handleDelete(comment)}>
                   Delete
-                </span>,
+                </span>
+              </ProtectedComponent>
               ]
         }
         content={

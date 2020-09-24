@@ -87,7 +87,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       match: { params },
     } = this.props;
     const { id } = params;
-    
+    console.log(params)
     if (id === prevProps.match.params.id) return;
 
     this.getServer()
@@ -131,9 +131,9 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
           serverId: (values.serverId)?(values.serverId):{ ...this.props.requestStore.editRequest }.serverId,
           description: (values.description) ? values.description :({ ...this.props.requestStore.editRequest }.description ? { ...this.props.requestStore.editRequest }.description : ''),
         };
-        
-            
-            
+        console.log(moment(valuesUpdate.startDate));
+            console.log(moment(valuesUpdate.endDate));
+            console.log(valuesUpdate)
           if (moment(valuesUpdate.startDate) > moment(valuesUpdate.endDate)) 
           {
             message.info("Update fail. StartDate must before EndDate"); 
@@ -209,7 +209,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   <Col span={6}>
                     <strong>Created Date: </strong>
                   </Col>
-                  <Col>{moment(editRequest.createdDate, "DD.MM.YY HH:mm:ss").format('DD-MM-YYYY HH:mm')}</Col>
+                  <Col>{moment(editRequest.createdDate).format('DD-MM-YYYY HH:mm')}</Col>
                 </Row>
                 {!isEmployee ? (<Row>
                   <Col span={6}>
@@ -220,13 +220,13 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 {isEmployee == false ? 
                 (<Row>
                   <Col span={6}>
-                    <strong>Update By </strong>
+                    <strong>Updated By </strong>
                   </Col>
                   <Col>{editRequest.updatedBy}</Col>
                 </Row>) : null}
                 <Row>
                   <Col span={6}>
-                    <strong>Update Date </strong>
+                    <strong>Updated Date </strong>
                   </Col>
                   <Col>{(editRequest.updatedDate)?moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss'):'-'}</Col>
                 </Row>

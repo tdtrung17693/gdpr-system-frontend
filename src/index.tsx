@@ -11,16 +11,13 @@ import initializeStores from './stores/storeInitializer';
 import registerServiceWorker from './registerServiceWorker';
 import { Spin } from 'antd';
 import Text from 'antd/lib/typography/Text';
-import { loadConfig } from './config/app'
 
 Utils.setLocalization();
-
 
 
 class LoadingScreenWrapper extends React.Component {
   state = { isInitialized: false, stores: {} }
   async componentDidMount() {
-    await loadConfig();
     const stores = await initializeStores()
     this.setState({isInitialized: true, stores})
   }
