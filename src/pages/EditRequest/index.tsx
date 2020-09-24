@@ -86,8 +86,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
     const {
       match: { params },
     } = this.props;
-    const { id } = params;
-    console.log(params)
+    const { id } = params;  
     if (id === prevProps.match.params.id) return;
 
     this.getServer()
@@ -269,7 +268,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                       <Input disabled={isClosed} defaultValue={editRequest.description} />
                     </Form.Item>
                     <Form.Item >
-                    {isEmployee ? (
+                    {editRequest.status === 'New' ? (
                       <Button
                       style = {{marginLeft:150}}
                       disabled={isClosed}

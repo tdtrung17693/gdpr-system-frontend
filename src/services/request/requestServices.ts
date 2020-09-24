@@ -34,7 +34,6 @@ class RequestService {
       searchKey: (pagingObj.filterBy)?pagingObj.filterBy:''
     }}
     );
-    console.log(result);
     let result1 = await http.get(`api/request`, {
       params: {
         _pageNo: pagingObj.page,
@@ -49,7 +48,6 @@ class RequestService {
       page: pagingObj.page,
       items: result1.data,
     };
-    console.log(pagingList)
     return pagingList;
   }
 
