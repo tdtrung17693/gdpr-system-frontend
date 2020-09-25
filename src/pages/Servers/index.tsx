@@ -63,10 +63,16 @@ export default class Servers extends Component<IServerProps> {
   state = {
     modalVisible: false,
     editingServerId: '',
-    fromDate: Date(),
-    toDate: Date(),
+    fromDate: moment('2/1/1753'),
+    toDate: moment(),
     guids: [],
     filterString: '',
+
+    // pageSize: 10,
+    // page: 1,
+    filterBy: '',
+    sortedBy: 'ServerName',
+    sortOrder: true,
   };
 
   createOrUpdateModalOpen = async (params: any) => {
@@ -113,12 +119,16 @@ export default class Servers extends Component<IServerProps> {
       filterKey: value,
     };
     this.setState({ filterString: filter.filterKey });
+
     this.props.serverStore.pagingObj = {
       ...this.props.serverStore.pagingObj,
       page: 0,
       filterBy: filter.filterKey,
     };
-    await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
+    //this.props.serverStore.setPagingObj(filter.filterKey);
+
+    await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj).then();
+    console.log(this.props.serverStore.servers);
   };
 
   handleExport = (e: any) => {
@@ -196,7 +206,13 @@ export default class Servers extends Component<IServerProps> {
           </div>
           <ResultTable filterString={this.state.filterString} serverStore={this.props.serverStore}
                        authenticationStore={this.props.authenticationStore}
-                       createOrUpdateModalOpen={this.createOrUpdateModalOpen} />
+                       createOrUpdateModalOpen={this.createOrUpdateModalOpen} 
+                       pageSize= {this.props.serverStore.pagingObj.pageSize}
+                       page= {this.props.serverStore.pagingObj.page}
+                       filterBy= {this.state.filterBy}
+                       sortedBy= {this.state.sortedBy}
+                       sortOrder= {this.state.sortOrder}
+                       />
         </Card>
         <CreateOrUpdateModal
           ref={this.modalRef}

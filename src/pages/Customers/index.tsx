@@ -42,8 +42,8 @@ export default class Customers extends React.Component<ICustomerProps> {
   createModalRef = React.createRef<CreateCustomerModal>();
 
   state = {
-    fromDate: Date(),
-    toDate: Date(),
+    fromDate: moment('2/1/1753'),
+    toDate: moment(),
     guids: [],
     //table
     selectedRowKeys: [], // Check here to configure the default column
