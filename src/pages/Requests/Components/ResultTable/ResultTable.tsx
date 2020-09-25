@@ -363,7 +363,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
-          {(isEmployee)?
+          {(!isEmployee)?
           <Button type="primary" onClick={this.handleBulkExportClick} disabled={!hasSelected} loading={loading} >
             Export
           </Button>: null}

@@ -229,6 +229,12 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   </Col>
                   <Col>{(editRequest.updatedDate)?moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss'):'-'}</Col>
                 </Row>
+                <Row>
+                  <Col span={6}>
+                    <strong>Description </strong>
+                  </Col>
+                  <Col>{(editRequest.description)?editRequest.description:'-'}</Col>
+                </Row>
               </Form>
               <Collapse defaultActiveKey={['1']}>
                 <Collapse.Panel header="Updatable Request Detail" key="0">
