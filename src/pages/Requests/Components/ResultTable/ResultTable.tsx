@@ -363,15 +363,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
+          {(isEmployee)?
           <Button type="primary" onClick={this.handleBulkExportClick} disabled={!hasSelected} loading={loading} >
             Export
-          </Button>
+          </Button>: null}
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <div style={{ overflowX: 'auto' }}>
         <Table
           rowKey={record => record.Id}
-          rowSelection={rowSelection}
+          rowSelection={isEmployee?undefined:rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
           bordered = {true}
