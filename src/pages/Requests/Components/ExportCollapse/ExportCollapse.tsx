@@ -1,5 +1,5 @@
 import React from 'react';
-import { Collapse, Card, Col, Row, Input, DatePicker, Button } from 'antd';
+import { Collapse, Card, Col, Row, Input, DatePicker, Button, message } from 'antd';
 import { Component } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import * as FileSaver from 'file-saver';
@@ -20,7 +20,9 @@ export default class ExportCollapse extends Component<any, any> {
       fileName: 'excel',
       fromDate: Date(),
       toDate: Date(),
-      guids: []
+      guids: [],
+      isChangeFromDate: false,
+      isChangeToDate: false,
     };
     this.handleExportClick = this.handleExportClick.bind(this);
   }
@@ -33,9 +35,14 @@ export default class ExportCollapse extends Component<any, any> {
     FileSaver.saveAs(data, fileName + '.xlsx');
   }
 
+  
+
   handleExportClick = () => {
     
-    
+    if(!this.state.isChangeFromDate || !this.state.isChangeToDate){
+      message.info("Please insert date");
+      return;
+    }
     http.post(`api/Request/exportRequest`, {
       fromDate: this.state.fromDate,
       toDate: this.state.toDate,
@@ -83,7 +90,7 @@ export default class ExportCollapse extends Component<any, any> {
                   <Card hoverable={true} title="FromDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ fromDate: date }) }} />
+                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ fromDate: date, isChangeFromDate: true });  }} />
                     </Input.Group>
                   </Card>
                 </Col>
@@ -91,7 +98,7 @@ export default class ExportCollapse extends Component<any, any> {
                   <Card hoverable={true} title="ToDate:" bordered={false}>
                     <Input.Group compact>
                       <EditOutlined />
-                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ toDate: date }) }} />
+                      <DatePicker style={{ width: '100%' }} onChange={(date) => { this.setState({ toDate: date, isChangeToDate: true  }) }} />
                     </Input.Group>
                   </Card>
                 </Col>
