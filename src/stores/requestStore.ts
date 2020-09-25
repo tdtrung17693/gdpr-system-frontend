@@ -153,7 +153,8 @@ class RequestStore {
       startDate: result.RequestDetails.StartDate,
       endDate: result.RequestDetails.EndDate,
       RoleName: result.RequestDetails.RoleName,
-      key: result.RequestDetails.Id
+      key: result.RequestDetails.Id,
+      description: result.RequestDetails.Description,
     };
     
   }
