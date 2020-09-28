@@ -34,6 +34,9 @@ module.exports = {
               {
                 from: 'src/lib/abp.js',
               },
+              {
+                from: 'src/config/config.json'
+              }
             ])
           : new CopyWebpackPlugin([
               {

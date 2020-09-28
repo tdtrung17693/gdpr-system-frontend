@@ -86,8 +86,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
     const {
       match: { params },
     } = this.props;
-    const { id } = params;
-    console.log(params)
+    const { id } = params;  
     if (id === prevProps.match.params.id) return;
 
     this.getServer()
@@ -120,7 +119,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
       .then((values: any) => {
         
         if (!(values.title) && !(values.startDate) && !(values.endDate) && !(values.serverId) && !(values.description)){message.info("No information changed !"); return;}
-        console.log(values)
+        
         let valuesUpdate: any = {
           ...values,
 
@@ -209,7 +208,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                   <Col span={6}>
                     <strong>Created Date: </strong>
                   </Col>
-                  <Col>{moment(editRequest.createdDate).format('DD-MM-YYYY HH:mm:ss')}</Col>
+                  <Col>{moment(editRequest.createdDate).format('DD-MM-YYYY HH:mm')}</Col>
                 </Row>
                 {!isEmployee ? (<Row>
                   <Col span={6}>
@@ -220,15 +219,21 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                 {isEmployee == false ? 
                 (<Row>
                   <Col span={6}>
-                    <strong>Update By </strong>
+                    <strong>Updated By </strong>
                   </Col>
                   <Col>{editRequest.updatedBy}</Col>
                 </Row>) : null}
                 <Row>
                   <Col span={6}>
-                    <strong>Update Date </strong>
+                    <strong>Updated Date </strong>
                   </Col>
-                  <Col>{moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss')}</Col>
+                  <Col>{(editRequest.updatedDate)?moment(editRequest.updatedDate).format('DD-MM-YYYY HH:mm:ss'):'-'}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>
+                    <strong>Description </strong>
+                  </Col>
+                  <Col>{(editRequest.description)?editRequest.description:'-'}</Col>
                 </Row>
               </Form>
               <Collapse defaultActiveKey={['1']}>
@@ -269,7 +274,7 @@ export default class EditRequest extends Component<IRequestProps, IRequestStates
                       <Input disabled={isClosed} defaultValue={editRequest.description} />
                     </Form.Item>
                     <Form.Item >
-                    {isEmployee ? (
+                    {editRequest.status === 'New' ? (
                       <Button
                       style = {{marginLeft:150}}
                       disabled={isClosed}

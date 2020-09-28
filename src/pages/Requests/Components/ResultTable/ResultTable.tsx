@@ -72,7 +72,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
   }
 
   handleBulkExportClick = () => {
-    console.log(this.state.selectedRowKeys.toString())
+    
     http.post(`api/Request/bulkExport`, {
       idList: this.state.selectedRowKeys.toString()
     })
@@ -155,7 +155,7 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     this.props.requestStore.requests.items.map(obj=> ({ ...obj, key: obj.Id }))
     const { page, pageSize} = this.state;
     const isEmployee = ({...this.props.requestStore.requests.items[0]}.RoleName == 'Employee')
-
+    //
     const columnsAdmin:ColumnProps<GetRequestOutput>[] = [
       
       {
@@ -189,24 +189,29 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
         sortDirections: ['descend', 'ascend'],
-        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm")}</div>
+        // render: (createdAt: Date) => <div>{moment.utc(createdAt, "DD.MM.YY HH:mm:ss").local().format("DD-MM-YYYY HH:mm")}</div>
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
-        title: 'Create By',
+        title: 'Created By',
         dataIndex: 'CreatedByNameEmail',
         key: 'createdAt',
         //sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.contractBeginDate).unix(),
         sortDirections: ['descend', 'ascend']
       },
       {
-        title: 'Update Date',
+        title: 'Updated Date',
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
+        // sorter: (a: any, b: any) => moment(a.UpdatedAt, "DD.MM.YY HH:mm:ss").unix() - moment(b.UpdatedAt, "DD.MM.YY HH:mm:ss").unix(),
+        // sortDirections: ['descend', 'ascend'],
+        // render: (updatedAt: Date) => <div>{updatedAt ? moment.utc(updatedAt, "DD.MM.YY HH:mm:ss").local().format("DD-MM-YYYY HH:mm") : ''}</div>
         sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.UpdatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (updatedAt: Date) => (updatedAt)?<div>{moment.utc(updatedAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>:<div>-</div>
       },
       {
-        title: 'Update By',
+        title: 'Updated By',
         dataIndex: 'UpdatedByNameEmail',
         key: 'updatedAt',
         //sorter: (a: any, b: any) => moment(a.UpdatedAt).unix() - moment(b.contractBeginDate).unix(),
@@ -230,15 +235,21 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
       {
         title: 'Request From',
         dataIndex: 'StartDate',
+        // sorter: (a: any, b: any) => moment(a.StartDate, "DD.MM.YY HH:mm:ss").unix() - moment(b.StartDate, "DD.MM.YY HH:mm:ss").unix(),
+        // sortDirections: ['descend', 'ascend']
         sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (startDate: Date) => <div>{moment.utc(startDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
+        // sorter: (a: any, b: any) => moment(a.EndDate, "DD.MM.YY HH:mm:ss").unix() - moment(b.EndDate, "DD.MM.YY HH:mm:ss").unix(),
+        // sortDirections: ['descend', 'ascend']
         sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (endDate: Date) => <div>{moment.utc(endDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Action',
@@ -285,14 +296,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         dataIndex: 'CreatedAt',
         key: 'createdAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (createdAt: Date) => <div>{moment.utc(createdAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Update Date',
         dataIndex: 'UpdatedAt',
         key: 'updatedAt',
         sorter: (a: any, b: any) => moment(a.CreatedAt).unix() - moment(b.CreatedAt).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (updatedAt: Date) => (updatedAt)?<div>{moment.utc(updatedAt).local().format("DD-MM-YYYY HH:mm:ss")}</div>:<div>-</div>
       },
       {
         title: 'Server',
@@ -313,14 +326,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
         title: 'Request From',
         dataIndex: 'StartDate',
         sorter: (a: any, b: any) => moment(a.StartDate).unix() - moment(b.StartDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (startDate: Date) => <div>{moment.utc(startDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Request To',
         dataIndex: 'EndDate',
         key: 'endDate',
         sorter: (a: any, b: any) => moment(a.EndDate).unix() - moment(b.EndDate).unix(),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        render: (endDate: Date) => <div>{moment.utc(endDate).local().format("DD-MM-YYYY HH:mm:ss")}</div>
       },
       {
         title: 'Action',
@@ -348,15 +363,16 @@ export default class ResultTable extends React.Component<RequestsProps, RequestS
     return (
       <div>
         <div style={{ marginBottom: 16 }}>
+          {(!isEmployee)?
           <Button type="primary" onClick={this.handleBulkExportClick} disabled={!hasSelected} loading={loading} >
             Export
-          </Button>
+          </Button>: null}
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
         <div style={{ overflowX: 'auto' }}>
         <Table
           rowKey={record => record.Id}
-          rowSelection={rowSelection}
+          rowSelection={isEmployee?undefined:rowSelection}
           columns={isEmployee?columnsEmployee:columnsAdmin}
           dataSource={this.props.requestStore.requests.items.length <= 0 ? [] : this.props.requestStore.requests.items}
           bordered = {true}

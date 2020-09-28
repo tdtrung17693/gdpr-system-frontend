@@ -44,6 +44,7 @@ class RequestStore {
     let result = await requestService.getRequestPaging(pagingObj);
     this.requests = result;
     this.requests.items = [...result.items];
+    
     this.requests.totalItems = result.totalItems;
   }
   
@@ -152,7 +153,8 @@ class RequestStore {
       startDate: result.RequestDetails.StartDate,
       endDate: result.RequestDetails.EndDate,
       RoleName: result.RequestDetails.RoleName,
-      key: result.RequestDetails.Id
+      key: result.RequestDetails.Id,
+      description: result.RequestDetails.Description,
     };
     
   }

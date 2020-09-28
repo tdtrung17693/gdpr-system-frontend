@@ -124,12 +124,22 @@ class ServerStore {
 
   @action
   public async getListServerByFilter(filter: PagingObject) {
+
     if (filter.filterBy.length !== 0) {
       let listServerByFilter = await serverService.getServerListByPaging(filter);
       this.servers = listServerByFilter;
     } else {
       this.pagingObj.filterBy = "";
       this.getServerListByPaging({...this.pagingObj});
+    }
+  }
+
+  @action
+  public async setPagingObj(filterKey: string){
+    this.pagingObj = {
+      ...this.pagingObj,
+      page: 0,
+      filterBy: filterKey,
     }
   }
 }

@@ -65,6 +65,7 @@ export default class Requests extends Component<IRequestProps> {
   };
 
   handleSearch = async (value: string) => {
+    
     let filterKey = value;
     this.setState({filterString: filterKey});
     this.props.requestStore.pagingObj = {
@@ -108,7 +109,7 @@ export default class Requests extends Component<IRequestProps> {
               placeholder="Search on GDPR Request"
               enterButton="Search"
               size="middle"
-              onSearch={(value) => this.props.requestStore.getSearch(value)}
+              onSearch={(value) => this.handleSearch(value)}
             />
           </div>
           <ResultTable historyLogStore = {this.props.historyLogStore} requestStore={this.props.requestStore} handleModalOpen={this.handleModalOpen} filterString = {this.state.filterString}/>

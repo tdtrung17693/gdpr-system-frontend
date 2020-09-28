@@ -34,7 +34,6 @@ class RequestService {
       searchKey: (pagingObj.filterBy)?pagingObj.filterBy:''
     }}
     );
-    console.log(result);
     let result1 = await http.get(`api/request`, {
       params: {
         _pageNo: pagingObj.page,
@@ -44,12 +43,11 @@ class RequestService {
     }
     );
     let pagingList: PagedResultDto<GetRequestOutput> = {
-      totalItems: result.data[0].column1 - pagingObj.pageSize,
+      totalItems: result.data[0].column1/* - pagingObj.pageSize*/,
       totalPages: Math.floor(result.data[0].column1 / pagingObj.pageSize) === 0 ? 1 : Math.floor(result.data[0].column1 / pagingObj.pageSize),
       page: pagingObj.page,
       items: result1.data,
     };
-    console.log(pagingList)
     return pagingList;
   }
 
@@ -111,7 +109,6 @@ class RequestService {
   }
 
   public async getServerList(){
-    //let result = await axios.get(`${url}/api/request`,{
     let result = await serverServices.getAll()
     return result.items; 
   }

@@ -37,7 +37,7 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
   }
 
   public setFieldsValues = (server: any) => {
-    //console.log( (new Date(0)).getFullYear() < (new Date(server?.EndDate)).getFullYear());
+    //
     this.setState({}, () => {
       this.formRef.current?.setFieldsValue({
         Name: server?.Name,
@@ -63,10 +63,19 @@ export default class CreateOrUpdateModal extends Component<ServersProps, ServerS
             return;
           }
         }
-        if(!values.IpAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)){
-          message.error("Ip Address is invalid!");
+        if (!values.IpAddress.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)) {
+          message.error('Ip Address is invalid!');
           return;
         }
+
+        let blocks = values.IpAddress.split('.');
+        for (let i = 0; i < blocks.length; i++) {
+          if (Number(blocks[i]) <= 0 || Number(blocks[i]) > 255) {
+            message.error('Ip Address is invalid!');
+            return;
+          }
+        }
+
         let id = this.props.authenticationStore.user?.id;
         let valuesUpdate: any = {
           ...values,

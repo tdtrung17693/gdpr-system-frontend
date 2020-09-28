@@ -9,7 +9,7 @@ import { BulkServerStatus } from '../../../../services/server/dto/BulkServerStat
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import AuthenticationStore from '../../../../stores/authenticationStore';
 import { TablePaginationConfig } from 'antd/lib/table';
-import { Key, SorterResult} from 'antd/lib/table/interface';
+import { Key, SorterResult } from 'antd/lib/table/interface';
 import { GetServerOutput } from '../../../../services/server/dto/GetServerOutput';
 import moment from 'moment';
 //import CreateOrEditServerModal from '../CreateOrEditServerModal/CreateOrEditServerModal';
@@ -19,6 +19,12 @@ interface ServersProps {
   createOrUpdateModalOpen: any;
   authenticationStore: AuthenticationStore;
   filterString: string;
+
+  pageSize: number | undefined;
+  page: number | undefined;
+  filterBy: string;
+  sortedBy: string;
+  sortOrder: boolean;
 }
 
 interface ServerStates {
@@ -26,11 +32,11 @@ interface ServerStates {
   loading: boolean;
   processing: boolean;
   filteredInfo: Record<string, Key[] | null>;
-  pageSize: number | undefined;
-  page: number | undefined;
-  filterBy: string;
-  sortedBy: string;
-  sortOrder: boolean;
+  // pageSize: number | undefined;
+  // page: number | undefined;
+  // filterBy: string;
+  // sortedBy: string;
+  // sortOrder: boolean;
 }
 
 @inject(Stores.ServerStore, Stores.AuthenticationStore)
@@ -44,11 +50,11 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       processing: false,
 
       filteredInfo: {},
-      pageSize: 10,
-      page: 1,
-      filterBy: '',
-      sortedBy: 'ServerName',
-      sortOrder: true,
+      // pageSize: 10,
+      // page: 1,
+      // filterBy: '',
+      // sortedBy: 'ServerName',
+      // sortOrder: true,
     };
     //this.ClickButton = this.ClickButton.bind(this);
   }
@@ -57,10 +63,10 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.getAllServers();
   }
 
-  getAllServers = async ()=>{
-    const {  pageSize, page, filterBy, sortedBy, sortOrder} = this.state;
-    await this.props.serverStore.getServerListByPaging({  pageSize, page, filterBy, sortedBy, sortOrder })
-  }
+  getAllServers = async () => {
+    const { pageSize, page, filterBy, sortedBy, sortOrder } = this.props;
+    await this.props.serverStore.getServerListByPaging({ pageSize, page, filterBy, sortedBy, sortOrder });
+  };
 
   start = async () => {
     this.setState({ processing: true });
@@ -68,7 +74,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
     this.state.selectedRowKeys.map((e: string, index: number) => {
       listId.push(this.props.serverStore.servers.items[Number(e)].id);
     });
-    console.log(listId);
+
     let bulkReq: BulkServerStatus = {
       serverIdList: listId,
       status: true,
@@ -85,45 +91,43 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
   };
 
   onSelectChange = (selectedRowKeys: any) => {
-    
-    
     this.setState({ selectedRowKeys });
   };
 
-
-  handleTableChange = (pagination: TablePaginationConfig, filters: Record<string, Key[] | null>, sorter: SorterResult<GetServerOutput> | SorterResult<GetServerOutput>[]) => {
+  handleTableChange = (
+    pagination: TablePaginationConfig,
+    filters: Record<string, Key[] | null>,
+    sorter: SorterResult<GetServerOutput> | SorterResult<GetServerOutput>[]
+  ) => {
     let sortOrder = true;
     let sortedBy = '';
     //let filterString = "";
     if (!Array.isArray(sorter)) {
       sortOrder = sorter.order === 'ascend' ? true : false;
-      if(String(sorter.columnKey) === "ipAddress"){
-        sortedBy = "Ip";
-      } 
-      else if(String(sorter.columnKey) === "cusName"){
-        sortedBy = "CustomerName";
-      }
-      else{
-        sortedBy = "ServerName";
+      if (String(sorter.columnKey) === 'ipAddress') {
+        sortedBy = 'Ip';
+      } else if (String(sorter.columnKey) === 'cusName') {
+        sortedBy = 'CustomerName';
+      } else {
+        sortedBy = 'ServerName';
       }
     }
-    this.setState({pageSize : pagination.pageSize, filteredInfo: filters, page: pagination.current, sortOrder, sortedBy, filterBy: this.props.filterString }, async () => {
+    this.setState({ filteredInfo: filters }, async () => {
+      //  page: pagination.current,
       this.props.serverStore.pagingObj = {
-        pageSize: this.state.pageSize,
-        page: this.state.page? this.state.page - 1 : 0,
+        pageSize: pagination.pageSize,
+        page: pagination.current ? pagination.current - 1 : 0,
         filterBy: this.props.filterString,
-        sortOrder: this.state.sortOrder,
-        sortedBy: this.state.sortedBy
-      }
-      console.log(this.props.serverStore.pagingObj)
+        sortOrder: sortOrder,
+        sortedBy: sortedBy,
+      };
       await this.props.serverStore.getListServerByFilter(this.props.serverStore.pagingObj);
     });
-
-  }
+  };
 
   render() {
     let { filteredInfo, processing, selectedRowKeys } = this.state;
-    const { page, pageSize} = this.state;
+    const { page, pageSize } = this.props;
     let { loading } = this.props.serverStore;
     filteredInfo = filteredInfo || {};
     let columns = [
@@ -136,7 +140,7 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
       {
         title: 'Ip Address',
         dataIndex: 'ipAddress',
-        key : 'ipAddress',
+        key: 'ipAddress',
         sorter: (a: any, b: any) => a?.ipAddress.length - b?.ipAddress.length,
       },
       {
@@ -144,21 +148,21 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         dataIndex: 'startDate',
         key: 'startDate',
         render: (e: Date) => {
-          return <div>{e ? moment(e).format("DD/MM/YYYY") : ''}</div>
-        }
+          return <div>{e ? moment(e).format('DD/MM/YYYY') : ''}</div>;
+        },
       },
       {
         title: 'EndDate',
         dataIndex: 'endDate',
         key: 'endDate',
         render: (e: Date) => {
-          return <div>{e ? moment(e).format("DD/MM/YYYY") : ''}</div>
-        }
+          return <div>{e ? moment(e).format('DD/MM/YYYY') : ''}</div>;
+        },
       },
       {
         title: 'Owner',
         dataIndex: 'cusName',
-        key : 'cusName',
+        key: 'cusName',
         sorter: (a: any, b: any) => a?.cusName.length - b?.cusName.length,
       },
       {
@@ -167,13 +171,11 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
         dataIndex: 'IsActive',
         render: (IsActive: string) => {
           return IsActive === 'active' ? (
-            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green"
-                 key={IsActive}>
+            <Tag icon={<CheckCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="green" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           ) : (
-            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue"
-                 key={IsActive}>
+            <Tag icon={<CloseCircleOutlined />} style={{ width: '100%', textAlign: 'center' }} color="geekblue" key={IsActive}>
               {IsActive.toLocaleUpperCase()}
             </Tag>
           );
@@ -208,16 +210,21 @@ export default class ResultTable extends React.Component<ServersProps, ServerSta
           </Button>
           <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
         </div>
-        <div style={{overflowX: 'auto'}}>
-        <Table
-          loading={loading}
-          rowSelection={rowSelection}
-          bordered = {true}
-          pagination={{ pageSize, total: this.props.serverStore.servers === undefined ? 0 : this.props.serverStore.servers.totalItems, current: page, defaultCurrent: 1 }}
-          columns={columns}
-          dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
-          onChange = {this.handleTableChange}
-        />
+        <div style={{ overflowX: 'auto' }}>
+          <Table
+            loading={loading}
+            rowSelection={rowSelection}
+            bordered={true}
+            pagination={{
+              pageSize,
+              total: this.props.serverStore.servers === undefined ? 0 : this.props.serverStore.servers.totalItems,
+              current: page ? page + 1 : 1,
+              defaultCurrent: 1,
+            }}
+            columns={columns}
+            dataSource={this.props.serverStore.servers.items.length <= 0 ? [] : this.props.serverStore.servers.items}
+            onChange={this.handleTableChange}
+          />
         </div>
       </div>
     );
