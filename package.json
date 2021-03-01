@@ -6,7 +6,7 @@
     "@ant-design/compatible": "^1.0.5",
     "@ant-design/icons": "^4.2.2",
     "@craco/craco": "^5.6.2",
-    "@microsoft/signalr": "^3.1.8",
+    "@microsoft/signalr": "^3.1.9",
     "@types/file-saver": "^2.0.1",
     "@types/qs": "^6.9.4",
     "abp-web-resources": "^5.1.1",
